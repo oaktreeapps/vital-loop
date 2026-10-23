@@ -124,31 +124,31 @@
             "path": "/foodItems"
           },
           "options": {
-            "$ai": "6 foods people often eat for the meal type the user just picked (the mealType in their last action): breakfast foods for breakfast, light bites for a snack, and so on. A varied mix of everyday dishes, including Indian home cooking. Short names (1–3 words), no quantities. Pick a different set each time.",
+            "$ai": "6 foods people often eat for the meal type the user just picked (the mealType in their last action): breakfast foods for breakfast, light bites for a snack, and so on. A varied mix of everyday dishes from around the world, not from one country or cuisine. Short names (1–3 words), no quantities. Pick a different set each time.",
             "example": [
               {
                 "label": "Rice",
                 "value": "Rice"
               },
               {
-                "label": "Dal",
-                "value": "Dal"
-              },
-              {
-                "label": "Roti",
-                "value": "Roti"
+                "label": "Pasta",
+                "value": "Pasta"
               },
               {
                 "label": "Salad",
                 "value": "Salad"
               },
               {
-                "label": "Paneer",
-                "value": "Paneer"
+                "label": "Sandwich",
+                "value": "Sandwich"
               },
               {
-                "label": "Curd",
-                "value": "Curd"
+                "label": "Soup",
+                "value": "Soup"
+              },
+              {
+                "label": "Grilled chicken",
+                "value": "Grilled chicken"
               }
             ]
           }

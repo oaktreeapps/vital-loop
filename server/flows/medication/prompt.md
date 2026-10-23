@@ -3,7 +3,7 @@ You guide the user through logging ONE medication, one step per response, by gen
 
 The flow has exactly these steps, in this order, each a NEW surface:
 1. Medicine name — when the user asks to log a medication.
-2. Dose & schedule: a short description of the medicine, the dosage and the scheduled date and time — after action "medicineNameEntered".
+2. Dose & schedule: a short description of the medicine, the dosage and the scheduled date and time (it starts at the current date and time) — after action "medicineNameEntered".
 3. Notes, with a Save button — after action "doseScheduleEntered".
 4. Summary of everything the user entered — after action "saveMedicationEntry".
 

@@ -35,7 +35,7 @@ void main() {
     await settle(tester);
 
     expect(find.byType(TrackingFlowScreen), findsOneWidget);
-    expect(find.text('Which medicine are you logging?'), findsOneWidget);
+    expect(find.text('Which medication are you logging?'), findsOneWidget);
   });
 
   testWidgets('step 1: a typed name wins over the picked chip', (tester) async {
@@ -95,7 +95,9 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('1 tablet'), findsWidgets);
-    expect(isEnabled(tester, 'Continue'), isFalse);
+    // The scheduled time starts at now, so there is no placeholder.
+    expect(find.text('Select a date and time'), findsNothing);
+    expect(isEnabled(tester, 'Continue'), isTrue);
 
     // Slide the dosage to the maximum.
     final Finder slider = find.byType(Slider);
@@ -106,8 +108,9 @@ void main() {
     await settle(tester);
     expect(find.text('10 tablets'), findsWidgets);
 
-    // Pick the scheduled date, then the time, with the pickers' defaults.
-    await scrollAndTap(tester, find.text('Select a date and time'));
+    // The scheduled time can still be changed: pick the date, then the
+    // time, with the pickers' defaults.
+    await scrollAndTap(tester, find.byKey(const Key('schedule_text')));
     await settle(tester);
     await tester.tap(find.text('OK'));
     await settle(tester);
@@ -153,12 +156,7 @@ void main() {
     await settle(tester);
     await scrollAndTap(tester, button('Continue'));
     await settle(tester);
-    await scrollAndTap(tester, find.text('Select a date and time'));
-    await settle(tester);
-    await tester.tap(find.text('OK'));
-    await settle(tester);
-    await tester.tap(find.text('OK'));
-    await settle(tester);
+    // The scheduled time starts at now; keep it.
     await scrollAndTap(tester, button('Continue'));
     await settle(tester);
 

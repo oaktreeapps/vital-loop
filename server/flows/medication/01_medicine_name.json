@@ -102,13 +102,13 @@
           "id": "title",
           "component": "Text",
           "variant": "h2",
-          "text": "Which medicine are you logging?"
+          "text": "Which medication are you logging?"
         },
         {
           "id": "subtitle",
           "component": "Text",
           "variant": "body",
-          "text": "Pick a common one, or type the name on your strip or bottle."
+          "text": "Pick from one of the options below, or type in your medication name"
         },
         {
           "id": "suggestions_label",
@@ -165,8 +165,7 @@
           "align": "stretch",
           "children": [
             "other_title",
-            "other",
-            "other_hint"
+            "other"
           ]
         },
         {
@@ -182,12 +181,6 @@
           "value": {
             "path": "/medicineOther"
           }
-        },
-        {
-          "id": "other_hint",
-          "component": "Text",
-          "variant": "caption",
-          "text": "A name typed here is used instead of the one picked above."
         },
         {
           "id": "tip_card",
@@ -216,7 +209,7 @@
           "component": "Text",
           "variant": "body",
           "weight": 1,
-          "text": "Next you'll add the dose and when it's scheduled."
+          "text": "Next, you will add the dose and time"
         },
         {
           "id": "next",

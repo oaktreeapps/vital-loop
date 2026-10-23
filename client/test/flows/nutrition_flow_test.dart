@@ -41,7 +41,7 @@ void main() {
     expect(find.text('What did you have for lunch?'), findsOneWidget);
     expect(isEnabled(tester, 'Continue · 0 items'), isFalse);
     await scrollAndTap(tester, find.text('Rice'));
-    await tester.enterText(find.byType(TextField), 'Dal, Roti');
+    await tester.enterText(find.byType(TextField), 'Noodles, Tea');
     await tester.pump();
     expect(isEnabled(tester, 'Continue · 1 item'), isTrue);
     await scrollAndTap(tester, button('Continue · 1 item'));
@@ -50,7 +50,7 @@ void main() {
     // Step 3: one slider card per food, built from the data model.
     expect(find.text('How much did you have?'), findsOneWidget);
     expect(find.text('3 foods'), findsOneWidget);
-    for (final food in ['Rice', 'Dal', 'Roti']) {
+    for (final food in ['Rice', 'Noodles', 'Tea']) {
       expect(find.text(food), findsOneWidget);
     }
     expect(find.byType(Slider), findsNWidgets(3));
@@ -91,7 +91,7 @@ void main() {
     expect(find.text('Entry saved'), findsOneWidget);
     expect(find.text('Lunch · Today, 1:00 PM'), findsOneWidget);
     expect(
-      find.text('Rice – 10, Dal – 1 serving, Roti – 1 serving'),
+      find.text('Rice – 10, Noodles – 1 serving, Tea – 1 serving'),
       findsOneWidget,
     );
     expect(find.text('Home cooked'), findsOneWidget);

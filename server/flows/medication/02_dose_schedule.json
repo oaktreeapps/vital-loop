@@ -16,6 +16,7 @@
       "path": "/",
       "value": {
         "dosage": 1,
+        "scheduledAt": "{{now}}",
         "descriptions": {
           "Paracetamol": "Paracetamol (acetaminophen) is a common pain reliever and fever reducer. It's used for headaches, body aches and mild to moderate pain. It's gentle on the stomach, but too much can harm the liver, so stay within the daily limit on the label.",
           "Ibuprofen": "Ibuprofen is a non-steroidal anti-inflammatory drug (NSAID). It eases pain, fever and inflammation, for example from sprains, toothache or period pain. Taking it with food or milk helps protect the stomach.",
@@ -155,8 +156,7 @@
           "align": "stretch",
           "children": [
             "dose_header",
-            "dose_slider",
-            "dose_range"
+            "dose_slider"
           ]
         },
         {
@@ -195,28 +195,6 @@
           "value": {
             "path": "/dosage"
           }
-        },
-        {
-          "id": "dose_range",
-          "component": "Row",
-          "justify": "spaceBetween",
-          "align": "center",
-          "children": [
-            "dose_min",
-            "dose_max"
-          ]
-        },
-        {
-          "id": "dose_min",
-          "component": "Text",
-          "variant": "caption",
-          "text": "1 tablet"
-        },
-        {
-          "id": "dose_max",
-          "component": "Text",
-          "variant": "caption",
-          "text": "10 tablets"
         },
         {
           "id": "schedule_card",
