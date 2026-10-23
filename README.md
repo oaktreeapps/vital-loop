@@ -89,6 +89,36 @@ Also:
 - **Custom components**: Flutter widgets registered as genui `CatalogItem`s in
   `client/lib/catalog/`. The JSON can only use components from the catalog.
 
+## The catalog
+
+28 components in six families: 18 of genui's basic components lay out every
+screen, and 10 of the app's own draw the health cards. Each custom component is
+declared once in `client/lib/catalog/<component>/`: a schema that tells Gemini
+what it takes, and a plain Flutter widget that draws it. The app's
+**Component Catalog** screen (the catalog button on the dashboard) shows every
+one live, with its example JSON and schema, in **Default** and **Custom** tabs.
+
+The [Figma file]([https://www.figma.com/design/I2u4OYGUp0aT4EmnXVMEeG/VitalLoop-%C2%B7-A2UI-Component-CatalogHealth-Tracker-%C2%B7-A2UI-Component-Catalog?node-id=116-14503](https://www.figma.com/design/I2u4OYGUp0aT4EmnXVMEeG/VitalLoop-%C2%B7-A2UI-Component-CatalogHealth-Tracker-%C2%B7-A2UI-Component-Catalog?node-id=0-1&p=f&t=hbUnixnlCE6pc8cH-0))
+holds every component as a Figma component, built from shared parts and bound
+to VitalLoop's colours, spacing, radii and text styles as variables and
+styles. It also has the foundations, the shared building blocks, and the
+flows screen by screen.
+
+| Family | Components |
+| --- | --- |
+| Layout and text | `Text`, `Row`, `Column`, `Card`, `Divider`, `Icon` |
+| Inputs and actions | `Button`, `TextField`, `ChoicePicker`, `Slider`, `DateTimeInput` |
+| Body and pain | `BodyMapPicker`, `SeverityInput` |
+| Vitals | `BloodPressureInput`, `HeartRateInput`, `TemperatureInput`, `BloodSugarInput` |
+| Summary and care | `CareMap`, `CareList`, `PdfReport` |
+| Page header | `IconBadge` |
+
+The first two families come from genui; the rest are VitalLoop's own. The
+custom cards share one look and the parts in `client/lib/catalog/shared/`: the
+status chip, unit toggle, round icon button and care place card. A screen can
+only use components from this list, and each custom component's schema
+description is exactly what Gemini reads about it.
+
 ## Prerequisites
 
 - [Flutter](https://docs.flutter.dev/get-started/install) 3.41 or newer (Dart 3.11)
