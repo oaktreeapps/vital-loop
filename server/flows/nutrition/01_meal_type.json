@@ -1,0 +1,362 @@
+[
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_step_1_meal_type"
+    }
+  },
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_step_2_food_items"
+    }
+  },
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_step_3_quantity"
+    }
+  },
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_step_4_meal_time"
+    }
+  },
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_step_5_notes"
+    }
+  },
+  {
+    "version": "v0.9",
+    "deleteSurface": {
+      "surfaceId": "nutrition_summary"
+    }
+  },
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "nutrition_step_1_meal_type",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "nutrition_step_1_meal_type",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "eyebrow",
+            "title",
+            "subtitle",
+            "meal_grid",
+            "tip_card"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "duration_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 1 of 5"
+        },
+        {
+          "id": "duration_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "About 1 min"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "eyebrow",
+          "component": "Text",
+          "variant": "h4",
+          "text": "LOG A MEAL"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Which meal are you logging?"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "It takes about a minute, and goes straight into today's health summary."
+        },
+        {
+          "id": "meal_grid",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "meal_row_1",
+            "meal_row_2"
+          ]
+        },
+        {
+          "id": "meal_row_1",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "tile_breakfast",
+            "tile_lunch"
+          ]
+        },
+        {
+          "id": "meal_row_2",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "tile_dinner",
+            "tile_snack"
+          ]
+        },
+        {
+          "id": "tile_breakfast",
+          "component": "Button",
+          "weight": 1,
+          "child": "tile_breakfast_content",
+          "action": {
+            "event": {
+              "name": "mealTypeSelected",
+              "context": {
+                "mealType": "Breakfast",
+                "mealIcon": "sunrise",
+                "mealColor": "#A4521E",
+                "mealBackground": "#FBE3D2",
+                "mealHours": "6 – 10 am"
+              }
+            }
+          }
+        },
+        {
+          "id": "tile_breakfast_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "tile_breakfast_icon",
+            "tile_breakfast_name",
+            "tile_breakfast_time"
+          ]
+        },
+        {
+          "id": "tile_breakfast_icon",
+          "component": "IconBadge",
+          "name": "sunrise",
+          "color": "#C0662B",
+          "background": "#FBE3D2",
+          "size": 48
+        },
+        {
+          "id": "tile_breakfast_name",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Breakfast"
+        },
+        {
+          "id": "tile_breakfast_time",
+          "component": "Text",
+          "variant": "caption",
+          "text": "6 – 10 am"
+        },
+        {
+          "id": "tile_lunch",
+          "component": "Button",
+          "weight": 1,
+          "child": "tile_lunch_content",
+          "action": {
+            "event": {
+              "name": "mealTypeSelected",
+              "context": {
+                "mealType": "Lunch",
+                "mealIcon": "sun",
+                "mealColor": "#6B5412",
+                "mealBackground": "#F5EDC4",
+                "mealHours": "12 – 3 pm"
+              }
+            }
+          }
+        },
+        {
+          "id": "tile_lunch_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "tile_lunch_icon",
+            "tile_lunch_name",
+            "tile_lunch_time"
+          ]
+        },
+        {
+          "id": "tile_lunch_icon",
+          "component": "IconBadge",
+          "name": "sun",
+          "color": "#9A7A1C",
+          "background": "#F5EDC4",
+          "size": 48
+        },
+        {
+          "id": "tile_lunch_name",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Lunch"
+        },
+        {
+          "id": "tile_lunch_time",
+          "component": "Text",
+          "variant": "caption",
+          "text": "12 – 3 pm"
+        },
+        {
+          "id": "tile_dinner",
+          "component": "Button",
+          "weight": 1,
+          "child": "tile_dinner_content",
+          "action": {
+            "event": {
+              "name": "mealTypeSelected",
+              "context": {
+                "mealType": "Dinner",
+                "mealIcon": "moon",
+                "mealColor": "#3E4A8A",
+                "mealBackground": "#E3E3F3",
+                "mealHours": "5 – 9 pm"
+              }
+            }
+          }
+        },
+        {
+          "id": "tile_dinner_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "tile_dinner_icon",
+            "tile_dinner_name",
+            "tile_dinner_time"
+          ]
+        },
+        {
+          "id": "tile_dinner_icon",
+          "component": "IconBadge",
+          "name": "moon",
+          "color": "#3E4A8A",
+          "background": "#E3E3F3",
+          "size": 48
+        },
+        {
+          "id": "tile_dinner_name",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Dinner"
+        },
+        {
+          "id": "tile_dinner_time",
+          "component": "Text",
+          "variant": "caption",
+          "text": "5 – 9 pm"
+        },
+        {
+          "id": "tile_snack",
+          "component": "Button",
+          "weight": 1,
+          "child": "tile_snack_content",
+          "action": {
+            "event": {
+              "name": "mealTypeSelected",
+              "context": {
+                "mealType": "Snack",
+                "mealIcon": "cookie",
+                "mealColor": "#3F6B4A",
+                "mealBackground": "#E2EDE1",
+                "mealHours": "anytime"
+              }
+            }
+          }
+        },
+        {
+          "id": "tile_snack_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "tile_snack_icon",
+            "tile_snack_name",
+            "tile_snack_time"
+          ]
+        },
+        {
+          "id": "tile_snack_icon",
+          "component": "IconBadge",
+          "name": "cookie",
+          "color": "#3F6B4A",
+          "background": "#E2EDE1",
+          "size": 48
+        },
+        {
+          "id": "tile_snack_name",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Snack"
+        },
+        {
+          "id": "tile_snack_time",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Anytime"
+        },
+        {
+          "id": "tip_card",
+          "component": "Card",
+          "child": "tip_row"
+        },
+        {
+          "id": "tip_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "tip_icon",
+            "tip_text"
+          ]
+        },
+        {
+          "id": "tip_icon",
+          "component": "IconBadge",
+          "name": "lightbulb",
+          "color": "#8A5A2B",
+          "background": "#F4F0EA",
+          "size": 36
+        },
+        {
+          "id": "tip_text",
+          "component": "Text",
+          "variant": "body",
+          "weight": 1,
+          "text": "Log right after eating for the most accurate record."
+        }
+      ]
+    }
+  }
+]

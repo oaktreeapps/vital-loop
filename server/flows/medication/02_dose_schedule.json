@@ -1,0 +1,313 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "medication_step_2_dose_schedule",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "medication_step_2_dose_schedule",
+      "path": "/",
+      "value": {
+        "dosage": 1,
+        "descriptions": {
+          "Paracetamol": "Paracetamol (acetaminophen) is a common pain reliever and fever reducer. It's used for headaches, body aches and mild to moderate pain. It's gentle on the stomach, but too much can harm the liver, so stay within the daily limit on the label.",
+          "Ibuprofen": "Ibuprofen is a non-steroidal anti-inflammatory drug (NSAID). It eases pain, fever and inflammation, for example from sprains, toothache or period pain. Taking it with food or milk helps protect the stomach.",
+          "Vitamin D": "Vitamin D helps the body absorb calcium and keeps bones, teeth and muscles healthy. It's often taken as a daily or weekly supplement, especially by people who get little sun.",
+          "Metformin": "Metformin is a common medicine for type 2 diabetes. It lowers blood sugar by reducing the sugar the liver releases and helping the body respond to insulin. It's usually taken with meals to reduce stomach upset.",
+          "Amlodipine": "Amlodipine is a calcium channel blocker used for high blood pressure and some kinds of chest pain (angina). It relaxes the blood vessels so blood flows more easily. It's usually taken once a day.",
+          "Cetirizine": "Cetirizine is an antihistamine that relieves allergy symptoms such as sneezing, a runny nose, itchy or watery eyes, and hives. It's usually taken once a day and can make some people a little drowsy."
+        }
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "medication_step_2_dose_schedule",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "medicine_tag",
+            "title",
+            "about_card",
+            "dose_card",
+            "schedule_card",
+            "next"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 2 of 3"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Dose & schedule"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "medicine_tag",
+          "component": "IconBadge",
+          "name": "medication",
+          "label": "{{medicineName}}",
+          "color": "#3F4A8A",
+          "background": "#E4E5F3"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "How much, and when?"
+        },
+        {
+          "id": "about_card",
+          "component": "Card",
+          "child": "about_content"
+        },
+        {
+          "id": "about_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "about_header",
+            "about_text",
+            "about_disclaimer"
+          ]
+        },
+        {
+          "id": "about_header",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "about_icon",
+            "about_title"
+          ]
+        },
+        {
+          "id": "about_icon",
+          "component": "IconBadge",
+          "name": "medication",
+          "color": "#3F4A8A",
+          "background": "#E4E5F3",
+          "size": 40
+        },
+        {
+          "id": "about_title",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "About {{medicineName}}"
+        },
+        {
+          "id": "about_text",
+          "component": "Text",
+          "variant": "body",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${pluralize(value:${length(value:${/descriptions/{{medicineName}}})}, zero:'No description for this medicine yet. Check the leaflet in the pack.', other:'${/descriptions/{{medicineName}}}')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "about_disclaimer",
+          "component": "Text",
+          "variant": "caption",
+          "text": "General information only. Follow your prescription or your pharmacist's advice."
+        },
+        {
+          "id": "dose_card",
+          "component": "Card",
+          "child": "dose_content"
+        },
+        {
+          "id": "dose_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "dose_header",
+            "dose_slider",
+            "dose_range"
+          ]
+        },
+        {
+          "id": "dose_header",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "dose_title",
+            "dose_value"
+          ]
+        },
+        {
+          "id": "dose_title",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Dosage"
+        },
+        {
+          "id": "dose_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${formatNumber(value:${/dosage}, decimalPlaces:0)} ${pluralize(value:${/dosage}, one:'tablet', other:'tablets')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "dose_slider",
+          "component": "Slider",
+          "min": 1,
+          "max": 10,
+          "value": {
+            "path": "/dosage"
+          }
+        },
+        {
+          "id": "dose_range",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "dose_min",
+            "dose_max"
+          ]
+        },
+        {
+          "id": "dose_min",
+          "component": "Text",
+          "variant": "caption",
+          "text": "1 tablet"
+        },
+        {
+          "id": "dose_max",
+          "component": "Text",
+          "variant": "caption",
+          "text": "10 tablets"
+        },
+        {
+          "id": "schedule_card",
+          "component": "Card",
+          "child": "schedule_content"
+        },
+        {
+          "id": "schedule_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "schedule_title",
+            "schedule",
+            "schedule_hint"
+          ]
+        },
+        {
+          "id": "schedule_title",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Scheduled time"
+        },
+        {
+          "id": "schedule",
+          "component": "DateTimeInput",
+          "variant": "datetime",
+          "label": "Date and time",
+          "value": {
+            "path": "/scheduledAt"
+          }
+        },
+        {
+          "id": "schedule_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "When this dose is due. Tap to pick the date, then the time."
+        },
+        {
+          "id": "next",
+          "component": "Button",
+          "variant": "primary",
+          "child": "next_content",
+          "action": {
+            "event": {
+              "name": "doseScheduleEntered",
+              "context": {
+                "dosage": {
+                  "path": "/dosage"
+                },
+                "scheduledAt": {
+                  "path": "/scheduledAt"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/scheduledAt"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick when the dose is scheduled"
+            }
+          ]
+        },
+        {
+          "id": "next_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "next_label",
+            "next_icon"
+          ]
+        },
+        {
+          "id": "next_label",
+          "component": "Text",
+          "text": "Continue"
+        },
+        {
+          "id": "next_icon",
+          "component": "Icon",
+          "name": "arrowForward"
+        }
+      ]
+    }
+  }
+]

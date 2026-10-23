@@ -1,0 +1,50 @@
+{
+  "_comment": "The pain flow: Body area \u2192 Pain level & start time \u2192 Notes \u2192 Save, then a summary. BodyMapPicker (lib/catalog/body_map_picker/body_map_picker.dart, the tappable front/back figure) and SeverityInput (lib/catalog/severity_input/severity_input.dart, here labelled \"Pain level\") are custom catalog components written in Dart; titles, buttons and the start time are built-in components. Notes and the summary reuse ../shared/notes.json and ../shared/summary.json with this flow's values for their {{slots}}; routing and placeholders work like ../nutrition/flow.json.",
+  "start": "01_body_area.json",
+  "bodyAreasSelected": "02_level_time.json",
+  "painDetailsEntered": {
+    "screen": "../shared/notes.json",
+    "with": {
+      "surfaceId": "pain_step_3_notes",
+      "stepLabel": "Step 3 of 3",
+      "tag1Icon": "gauge",
+      "tag1Label": "Pain {{painLevel}}/10",
+      "tag1Color": "#A14B3F",
+      "tag1Background": "#F4E3DD",
+      "tag2Icon": "schedule",
+      "tag2Label": {
+        "call": "formatString",
+        "args": {
+          "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
+        },
+        "returnType": "string"
+      },
+      "tag2Color": "#1F2A24",
+      "tag2Background": "#FFFFFF",
+      "notesHint": "e.g. Sharp when I bend, eases when I lie down",
+      "saveAction": "savePainEntry"
+    }
+  },
+  "savePainEntry": {
+    "screen": "../shared/summary.json",
+    "with": {
+      "surfaceId": "pain_summary",
+      "row1Icon": "body",
+      "row1Color": "#A14B3F",
+      "row1Background": "#F4E3DD",
+      "row1Label": "Where",
+      "row1Value": "{{bodyAreas|text}}",
+      "row2Icon": "gauge",
+      "row2Color": "#8A5A2B",
+      "row2Background": "#F1EBE0",
+      "row2Label": "Pain level & start",
+      "row2Value": {
+        "call": "formatString",
+        "args": {
+          "value": "{{painLevel}}/10 \u00b7 ${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
+        },
+        "returnType": "string"
+      }
+    }
+  }
+}

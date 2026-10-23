@@ -1,0 +1,247 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "{{surfaceId}}",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "{{surfaceId}}",
+      "path": "/",
+      "value": {
+        "notes": "{{notes}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "{{surfaceId}}",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "hero",
+            "details_card",
+            "dashboard"
+          ]
+        },
+        {
+          "id": "hero",
+          "component": "Column",
+          "align": "center",
+          "children": [
+            "done_icon",
+            "title",
+            "subtitle"
+          ]
+        },
+        {
+          "id": "done_icon",
+          "component": "IconBadge",
+          "name": "check",
+          "color": "#FFFFFF",
+          "background": "#2C4A3E",
+          "size": 88
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Entry saved"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Added to today's health summary."
+        },
+        {
+          "id": "details_card",
+          "component": "Card",
+          "child": "details"
+        },
+        {
+          "id": "details",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "row_1_row",
+            "divider_1",
+            "row_2_row",
+            "divider_2",
+            "notes_row"
+          ]
+        },
+        {
+          "id": "divider_1",
+          "component": "Divider"
+        },
+        {
+          "id": "divider_2",
+          "component": "Divider"
+        },
+        {
+          "id": "row_1_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_1_icon",
+            "row_1_text"
+          ]
+        },
+        {
+          "id": "row_1_icon",
+          "component": "IconBadge",
+          "name": "{{row1Icon}}",
+          "color": "{{row1Color}}",
+          "background": "{{row1Background}}",
+          "size": 44
+        },
+        {
+          "id": "row_1_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_1_label",
+            "row_1_value"
+          ]
+        },
+        {
+          "id": "row_1_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "{{row1Label}}"
+        },
+        {
+          "id": "row_1_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": "{{row1Value}}"
+        },
+        {
+          "id": "row_2_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_2_icon",
+            "row_2_text"
+          ]
+        },
+        {
+          "id": "row_2_icon",
+          "component": "IconBadge",
+          "name": "{{row2Icon}}",
+          "color": "{{row2Color}}",
+          "background": "{{row2Background}}",
+          "size": 44
+        },
+        {
+          "id": "row_2_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_2_label",
+            "row_2_value"
+          ]
+        },
+        {
+          "id": "row_2_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "{{row2Label}}"
+        },
+        {
+          "id": "row_2_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": "{{row2Value}}"
+        },
+        {
+          "id": "notes_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "notes_icon",
+            "notes_text"
+          ]
+        },
+        {
+          "id": "notes_icon",
+          "component": "IconBadge",
+          "name": "note",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 44
+        },
+        {
+          "id": "notes_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "notes_label",
+            "notes_value"
+          ]
+        },
+        {
+          "id": "notes_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Notes"
+        },
+        {
+          "id": "notes_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${pluralize(value:${length(value:${/notes})}, zero:'No notes added', one:'${/notes}', other:'${/notes}')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "dashboard",
+          "component": "Button",
+          "variant": "primary",
+          "child": "dashboard_content",
+          "action": {
+            "event": {
+              "name": "goToDashboard",
+              "context": {}
+            }
+          }
+        },
+        {
+          "id": "dashboard_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "dashboard_icon",
+            "dashboard_label"
+          ]
+        },
+        {
+          "id": "dashboard_icon",
+          "component": "Icon",
+          "name": "home"
+        },
+        {
+          "id": "dashboard_label",
+          "component": "Text",
+          "text": "Go to dashboard"
+        }
+      ]
+    }
+  }
+]

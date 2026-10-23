@@ -1,0 +1,6 @@
+{
+  "_comment": "The symptoms flow: Select symptoms \u2192 Description, severity & start time \u2192 Save, then a summary. Severity is a custom catalog component written in Dart (lib/catalog/severity_input/severity_input.dart: SeverityInput, a 1\u201310 scale); everything else uses built-in components and IconBadge. \"{{a,b|list}}\" merges the picked symptoms with the typed ones; \"{{now}}\" is the current local date and time. Routing and placeholders work like ../nutrition/flow.json. Step 1's Continue check reads \"<number picked>|<typed text>\" and passes unless it is \"0|\" (nothing picked or typed): genui's and/or functions don't evaluate function calls nested in their list, so one regex check stands in for \"picked OR typed\".",
+  "start": "01_select_symptoms.json",
+  "symptomsSelected": "02_details.json",
+  "symptomDetailsEntered": "03_summary.json"
+}

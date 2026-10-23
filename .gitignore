@@ -1,0 +1,9 @@
+# Repository-wide ignores. client/ and server/ have their own .gitignore.
+.DS_Store
+.idea/
+*.iml
+
+# Dart and Flutter tool output, including the Chrome profile that
+# `flutter run -d chrome` keeps in .dart_tool/chrome-device (cookies, history).
+.dart_tool/
+build/

@@ -1,0 +1,226 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "daily_summary",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json",
+        "text": {
+          "h3": {
+            "size": 15,
+            "weight": 400,
+            "color": "#1F2A24",
+            "height": 1.65
+          },
+          "body": {
+            "size": 15,
+            "height": 1.65
+          },
+          "h5": {
+            "size": 15
+          }
+        }
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "daily_summary",
+      "path": "/",
+      "value": {
+        "entries": "{{entries}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "daily_summary",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "eyebrow",
+            "title",
+            "overview_lead",
+            "overview",
+            "divider",
+            "entries_title",
+            "entries",
+            "disclaimer_box",
+            "find_care"
+          ]
+        },
+        {
+          "id": "eyebrow",
+          "component": "Text",
+          "variant": "h4",
+          "text": "{{date|upper}} · {{entryCountLabel|upper}}"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h1",
+          "text": {
+            "$ai": "A short title for today's entries (2–5 words), e.g. naming the main thing logged. No diagnosis.",
+            "example": "Your day at a glance"
+          }
+        },
+        {
+          "id": "overview_lead",
+          "component": "Text",
+          "variant": "h3",
+          "text": {
+            "$ai": "The opening paragraph of an overview of today's entries written for the user's doctor: one or two plain sentences on what was logged and over what time (e.g. from the first to the last entry). Plain text, no markdown.",
+            "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry."
+          }
+        },
+        {
+          "id": "overview",
+          "component": "Text",
+          "variant": "body",
+          "text": {
+            "$ai": "The rest of that overview for the doctor, after the opening paragraph (don't repeat it). Plain text, no markdown: 2–4 short paragraphs separated by a blank line, about 120–220 words. Describe each entry with its exact values, body areas, severities, onset times and the user's own notes: pain and symptoms, vital readings (say whether each is inside or outside the general adult range), medications with dose and time, meals and anything noticed after eating. Point out timing or patterns that may be related, e.g. pain and a symptom that started together. End with the points worth discussing with the doctor. Describe only what was logged: no diagnosis, no possible causes, no treatment or dosing advice. If something looks urgent (e.g. pain 9–10/10 or a very high blood pressure), say it should be discussed with a doctor promptly.",
+            "example": "Each entry is listed below as it was saved, with its time and values."
+          }
+        },
+        {
+          "id": "divider",
+          "component": "Divider"
+        },
+        {
+          "id": "entries_title",
+          "component": "Text",
+          "variant": "h4",
+          "text": "TODAY'S ENTRIES"
+        },
+        {
+          "id": "entries",
+          "component": "Column",
+          "align": "stretch",
+          "children": {
+            "componentId": "entry_row",
+            "path": "/entries"
+          }
+        },
+        {
+          "id": "entry_row",
+          "component": "Row",
+          "align": "start",
+          "children": [
+            "entry_icon",
+            "entry_text"
+          ]
+        },
+        {
+          "id": "entry_icon",
+          "component": "IconBadge",
+          "name": {
+            "path": "icon"
+          },
+          "color": {
+            "path": "color"
+          },
+          "background": "#FFFFFF",
+          "border": "#E8E1D6",
+          "shape": "circle",
+          "size": 40
+        },
+        {
+          "id": "entry_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "entry_head",
+            "entry_line"
+          ],
+          "align": "stretch"
+        },
+        {
+          "id": "entry_head",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "entry_category",
+            "entry_time"
+          ]
+        },
+        {
+          "id": "entry_category",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "path": "category"
+          }
+        },
+        {
+          "id": "entry_time",
+          "component": "Text",
+          "variant": "caption",
+          "text": {
+            "path": "time"
+          }
+        },
+        {
+          "id": "entry_line",
+          "component": "Text",
+          "variant": "body",
+          "text": {
+            "path": "line"
+          }
+        },
+        {
+          "id": "disclaimer_box",
+          "component": "Column",
+          "align": "center",
+          "children": [
+            "disclaimer"
+          ]
+        },
+        {
+          "id": "disclaimer",
+          "component": "Text",
+          "variant": "caption",
+          "text": "A summary of what you logged, not a diagnosis."
+        },
+        {
+          "id": "find_care",
+          "component": "Button",
+          "variant": "primary",
+          "child": "find_care_content",
+          "action": {
+            "event": {
+              "name": "chooseCareCity",
+              "context": {}
+            }
+          }
+        },
+        {
+          "id": "find_care_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "find_care_icon",
+            "find_care_label"
+          ]
+        },
+        {
+          "id": "find_care_label",
+          "component": "Text",
+          "text": "Find care nearby"
+        },
+        {
+          "id": "find_care_icon",
+          "component": "Icon",
+          "name": "locationOn"
+        }
+      ]
+    }
+  }
+]

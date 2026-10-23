@@ -1,0 +1,215 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "{{surfaceId}}",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "{{surfaceId}}",
+      "path": "/",
+      "value": {
+        "notes": ""
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "{{surfaceId}}",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "tags",
+            "title",
+            "subtitle",
+            "notes_card",
+            "save"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "{{stepLabel}}"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Last step"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "tags",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "tag_1",
+            "tag_2"
+          ]
+        },
+        {
+          "id": "tag_1",
+          "component": "IconBadge",
+          "name": "{{tag1Icon}}",
+          "label": "{{tag1Label}}",
+          "color": "{{tag1Color}}",
+          "background": "{{tag1Background}}"
+        },
+        {
+          "id": "tag_2",
+          "component": "IconBadge",
+          "name": "{{tag2Icon}}",
+          "label": "{{tag2Label}}",
+          "color": "{{tag2Color}}",
+          "background": "{{tag2Background}}"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Anything else to note?"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Optional. Skip it if nothing stood out."
+        },
+        {
+          "id": "notes_card",
+          "component": "Card",
+          "child": "notes_content"
+        },
+        {
+          "id": "notes_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "notes_header",
+            "notes"
+          ]
+        },
+        {
+          "id": "notes_header",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "notes_label",
+            "notes_count"
+          ]
+        },
+        {
+          "id": "notes_label",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Notes"
+        },
+        {
+          "id": "notes_count",
+          "component": "Text",
+          "variant": "caption",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${length(value:${/notes})} / 280"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "notes",
+          "component": "TextField",
+          "variant": "longText",
+          "label": "{{notesHint}}",
+          "value": {
+            "path": "/notes"
+          }
+        },
+        {
+          "id": "save",
+          "component": "Button",
+          "variant": "primary",
+          "child": "save_content",
+          "action": {
+            "event": {
+              "name": "{{saveAction}}",
+              "context": {
+                "notes": {
+                  "path": "/notes"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "regex",
+                "args": {
+                  "value": {
+                    "path": "/notes"
+                  },
+                  "pattern": "^[\\s\\S]{0,280}$"
+                },
+                "returnType": "boolean"
+              },
+              "message": "Keep notes under 280 characters"
+            }
+          ]
+        },
+        {
+          "id": "save_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "save_icon",
+            "save_label"
+          ]
+        },
+        {
+          "id": "save_icon",
+          "component": "Icon",
+          "name": "check"
+        },
+        {
+          "id": "save_label",
+          "component": "Text",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${pluralize(value:${length(value:${/notes})}, zero:'Save without notes', one:'Save entry', other:'Save entry')}"
+            },
+            "returnType": "string"
+          }
+        }
+      ]
+    }
+  }
+]

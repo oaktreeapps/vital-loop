@@ -1,0 +1,5 @@
+{
+  "_comment": "The vitals flow: Readings (blood pressure, heart rate, temperature, blood sugar, measurement time) \u2192 Save, then a summary. The four readings are custom catalog components written in Dart (lib/catalog/<input>/, one folder per input: BloodPressureInput, HeartRateInput, TemperatureInput, BloodSugarInput); titles, the measurement time and the button are built-in components here. Each reading is bound to the data model, whose defaults are set by the screen's updateDataModel; \"{{now}}\" is the current local date and time. Routing and placeholders work like ../nutrition/flow.json.",
+  "start": "01_readings.json",
+  "vitalsEntered": "02_summary.json"
+}

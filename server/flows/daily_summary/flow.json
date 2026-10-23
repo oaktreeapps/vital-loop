@@ -1,0 +1,6 @@
+{
+  "_comment": "The daily summary: the first request is the action \"generateSummary\" carrying the day's entries (date, entryCount, entryCountLabel, categories, entries); the app sends it from the dashboard's Generate summary button. The summary lists the entries from the data model and has a Find care nearby button: the app asks for a city (the local action \"chooseCareCity\") and sends \"findNearbyCare\" with it. Gemini then calls the search_care_places tool (server/places.py) and fills the nearby care screen: a CareMap and a CareList (lib/catalog/care_map/, lib/catalog/care_list/) showing the same \"$places\" list, which the server checks against the tool's results. That screen has the Generate PDF button, which sends the picked place's id (selectedPlaceId, empty if none); the report's PdfReport component (lib/catalog/pdf_report/pdf_report.dart) shows that place (a \"$place\" the server fills in) and builds the PDF from its props. Gemini writes the titles, subtitles and overviews. The report's Finish button sends the local action \"finish\": the app clears the log and goes back to the dashboard, so it has no route here.",
+  "generateSummary": "01_summary.json",
+  "findNearbyCare": "02_nearby_care.json",
+  "generatePdf": "03_report.json"
+}

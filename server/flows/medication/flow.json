@@ -1,0 +1,50 @@
+{
+  "_comment": "The medication flow: Medicine name → Dose & schedule (description, dosage, scheduled time) → Notes → Save, then a summary. Notes and the summary reuse ../shared/notes.json and ../shared/summary.json with this flow's values for their {{slots}}; routing and placeholders work like ../nutrition/flow.json.",
+  "start": "01_medicine_name.json",
+  "medicineNameEntered": "02_dose_schedule.json",
+  "doseScheduleEntered": {
+    "screen": "../shared/notes.json",
+    "with": {
+      "surfaceId": "medication_step_3_notes",
+      "stepLabel": "Step 3 of 3",
+      "tag1Icon": "medication",
+      "tag1Label": "{{medicineName}}",
+      "tag1Color": "#3F4A8A",
+      "tag1Background": "#E4E5F3",
+      "tag2Icon": "schedule",
+      "tag2Label": {
+        "call": "formatString",
+        "args": {
+          "value": "${formatDate(value:'{{scheduledAt}}', pattern:'d MMM, h:mm a')}"
+        },
+        "returnType": "string"
+      },
+      "tag2Color": "#1F2A24",
+      "tag2Background": "#FFFFFF",
+      "notesHint": "e.g. Took it after breakfast, felt a little drowsy",
+      "saveAction": "saveMedicationEntry"
+    }
+  },
+  "saveMedicationEntry": {
+    "screen": "../shared/summary.json",
+    "with": {
+      "surfaceId": "medication_summary",
+      "row1Icon": "medication",
+      "row1Color": "#3F4A8A",
+      "row1Background": "#E4E5F3",
+      "row1Label": "Medicine",
+      "row1Value": "{{medicineName}}",
+      "row2Icon": "schedule",
+      "row2Color": "#8A5A2B",
+      "row2Background": "#F1EBE0",
+      "row2Label": "Dose & time",
+      "row2Value": {
+        "call": "formatString",
+        "args": {
+          "value": "{{dosage|text}} ${pluralize(value:{{dosage}}, one:'tablet', other:'tablets')} · ${formatDate(value:'{{scheduledAt}}', pattern:'d MMM, h:mm a')}"
+        },
+        "returnType": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,232 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "symptoms_step_1_select",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "symptoms_step_1_select",
+      "path": "/",
+      "value": {
+        "symptoms": [],
+        "otherSymptoms": ""
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "symptoms_step_1_select",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "title",
+            "subtitle",
+            "picker_label",
+            "picked",
+            "other_title",
+            "other",
+            "other_hint",
+            "next"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 1 of 2"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Symptoms"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "What are you feeling?"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Pick everything that applies, or add your own."
+        },
+        {
+          "id": "picker_label",
+          "component": "Text",
+          "variant": "h4",
+          "text": "COMMON SYMPTOMS"
+        },
+        {
+          "id": "picked",
+          "component": "ChoicePicker",
+          "variant": "multipleSelection",
+          "displayStyle": "chips",
+          "value": {
+            "path": "/symptoms"
+          },
+          "options": {
+            "$ai": "12 symptoms people commonly log at home, as short plain names a patient would use (1–3 words, e.g. \"Sore throat\"). Cover the head, chest and breathing, stomach and digestion, muscles and joints, skin, and general ones like fever or fatigue. Pick a different, varied set each time.",
+            "example": [
+              {
+                "label": "Headache",
+                "value": "Headache"
+              },
+              {
+                "label": "Fever",
+                "value": "Fever"
+              },
+              {
+                "label": "Cough",
+                "value": "Cough"
+              },
+              {
+                "label": "Sore throat",
+                "value": "Sore throat"
+              },
+              {
+                "label": "Runny nose",
+                "value": "Runny nose"
+              },
+              {
+                "label": "Fatigue",
+                "value": "Fatigue"
+              },
+              {
+                "label": "Nausea",
+                "value": "Nausea"
+              },
+              {
+                "label": "Dizziness",
+                "value": "Dizziness"
+              },
+              {
+                "label": "Stomach pain",
+                "value": "Stomach pain"
+              },
+              {
+                "label": "Body aches",
+                "value": "Body aches"
+              },
+              {
+                "label": "Back pain",
+                "value": "Back pain"
+              },
+              {
+                "label": "Shortness of breath",
+                "value": "Shortness of breath"
+              }
+            ]
+          }
+        },
+        {
+          "id": "other_title",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Something else?"
+        },
+        {
+          "id": "other",
+          "component": "TextField",
+          "label": "e.g. Chills, Itchy eyes",
+          "value": {
+            "path": "/otherSymptoms"
+          }
+        },
+        {
+          "id": "other_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Separate several symptoms with commas."
+        },
+        {
+          "id": "next",
+          "component": "Button",
+          "variant": "primary",
+          "child": "next_content",
+          "action": {
+            "event": {
+              "name": "symptomsSelected",
+              "context": {
+                "symptoms": {
+                  "path": "/symptoms"
+                },
+                "otherSymptoms": {
+                  "path": "/otherSymptoms"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "regex",
+                "args": {
+                  "value": {
+                    "call": "formatString",
+                    "args": {
+                      "value": "${length(value:${/symptoms})}|${/otherSymptoms}"
+                    },
+                    "returnType": "string"
+                  },
+                  "pattern": "^(?!0\\|\\s*$)"
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick or type at least one symptom"
+            }
+          ]
+        },
+        {
+          "id": "next_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "next_label",
+            "next_icon"
+          ]
+        },
+        {
+          "id": "next_label",
+          "component": "Text",
+          "text": "Continue"
+        },
+        {
+          "id": "next_icon",
+          "component": "Icon",
+          "name": "arrowForward"
+        }
+      ]
+    }
+  }
+]

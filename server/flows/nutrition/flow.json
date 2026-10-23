@@ -1,0 +1,52 @@
+{
+  "_comment": "The nutrition flow: screens use genui's built-in components (Card, Column, Row, Text, ChoicePicker, TextField, Slider, DateTimeInput, Button) plus the custom IconBadge (lib/catalog/icon_badge/icon_badge.dart). A createSurface \"theme\" sets colors, fonts and text styles (lib/core/theme/surface_theme.dart). Inputs are bound to the surface's data model with {\"path\": ...}; each Button sends those values as its action context. A route is a screen file, or {\"screen\": \"../shared/…json\", \"with\": {…}} to reuse a shared screen (notes, summary) with this flow's values for its {{slots}}. Placeholders: \"{{name}}\" is a value from an earlier action; \"{{a,b|rows}}\" turns the values of a and b (lists or comma-separated text) into rows [{\"item\": ..., \"amount\": \"1 serving\"}]; \"{{a|text}}\" turns any value into readable text (use it when a placeholder is a whole Text value); \"{{a|lower}}\" the same in lowercase.",
+  "start": "01_meal_type.json",
+  "mealTypeSelected": "02_food_items.json",
+  "foodItemsEntered": "03_quantity.json",
+  "quantitiesEntered": "04_meal_time.json",
+  "mealTimeSelected": {
+    "screen": "../shared/notes.json",
+    "with": {
+      "surfaceId": "nutrition_step_5_notes",
+      "stepLabel": "Step 5 of 5",
+      "tag1Icon": "{{mealIcon}}",
+      "tag1Label": "{{mealType}}",
+      "tag1Color": "{{mealColor}}",
+      "tag1Background": "{{mealBackground}}",
+      "tag2Icon": "schedule",
+      "tag2Label": {
+        "call": "formatString",
+        "args": {
+          "value": "{{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', pattern:'h:mm a')}"
+        },
+        "returnType": "string"
+      },
+      "tag2Color": "#1F2A24",
+      "tag2Background": "#FFFFFF",
+      "notesHint": "e.g. Ate at the office canteen, a bit spicier than usual",
+      "saveAction": "saveNutritionEntry"
+    }
+  },
+  "saveNutritionEntry": {
+    "screen": "../shared/summary.json",
+    "with": {
+      "surfaceId": "nutrition_summary",
+      "row1Icon": "{{mealIcon}}",
+      "row1Color": "{{mealColor}}",
+      "row1Background": "{{mealBackground}}",
+      "row1Label": "Meal",
+      "row1Value": {
+        "call": "formatString",
+        "args": {
+          "value": "{{mealType}} · {{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', pattern:'h:mm a')}"
+        },
+        "returnType": "string"
+      },
+      "row2Icon": "dinner",
+      "row2Color": "#8A5A2B",
+      "row2Background": "#F1EBE0",
+      "row2Label": "Food",
+      "row2Value": "{{quantities|text}}"
+    }
+  }
+}

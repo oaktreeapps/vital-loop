@@ -1,0 +1,297 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "symptoms_summary",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "symptoms_summary",
+      "path": "/",
+      "value": {
+        "description": "{{description}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "symptoms_summary",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "hero",
+            "details_card",
+            "dashboard"
+          ]
+        },
+        {
+          "id": "hero",
+          "component": "Column",
+          "align": "center",
+          "children": [
+            "done_icon",
+            "title",
+            "subtitle"
+          ]
+        },
+        {
+          "id": "done_icon",
+          "component": "IconBadge",
+          "name": "check",
+          "color": "#FFFFFF",
+          "background": "#2C4A3E",
+          "size": 88
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Symptoms saved"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Added to today's health summary."
+        },
+        {
+          "id": "details_card",
+          "component": "Card",
+          "child": "details"
+        },
+        {
+          "id": "details",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "row_1_row",
+            "divider_1",
+            "row_2_row",
+            "divider_2",
+            "row_3_row",
+            "divider_3",
+            "row_4_row"
+          ]
+        },
+        {
+          "id": "divider_1",
+          "component": "Divider"
+        },
+        {
+          "id": "divider_2",
+          "component": "Divider"
+        },
+        {
+          "id": "divider_3",
+          "component": "Divider"
+        },
+        {
+          "id": "row_1_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_1_icon",
+            "row_1_text"
+          ]
+        },
+        {
+          "id": "row_1_icon",
+          "component": "IconBadge",
+          "name": "sick",
+          "color": "#8A6420",
+          "background": "#F5ECD2",
+          "size": 44
+        },
+        {
+          "id": "row_1_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_1_label",
+            "row_1_value"
+          ]
+        },
+        {
+          "id": "row_1_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Symptoms"
+        },
+        {
+          "id": "row_1_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": "{{symptoms|text}}"
+        },
+        {
+          "id": "row_2_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_2_icon",
+            "row_2_text"
+          ]
+        },
+        {
+          "id": "row_2_icon",
+          "component": "IconBadge",
+          "name": "gauge",
+          "color": "#A14B3F",
+          "background": "#F4E3DD",
+          "size": 44
+        },
+        {
+          "id": "row_2_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_2_label",
+            "row_2_value"
+          ]
+        },
+        {
+          "id": "row_2_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Severity"
+        },
+        {
+          "id": "row_2_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": "{{severity}} / 10"
+        },
+        {
+          "id": "row_3_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_3_icon",
+            "row_3_text"
+          ]
+        },
+        {
+          "id": "row_3_icon",
+          "component": "IconBadge",
+          "name": "schedule",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 44
+        },
+        {
+          "id": "row_3_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_3_label",
+            "row_3_value"
+          ]
+        },
+        {
+          "id": "row_3_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Started"
+        },
+        {
+          "id": "row_3_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "row_4_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "row_4_icon",
+            "row_4_text"
+          ]
+        },
+        {
+          "id": "row_4_icon",
+          "component": "IconBadge",
+          "name": "note",
+          "color": "#3F4A8A",
+          "background": "#E4E5F3",
+          "size": 44
+        },
+        {
+          "id": "row_4_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "row_4_label",
+            "row_4_value"
+          ]
+        },
+        {
+          "id": "row_4_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Description"
+        },
+        {
+          "id": "row_4_value",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "${pluralize(value:${length(value:${/description})}, zero:'No description added', one:'${/description}', other:'${/description}')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "dashboard",
+          "component": "Button",
+          "variant": "primary",
+          "child": "dashboard_content",
+          "action": {
+            "event": {
+              "name": "goToDashboard",
+              "context": {}
+            }
+          }
+        },
+        {
+          "id": "dashboard_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "dashboard_icon",
+            "dashboard_label"
+          ]
+        },
+        {
+          "id": "dashboard_label",
+          "component": "Text",
+          "text": "Go to dashboard"
+        },
+        {
+          "id": "dashboard_icon",
+          "component": "Icon",
+          "name": "home"
+        }
+      ]
+    }
+  }
+]

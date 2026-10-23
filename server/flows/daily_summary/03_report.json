@@ -1,0 +1,107 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "daily_summary_report",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "daily_summary_report",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "hero",
+            "report",
+            "finish"
+          ]
+        },
+        {
+          "id": "hero",
+          "component": "Column",
+          "align": "center",
+          "children": [
+            "done_icon",
+            "title",
+            "subtitle"
+          ]
+        },
+        {
+          "id": "done_icon",
+          "component": "IconBadge",
+          "name": "check",
+          "color": "#FFFFFF",
+          "background": "#2C4A3E",
+          "size": 72
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Your report is ready"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Share it with your doctor or keep a copy."
+        },
+        {
+          "id": "report",
+          "component": "PdfReport",
+          "title": "Daily health report",
+          "subtitle": "{{date}} · {{entryCountLabel}}",
+          "overview": {
+            "$ai": "The same detailed overview for the doctor that you wrote for the summary screen, word for word, so the PDF matches what the user read: its opening paragraph, a blank line, then the rest. If there was none, write one as described there.",
+            "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry.\n\nEach entry is listed below as it was saved, with its time and values."
+          },
+          "entries": "{{entries}}",
+          "carePlace": {
+            "$place": "{{selectedPlaceId}}"
+          },
+          "fileName": "health-report"
+        },
+        {
+          "id": "finish",
+          "component": "Button",
+          "variant": "primary",
+          "child": "finish_content",
+          "action": {
+            "event": {
+              "name": "finish",
+              "context": {}
+            }
+          }
+        },
+        {
+          "id": "finish_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "finish_icon",
+            "finish_label"
+          ]
+        },
+        {
+          "id": "finish_label",
+          "component": "Text",
+          "text": "Finish"
+        },
+        {
+          "id": "finish_icon",
+          "component": "Icon",
+          "name": "check"
+        }
+      ]
+    }
+  }
+]

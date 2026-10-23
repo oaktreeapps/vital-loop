@@ -1,0 +1,44 @@
+[
+  {
+    "id": "example-hospital",
+    "name": "Example General Hospital",
+    "kind": "Hospital",
+    "type": "hospital",
+    "address": "2315 Example Street, Sacramento, CA 95816, USA",
+    "lat": 38.5555,
+    "lng": -121.4545,
+    "rating": 4.2,
+    "ratingCount": 812,
+    "phone": "+1 916-555-0100",
+    "website": "https://example.com",
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Sacramento"
+  },
+  {
+    "id": "example-clinic",
+    "name": "Example Orthopedic Clinic",
+    "kind": "Medical clinic",
+    "type": "medical_clinic",
+    "address": "1020 Sample Avenue, Sacramento, CA 95814, USA",
+    "lat": 38.5794,
+    "lng": -121.4903,
+    "rating": 4.7,
+    "ratingCount": 156,
+    "phone": "+1 916-555-0142",
+    "website": null,
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Sacramento"
+  },
+  {
+    "id": "example-doctor",
+    "name": "Example Family Practice",
+    "kind": "Doctor",
+    "type": "doctor",
+    "address": "48 Placeholder Road, Sacramento, CA 95818, USA",
+    "lat": 38.5652,
+    "lng": -121.5018,
+    "rating": null,
+    "ratingCount": null,
+    "phone": null,
+    "website": null,
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Sacramento"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "fontFamily": "Open Sans",
+  "cornerRadius": 20,
+  "colors": {
+    "primary": "#2C4A3E",
+    "onPrimary": "#FFFFFF",
+    "background": "#F4F0EA",
+    "surface": "#FFFFFF",
+    "text": "#1F2A24",
+    "border": "#E8E1D6",
+    "field": "#FAF7F2"
+  },
+  "text": {
+    "h1": {
+      "size": 28,
+      "weight": 700,
+      "color": "#1F2A24",
+      "height": 1.2,
+      "letterSpacing": -0.3
+    },
+    "h2": {
+      "size": 24,
+      "weight": 700,
+      "color": "#1F2A24",
+      "height": 1.25
+    },
+    "h3": {
+      "size": 20
+    },
+    "h4": {
+      "size": 12,
+      "weight": 700,
+      "color": "#8A5A2B",
+      "letterSpacing": 1.2
+    },
+    "h5": {
+      "size": 16,
+      "weight": 600,
+      "color": "#1F2A24"
+    },
+    "body": {
+      "size": 14,
+      "weight": 400,
+      "color": "#5C5B55",
+      "height": 1.43
+    },
+    "caption": {
+      "size": 12,
+      "weight": 500,
+      "color": "#6B6A63"
+    },
+    "chip": {
+      "size": 14,
+      "weight": 600
+    }
+  }
+}

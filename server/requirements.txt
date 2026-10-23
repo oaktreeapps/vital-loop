@@ -1,0 +1,10 @@
+# a2a-sdk stays on 0.3.x: the app's A2A client (genui_a2a) speaks A2A 0.3.
+# a2a-sdk 1.x can still answer 0.3 clients, but its compatibility layer sends
+# every number as a decimal (72.0 instead of 72), which the app doesn't expect.
+# Move to 1.x once genui_a2a supports A2A 1.0.
+a2a-sdk[http-server]>=0.3.26,<1.0
+google-adk>=2.12.0
+# Looks up cities on OpenStreetMap for the nearby care search (places.py).
+httpx>=0.28.1
+python-dotenv>=1.2.4
+uvicorn>=0.54.0

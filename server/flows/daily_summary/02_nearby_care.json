@@ -1,0 +1,201 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "nearby_care",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "nearby_care",
+      "path": "/",
+      "value": {
+        "center": {
+          "$ai": "The center of the city that search_care_places returned, as {\"lat\", \"lng\"}.",
+          "example": {
+            "lat": 38.5816,
+            "lng": -121.4944
+          }
+        },
+        "places": {
+          "$places": {
+            "$ai": "Up to 8 of the places search_care_places returned, the ones that fit what the user logged today first. For each, write only its exact \"id\" from the tool and \"reason\": one short sentence on why it fits what was logged, e.g. \"Orthopedic clinic, for the knee pain you logged.\" No diagnosis. The server adds each place's name, address and other facts. An empty list if the tool returned an error or no places.",
+            "example": [
+              {
+                "id": "example-hospital",
+                "reason": "A hospital nearby, for anything that needs care today."
+              },
+              {
+                "id": "example-clinic",
+                "reason": "Orthopedic care, for the pain you logged."
+              },
+              {
+                "id": "example-doctor",
+                "reason": "A general doctor, to talk through today's entries."
+              }
+            ]
+          }
+        },
+        "selectedPlaceId": ""
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "nearby_care",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "city_tag",
+            "title",
+            "subtitle",
+            "map",
+            "list",
+            "note",
+            "change_city",
+            "pdf"
+          ]
+        },
+        {
+          "id": "city_tag",
+          "component": "IconBadge",
+          "name": "location",
+          "label": "{{city}}",
+          "color": "#2C4A3E",
+          "background": "#DFEBDF"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": {
+            "$ai": "A short title (2–6 words) naming the main kind of care found and the city, e.g. \"Orthopedic care near Austin\". No diagnosis.",
+            "example": "Care near {{city}}"
+          }
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": {
+            "$ai": "One or two sentences on what you searched for and why, linked to what the user logged today, e.g. \"You logged knee pain, so here are orthopedic clinics and a hospital near Austin.\" If something logged looks urgent, add that they should get care promptly and call their local emergency number in an emergency. If search_care_places returned an error, explain it plainly instead. No diagnosis.",
+            "example": "Hospitals, clinics and doctors near {{city}} that fit what you logged today. Tap a place to see it on the map."
+          }
+        },
+        {
+          "id": "map",
+          "component": "CareMap",
+          "places": {
+            "path": "/places"
+          },
+          "center": {
+            "path": "/center"
+          },
+          "selected": {
+            "path": "/selectedPlaceId"
+          },
+          "city": "{{city}}"
+        },
+        {
+          "id": "list",
+          "component": "CareList",
+          "title": "Places nearby",
+          "city": "{{city}}",
+          "places": {
+            "path": "/places"
+          },
+          "selected": {
+            "path": "/selectedPlaceId"
+          },
+          "emptyText": {
+            "$ai": "One short sentence shown when the places list is empty. If search_care_places returned an error, say nearby search couldn't run and why in plain words (e.g. it isn't set up on the server yet), without suggesting another city. Otherwise say no places were found near {{city}} and suggest a nearby larger city.",
+            "example": "No places were found near {{city}}. Try a nearby larger city."
+          }
+        },
+        {
+          "id": "note",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Listings come from Google Maps. Call ahead to check opening hours and services. In an emergency, call your local emergency number."
+        },
+        {
+          "id": "change_city",
+          "component": "Button",
+          "variant": "borderless",
+          "child": "change_city_content",
+          "action": {
+            "event": {
+              "name": "chooseCareCity",
+              "context": {}
+            }
+          }
+        },
+        {
+          "id": "change_city_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "change_city_icon",
+            "change_city_label"
+          ]
+        },
+        {
+          "id": "change_city_icon",
+          "component": "Icon",
+          "name": "search"
+        },
+        {
+          "id": "change_city_label",
+          "component": "Text",
+          "text": "Search another city"
+        },
+        {
+          "id": "pdf",
+          "component": "Button",
+          "variant": "primary",
+          "child": "pdf_content",
+          "action": {
+            "event": {
+              "name": "generatePdf",
+              "context": {
+                "selectedPlaceId": {
+                  "path": "/selectedPlaceId"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "pdf_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "pdf_icon",
+            "pdf_label"
+          ]
+        },
+        {
+          "id": "pdf_icon",
+          "component": "Icon",
+          "name": "download"
+        },
+        {
+          "id": "pdf_label",
+          "component": "Text",
+          "text": "Generate PDF"
+        }
+      ]
+    }
+  }
+]

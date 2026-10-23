@@ -1,0 +1,14 @@
+VitalLoop
+Copyright 2026 Oaktreeapps
+
+This product includes software developed by Oaktreeapps, licensed under the
+Apache License, Version 2.0.
+
+The body map (client/lib/models/body_map/ and client/lib/catalog/body_map_picker/)
+comes from the Daily Health
+Tracker project, Copyright 2026 The Daily Health Tracker Authors, licensed
+under the Apache License, Version 2.0, and was modified by Oaktreeapps.
+
+The app's structure is adapted from the genui examples, Copyright 2025 The
+Flutter Authors, licensed under the BSD 3-Clause License. See
+THIRD_PARTY_NOTICES.md for the full license text.

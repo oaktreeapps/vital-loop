@@ -1,0 +1,249 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "vitals_step_1_readings",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "vitals_step_1_readings",
+      "path": "/",
+      "value": {
+        "systolic": 118,
+        "diastolic": 76,
+        "heartRate": 72,
+        "temperature": 36.6,
+        "bloodSugar": 98,
+        "measuredAt": "{{now}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "vitals_step_1_readings",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "title",
+            "subtitle",
+            "blood_pressure",
+            "heart_rate",
+            "temperature",
+            "blood_sugar",
+            "time_card",
+            "disclaimer",
+            "save"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Vitals check"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "About 1 min"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Log your vitals"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Scroll each wheel to your reading. The starting values are typical for adults."
+        },
+        {
+          "id": "blood_pressure",
+          "component": "BloodPressureInput",
+          "systolic": {
+            "path": "/systolic"
+          },
+          "diastolic": {
+            "path": "/diastolic"
+          }
+        },
+        {
+          "id": "heart_rate",
+          "component": "HeartRateInput",
+          "value": {
+            "path": "/heartRate"
+          }
+        },
+        {
+          "id": "temperature",
+          "component": "TemperatureInput",
+          "value": {
+            "path": "/temperature"
+          },
+          "unit": "celsius"
+        },
+        {
+          "id": "blood_sugar",
+          "component": "BloodSugarInput",
+          "value": {
+            "path": "/bloodSugar"
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "id": "time_card",
+          "component": "Card",
+          "child": "time_content"
+        },
+        {
+          "id": "time_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "time_header",
+            "time",
+            "time_hint"
+          ]
+        },
+        {
+          "id": "time_header",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "time_icon",
+            "time_title"
+          ]
+        },
+        {
+          "id": "time_icon",
+          "component": "IconBadge",
+          "name": "schedule",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 44
+        },
+        {
+          "id": "time_title",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "Measurement time"
+        },
+        {
+          "id": "time",
+          "component": "DateTimeInput",
+          "variant": "datetime",
+          "label": "Date and time",
+          "value": {
+            "path": "/measuredAt"
+          }
+        },
+        {
+          "id": "time_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Set to now. Tap to change the date, then the time."
+        },
+        {
+          "id": "disclaimer",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Status labels use general adult ranges and are not a diagnosis."
+        },
+        {
+          "id": "save",
+          "component": "Button",
+          "variant": "primary",
+          "child": "save_content",
+          "action": {
+            "event": {
+              "name": "vitalsEntered",
+              "context": {
+                "systolic": {
+                  "path": "/systolic"
+                },
+                "diastolic": {
+                  "path": "/diastolic"
+                },
+                "heartRate": {
+                  "path": "/heartRate"
+                },
+                "temperature": {
+                  "path": "/temperature"
+                },
+                "bloodSugar": {
+                  "path": "/bloodSugar"
+                },
+                "measuredAt": {
+                  "path": "/measuredAt"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/measuredAt"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick the measurement time"
+            }
+          ]
+        },
+        {
+          "id": "save_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "save_label",
+            "save_icon"
+          ]
+        },
+        {
+          "id": "save_label",
+          "component": "Text",
+          "text": "Save readings"
+        },
+        {
+          "id": "save_icon",
+          "component": "Icon",
+          "name": "check"
+        }
+      ]
+    }
+  }
+]

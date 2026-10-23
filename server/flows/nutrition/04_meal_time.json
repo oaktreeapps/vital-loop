@@ -1,0 +1,267 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "nutrition_step_4_meal_time",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "nutrition_step_4_meal_time",
+      "path": "/",
+      "value": {
+        "mealDay": [
+          "Today"
+        ],
+        "mealTime": "13:00:00",
+        "quantities": "{{quantities}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "nutrition_step_4_meal_time",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "tags",
+            "title",
+            "time_card",
+            "next"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 4 of 5"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Meal time"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "tags",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "meal_tag",
+            "foods_tag"
+          ]
+        },
+        {
+          "id": "meal_tag",
+          "component": "IconBadge",
+          "name": "{{mealIcon}}",
+          "label": "{{mealType}}",
+          "color": "{{mealColor}}",
+          "background": "{{mealBackground}}"
+        },
+        {
+          "id": "foods_tag",
+          "component": "IconBadge",
+          "name": "check",
+          "label": {
+            "call": "formatString",
+            "args": {
+              "value": "${length(value:${/quantities})} ${pluralize(value:${length(value:${/quantities})}, one:'food', other:'foods')}"
+            },
+            "returnType": "string"
+          },
+          "color": "#1F2A24",
+          "background": "#FFFFFF"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "When did you have your {{mealType|lower}}?"
+        },
+        {
+          "id": "time_card",
+          "component": "Card",
+          "child": "time_content"
+        },
+        {
+          "id": "time_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "day_label",
+            "day",
+            "time_label",
+            "time",
+            "time_divider",
+            "typical"
+          ]
+        },
+        {
+          "id": "day_label",
+          "component": "Text",
+          "variant": "h4",
+          "text": "DAY"
+        },
+        {
+          "id": "day",
+          "component": "ChoicePicker",
+          "variant": "mutuallyExclusive",
+          "displayStyle": "chips",
+          "value": {
+            "path": "/mealDay"
+          },
+          "options": [
+            {
+              "label": "Today",
+              "value": "Today"
+            },
+            {
+              "label": "Yesterday",
+              "value": "Yesterday"
+            }
+          ]
+        },
+        {
+          "id": "time_label",
+          "component": "Text",
+          "variant": "h4",
+          "text": "TIME"
+        },
+        {
+          "id": "time",
+          "component": "DateTimeInput",
+          "variant": "time",
+          "label": "Tap to change the time",
+          "value": {
+            "path": "/mealTime"
+          }
+        },
+        {
+          "id": "time_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "typical",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "typical_icon",
+            "typical_text"
+          ]
+        },
+        {
+          "id": "typical_icon",
+          "component": "IconBadge",
+          "name": "schedule",
+          "color": "#8A5A2B",
+          "background": "#F4F0EA",
+          "size": 36
+        },
+        {
+          "id": "typical_text",
+          "component": "Text",
+          "variant": "caption",
+          "weight": 1,
+          "text": "Typical {{mealType|lower}} time · {{mealHours}}"
+        },
+        {
+          "id": "next",
+          "component": "Button",
+          "variant": "primary",
+          "child": "next_content",
+          "action": {
+            "event": {
+              "name": "mealTimeSelected",
+              "context": {
+                "mealTime": {
+                  "path": "/mealTime"
+                },
+                "mealDay": {
+                  "path": "/mealDay/0"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/mealTime"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick a time"
+            },
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/mealDay"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick a day"
+            }
+          ]
+        },
+        {
+          "id": "next_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "next_label",
+            "next_icon"
+          ]
+        },
+        {
+          "id": "next_label",
+          "component": "Text",
+          "text": {
+            "call": "formatString",
+            "args": {
+              "value": "Continue · ${/mealDay/0}, ${formatDate(value:'2000-01-01T${/mealTime}', pattern:'h:mm a')}"
+            },
+            "returnType": "string"
+          }
+        },
+        {
+          "id": "next_icon",
+          "component": "Icon",
+          "name": "arrowForward"
+        }
+      ]
+    }
+  }
+]

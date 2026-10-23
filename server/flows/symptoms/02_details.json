@@ -1,0 +1,265 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "symptoms_step_2_details",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "symptoms_step_2_details",
+      "path": "/",
+      "value": {
+        "symptoms": "{{symptoms,otherSymptoms|list}}",
+        "description": "",
+        "severity": 5,
+        "startedAt": "{{now}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "symptoms_step_2_details",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "symptoms_card",
+            "title",
+            "description_card",
+            "severity",
+            "start_card",
+            "save"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 2 of 2"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Details"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "symptoms_card",
+          "component": "Card",
+          "child": "symptoms_row"
+        },
+        {
+          "id": "symptoms_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "symptoms_icon",
+            "symptoms_text"
+          ]
+        },
+        {
+          "id": "symptoms_icon",
+          "component": "IconBadge",
+          "name": "sick",
+          "color": "#8A6420",
+          "background": "#F5ECD2",
+          "size": 40
+        },
+        {
+          "id": "symptoms_text",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "{{symptoms,otherSymptoms|list|text}}"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "Tell us a bit more"
+        },
+        {
+          "id": "description_card",
+          "component": "Card",
+          "child": "description_content"
+        },
+        {
+          "id": "description_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "description_title",
+            "description",
+            "description_hint"
+          ]
+        },
+        {
+          "id": "description_title",
+          "component": "Text",
+          "variant": "h5",
+          "text": "Description"
+        },
+        {
+          "id": "description",
+          "component": "TextField",
+          "variant": "longText",
+          "label": "What does it feel like?",
+          "value": {
+            "path": "/description"
+          }
+        },
+        {
+          "id": "description_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Optional. Where it is, and what makes it better or worse."
+        },
+        {
+          "id": "severity",
+          "component": "SeverityInput",
+          "value": {
+            "path": "/severity"
+          }
+        },
+        {
+          "id": "start_card",
+          "component": "Card",
+          "child": "start_content"
+        },
+        {
+          "id": "start_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "start_header",
+            "started",
+            "start_hint"
+          ]
+        },
+        {
+          "id": "start_header",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "start_icon",
+            "start_title"
+          ]
+        },
+        {
+          "id": "start_icon",
+          "component": "IconBadge",
+          "name": "schedule",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 40
+        },
+        {
+          "id": "start_title",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "When did it start?"
+        },
+        {
+          "id": "started",
+          "component": "DateTimeInput",
+          "variant": "datetime",
+          "label": "Date and time",
+          "value": {
+            "path": "/startedAt"
+          }
+        },
+        {
+          "id": "start_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Set to now. Tap to change the date, then the time."
+        },
+        {
+          "id": "save",
+          "component": "Button",
+          "variant": "primary",
+          "child": "save_content",
+          "action": {
+            "event": {
+              "name": "symptomDetailsEntered",
+              "context": {
+                "symptoms": {
+                  "path": "/symptoms"
+                },
+                "description": {
+                  "path": "/description"
+                },
+                "severity": {
+                  "path": "/severity"
+                },
+                "startedAt": {
+                  "path": "/startedAt"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/startedAt"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick when it started"
+            }
+          ]
+        },
+        {
+          "id": "save_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "save_label",
+            "save_icon"
+          ]
+        },
+        {
+          "id": "save_label",
+          "component": "Text",
+          "text": "Save symptoms"
+        },
+        {
+          "id": "save_icon",
+          "component": "Icon",
+          "name": "check"
+        }
+      ]
+    }
+  }
+]

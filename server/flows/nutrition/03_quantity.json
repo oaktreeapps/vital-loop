@@ -1,0 +1,274 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "nutrition_step_3_quantity",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "nutrition_step_3_quantity",
+      "path": "/",
+      "value": {
+        "quantities": "{{foodItems,otherFood|rows}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "nutrition_step_3_quantity",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "tags",
+            "title",
+            "subtitle",
+            "portions",
+            "tip_card",
+            "next"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 3 of 5"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Portions"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "tags",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "meal_tag",
+            "foods_tag"
+          ]
+        },
+        {
+          "id": "meal_tag",
+          "component": "IconBadge",
+          "name": "{{mealIcon}}",
+          "label": "{{mealType}}",
+          "color": "{{mealColor}}",
+          "background": "{{mealBackground}}"
+        },
+        {
+          "id": "foods_tag",
+          "component": "IconBadge",
+          "name": "check",
+          "label": {
+            "call": "formatString",
+            "args": {
+              "value": "${length(value:${/quantities})} ${pluralize(value:${length(value:${/quantities})}, one:'food', other:'foods')}"
+            },
+            "returnType": "string"
+          },
+          "color": "#1F2A24",
+          "background": "#FFFFFF"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "How much did you have?"
+        },
+        {
+          "id": "subtitle",
+          "component": "Text",
+          "variant": "body",
+          "text": "Slide to set a portion for each food. A rough guess is fine."
+        },
+        {
+          "id": "portions",
+          "component": "Column",
+          "align": "stretch",
+          "children": {
+            "componentId": "portion_card",
+            "path": "/quantities"
+          }
+        },
+        {
+          "id": "portion_card",
+          "component": "Card",
+          "child": "portion_content"
+        },
+        {
+          "id": "portion_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "portion_header",
+            "portion_slider",
+            "portion_range"
+          ]
+        },
+        {
+          "id": "portion_header",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "portion_icon",
+            "portion_text"
+          ]
+        },
+        {
+          "id": "portion_icon",
+          "component": "IconBadge",
+          "name": "dinner",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 44
+        },
+        {
+          "id": "portion_text",
+          "component": "Column",
+          "weight": 1,
+          "children": [
+            "portion_name",
+            "portion_hint"
+          ]
+        },
+        {
+          "id": "portion_name",
+          "component": "Text",
+          "variant": "h5",
+          "text": {
+            "path": "item"
+          }
+        },
+        {
+          "id": "portion_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Regular portion is 1 serve"
+        },
+        {
+          "id": "portion_slider",
+          "component": "Slider",
+          "min": 1,
+          "max": 10,
+          "value": {
+            "path": "amount"
+          }
+        },
+        {
+          "id": "portion_range",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "portion_min",
+            "portion_max"
+          ]
+        },
+        {
+          "id": "portion_min",
+          "component": "Text",
+          "variant": "caption",
+          "text": "1 serve"
+        },
+        {
+          "id": "portion_max",
+          "component": "Text",
+          "variant": "caption",
+          "text": "10 serves"
+        },
+        {
+          "id": "tip_card",
+          "component": "Card",
+          "child": "tip_row"
+        },
+        {
+          "id": "tip_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "tip_icon",
+            "tip_text"
+          ]
+        },
+        {
+          "id": "tip_icon",
+          "component": "IconBadge",
+          "name": "lightbulb",
+          "color": "#8A5A2B",
+          "background": "#F4F0EA",
+          "size": 36
+        },
+        {
+          "id": "tip_text",
+          "component": "Text",
+          "variant": "body",
+          "weight": 1,
+          "text": "One serve is about the size of your cupped hands."
+        },
+        {
+          "id": "next",
+          "component": "Button",
+          "variant": "primary",
+          "child": "next_content",
+          "action": {
+            "event": {
+              "name": "quantitiesEntered",
+              "context": {
+                "quantities": {
+                  "path": "/quantities"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "next_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "next_label",
+            "next_icon"
+          ]
+        },
+        {
+          "id": "next_label",
+          "component": "Text",
+          "text": "Continue"
+        },
+        {
+          "id": "next_icon",
+          "component": "Icon",
+          "name": "arrowForward"
+        }
+      ]
+    }
+  }
+]

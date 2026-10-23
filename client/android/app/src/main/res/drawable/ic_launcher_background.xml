@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background layer of the adaptive launcher icon: the same green gradient
+     as the other icons (see tool/app_icon/app_icon_painter.dart). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="315"
+        android:endColor="#FF1E352C"
+        android:startColor="#FF3D6656"
+        android:type="linear" />
+</shape>

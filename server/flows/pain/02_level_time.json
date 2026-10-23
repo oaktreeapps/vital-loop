@@ -1,0 +1,221 @@
+[
+  {
+    "version": "v0.9",
+    "createSurface": {
+      "surfaceId": "pain_step_2_level",
+      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+      "theme": {
+        "$include": "../shared/theme.json"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateDataModel": {
+      "surfaceId": "pain_step_2_level",
+      "path": "/",
+      "value": {
+        "painLevel": 5,
+        "startedAt": "{{now}}"
+      }
+    }
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "surfaceId": "pain_step_2_level",
+      "components": [
+        {
+          "id": "root",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "progress_row",
+            "progress_divider",
+            "areas_card",
+            "title",
+            "pain_level",
+            "start_card",
+            "next"
+          ]
+        },
+        {
+          "id": "progress_row",
+          "component": "Row",
+          "justify": "spaceBetween",
+          "align": "center",
+          "children": [
+            "step_label",
+            "section_label"
+          ]
+        },
+        {
+          "id": "step_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Step 2 of 3"
+        },
+        {
+          "id": "section_label",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Details"
+        },
+        {
+          "id": "progress_divider",
+          "component": "Divider"
+        },
+        {
+          "id": "areas_card",
+          "component": "Card",
+          "child": "areas_row"
+        },
+        {
+          "id": "areas_row",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "areas_icon",
+            "areas_text"
+          ]
+        },
+        {
+          "id": "areas_icon",
+          "component": "IconBadge",
+          "name": "body",
+          "color": "#A14B3F",
+          "background": "#F4E3DD",
+          "size": 40
+        },
+        {
+          "id": "areas_text",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "{{bodyAreas|text}}"
+        },
+        {
+          "id": "title",
+          "component": "Text",
+          "variant": "h2",
+          "text": "How bad is it?"
+        },
+        {
+          "id": "pain_level",
+          "component": "SeverityInput",
+          "label": "Pain level",
+          "value": {
+            "path": "/painLevel"
+          }
+        },
+        {
+          "id": "start_card",
+          "component": "Card",
+          "child": "start_content"
+        },
+        {
+          "id": "start_content",
+          "component": "Column",
+          "align": "stretch",
+          "children": [
+            "start_header",
+            "started",
+            "start_hint"
+          ]
+        },
+        {
+          "id": "start_header",
+          "component": "Row",
+          "align": "center",
+          "children": [
+            "start_icon",
+            "start_title"
+          ]
+        },
+        {
+          "id": "start_icon",
+          "component": "IconBadge",
+          "name": "schedule",
+          "color": "#8A5A2B",
+          "background": "#F1EBE0",
+          "size": 40
+        },
+        {
+          "id": "start_title",
+          "component": "Text",
+          "variant": "h5",
+          "weight": 1,
+          "text": "When did it start?"
+        },
+        {
+          "id": "started",
+          "component": "DateTimeInput",
+          "variant": "datetime",
+          "label": "Date and time",
+          "value": {
+            "path": "/startedAt"
+          }
+        },
+        {
+          "id": "start_hint",
+          "component": "Text",
+          "variant": "caption",
+          "text": "Set to now. Tap to change the date, then the time."
+        },
+        {
+          "id": "next",
+          "component": "Button",
+          "variant": "primary",
+          "child": "next_content",
+          "action": {
+            "event": {
+              "name": "painDetailsEntered",
+              "context": {
+                "painLevel": {
+                  "path": "/painLevel"
+                },
+                "startedAt": {
+                  "path": "/startedAt"
+                }
+              }
+            }
+          },
+          "checks": [
+            {
+              "condition": {
+                "call": "required",
+                "args": {
+                  "value": {
+                    "path": "/startedAt"
+                  }
+                },
+                "returnType": "boolean"
+              },
+              "message": "Pick when it started"
+            }
+          ]
+        },
+        {
+          "id": "next_content",
+          "component": "Row",
+          "justify": "center",
+          "align": "center",
+          "children": [
+            "next_label",
+            "next_icon"
+          ]
+        },
+        {
+          "id": "next_label",
+          "component": "Text",
+          "text": "Continue"
+        },
+        {
+          "id": "next_icon",
+          "component": "Icon",
+          "name": "arrowForward"
+        }
+      ]
+    }
+  }
+]
