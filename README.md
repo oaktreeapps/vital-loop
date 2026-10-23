@@ -12,7 +12,7 @@ cards with a thermometer, rulers and a live ECG trace), a saved
 log, a daily summary written by Gemini, care nearby on a map, and a PDF
 report.
 
-Try it at [vital-loop on Cloud Run](https://vital-loop-555131973673.us-central1.run.app/)
+Try it at [vital-loop](https://vital-loop-555131973673.us-central1.run.app/)
 with a free [Gemini API key](https://aistudio.google.com/app/apikey); the
 catalog there needs no key. Your key stays in that browser session and is
 cleared when you close the window.
