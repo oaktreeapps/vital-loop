@@ -34,10 +34,8 @@ final CatalogItem bodyMapPicker = CatalogItem(
   name: 'BodyMapPicker',
   dataSchema: S.object(
     description:
-        'An anatomical figure, front and back, on which the user taps the '
-        'areas that hurt. Every region is always tappable; `suggested` only '
-        'ranks them and picks the side that opens first. Writes the canonical '
-        'area names as a list of strings.',
+        'An anatomical figure which can show front and back. Every region '
+        'is tappable. `suggested` opens a default view',
     properties: {
       'value': A2uiSchemas.stringArrayReference(
         description: 'Data binding for the selected area names.',

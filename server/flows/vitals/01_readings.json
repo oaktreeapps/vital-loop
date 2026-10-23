@@ -83,7 +83,7 @@
           "id": "subtitle",
           "component": "Text",
           "variant": "body",
-          "text": "Scroll each wheel to your reading. The starting values are typical for adults."
+          "text": "Drag or tap each card to your reading. The starting values are typical for adults."
         },
         {
           "id": "blood_pressure",

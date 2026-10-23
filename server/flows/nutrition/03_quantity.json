@@ -170,7 +170,7 @@
           "id": "portion_hint",
           "component": "Text",
           "variant": "caption",
-          "text": "Regular portion is 1 serve"
+          "text": "Regular portion is 1 serving"
         },
         {
           "id": "portion_slider",
@@ -195,13 +195,13 @@
           "id": "portion_min",
           "component": "Text",
           "variant": "caption",
-          "text": "1 serve"
+          "text": "1 serving"
         },
         {
           "id": "portion_max",
           "component": "Text",
           "variant": "caption",
-          "text": "10 serves"
+          "text": "10 servings"
         },
         {
           "id": "tip_card",
@@ -230,7 +230,7 @@
           "component": "Text",
           "variant": "body",
           "weight": 1,
-          "text": "One serve is about the size of your cupped hands."
+          "text": "One serving is about the size of your cupped hands."
         },
         {
           "id": "next",

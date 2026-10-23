@@ -177,7 +177,7 @@
         {
           "id": "other",
           "component": "TextField",
-          "label": "e.g. Poha, Chole, Mango lassi",
+          "label": "e.g. Oatmeal, eggs",
           "value": {
             "path": "/otherFood"
           }

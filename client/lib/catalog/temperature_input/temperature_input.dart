@@ -31,9 +31,8 @@ final CatalogItem temperatureInput = CatalogItem(
   name: 'TemperatureInput',
   dataSchema: S.object(
     description:
-        'Body temperature in °C (34–42, 0.1 steps): a card with a draggable '
-        'thermometer, a °C / °F switch for display, and a Low / Normal / '
-        'Elevated / Fever status.',
+        'Body temperature in C: A custom catalog widget with a draggable '
+        'widget, a C/F switch, and a label',
     properties: {
       'value': A2uiSchemas.numberReference(
         description:

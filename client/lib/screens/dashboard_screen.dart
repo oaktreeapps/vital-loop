@@ -75,6 +75,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final int count = healthLog.entries.length;
     final bool? confirmed = await showDialog<bool>(
       context: context,
+      // Over this screen's navigator, so it stays inside the app when the
+      // app is embedded in a page (the showcase website's phone).
+      useRootNavigator: false,
       builder: (_) => StartOverDialog(entryCount: count),
     );
     if (confirmed != true) return;

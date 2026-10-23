@@ -30,9 +30,8 @@ final CatalogItem heartRateInput = CatalogItem(
   name: 'HeartRateInput',
   dataSchema: S.object(
     description:
-        'Resting heart rate in bpm (40–200): a card with a beating heart, an '
-        'ECG trace to drag, tap-along-with-your-pulse, − / + buttons, and a '
-        'Low / Normal / High status.',
+        'Resting heart rate in bpm: A custom catalog widget with heart '
+        'widget, ECG trace, -/+ buttons, and a label',
     properties: {
       'value': A2uiSchemas.numberReference(
         description: 'The heart rate in bpm, bound to the data model.',

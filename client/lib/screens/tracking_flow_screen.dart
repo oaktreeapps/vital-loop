@@ -141,6 +141,9 @@ class _TrackingFlowScreenState extends State<TrackingFlowScreen> {
     _log.info('$chooseCareCityAction → ask for a city');
     final String? city = await showDialog<String>(
       context: context,
+      // Over this screen's navigator, so it stays inside the app when the
+      // app is embedded in a page (the showcase website's phone).
+      useRootNavigator: false,
       builder: (_) => CareCityDialog(initialCity: _careCity),
     );
     if (!mounted || city == null) return;

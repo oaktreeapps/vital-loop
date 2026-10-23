@@ -35,8 +35,9 @@ final CatalogItem severityInput = CatalogItem(
   name: 'SeverityInput',
   dataSchema: S.object(
     description:
-        'Symptom severity on a 1–10 scale: a card with a face, a scale to '
-        'drag or tap, and a Mild / Moderate / Severe / Worst label.',
+        'Severity on a scale of 1-10: A custom catalog widget with a face, '
+        'a scale to tap or drag, and a Mild / Moderate / Severe / Worst '
+        'label',
     properties: {
       'value': A2uiSchemas.numberReference(
         description: 'Severity from 1 to 10, bound to the data model.',

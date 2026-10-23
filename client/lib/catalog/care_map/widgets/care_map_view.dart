@@ -17,6 +17,7 @@ import 'package:flutter_map/flutter_map.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../models/care_place.dart';
+import 'care_map_credit.dart';
 import 'care_map_fallback.dart';
 import 'care_map_markers.dart';
 
@@ -163,9 +164,7 @@ class _CareMapViewState extends State<CareMapView> {
                 onSelect: widget.onSelect,
               ),
             ),
-            const SimpleAttributionWidget(
-              source: Text('OpenStreetMap contributors'),
-            ),
+            const CareMapCredit(),
           ],
         ),
       ),

@@ -32,9 +32,8 @@ final CatalogItem bloodSugarInput = CatalogItem(
   name: 'BloodSugarInput',
   dataSchema: S.object(
     description:
-        'Blood sugar in mg/dL (40–300): a card with − / + buttons, a band of '
-        'Low / Normal / Elevated / High zones to drag, and a mg/dL / mmol/L '
-        'switch for display.',
+        'Blood sugar in mg/dL: A custom catalog widget with -/+ buttons, a '
+        'slider, and a switcher between mg/dL and mmol/L',
     properties: {
       'value': A2uiSchemas.numberReference(
         description:

@@ -38,9 +38,9 @@ final CatalogItem pdfReport = CatalogItem(
   name: 'PdfReport',
   dataSchema: S.object(
     description:
-        'A shareable PDF health report: a card with the report\'s title and '
-        '"Share PDF" / "Preview" buttons. Its props are the report\'s '
-        'content.',
+        'A shareable PDF report card: A custom catalog widget with the report '
+        'title and share PDF/Preview buttons. The properties form the report '
+        'content',
     properties: {
       'title': S.string(description: 'Report title.'),
       'subtitle': S.string(description: 'E.g. the date and entry count.'),

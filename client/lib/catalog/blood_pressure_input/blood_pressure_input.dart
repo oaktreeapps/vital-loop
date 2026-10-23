@@ -31,9 +31,8 @@ final CatalogItem bloodPressureInput = CatalogItem(
   name: 'BloodPressureInput',
   dataSchema: S.object(
     description:
-        'Blood pressure in mmHg: a card with a systolic and a diastolic '
-        'ruler and a Low / Normal / Elevated / High · stage 1 / High · stage '
-        '2 status.',
+        'Blood pressure in mmHg: A custom catalog widget with systolic and '
+        'diastolic ruler, and a label',
     properties: {
       'systolic': A2uiSchemas.numberReference(
         description: 'Systolic (top) number, 70–200, bound to the data model.',
