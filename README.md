@@ -160,20 +160,6 @@ Each `test/` folder mirrors the code it tests; see
 [client/README.md](client/README.md#tests) and
 [server/README.md](server/README.md#tests).
 
-## Known issues
-
-- **"Concurrent modification during iteration" in genui (0.10.4 and earlier):**
-  genui checks each streamed update in the background, and the next update
-  changes the screen before the check ends. The screen is fine, and the final
-  screen is still fully checked (`client/test/genui/streamed_validation_test.dart`).
-  The client's logging shows these errors as one grey line instead of a red box.
-- The health log lives in memory only and is cleared when the app restarts.
-- The app runs on Android, iOS and the web. There are no macOS, Windows or
-  Linux builds.
-- With no places to pin, the care map shows a link to the area on Google
-  Maps instead.
-- The server stays on `a2a-sdk` 0.3: the client's A2A library (`genui_a2a`)
-  speaks A2A 0.3. See [server/README.md](server/README.md#dependencies).
 
 ## Contributing
 
@@ -188,9 +174,7 @@ Issues and pull requests are welcome. Before you open a PR:
 
 ## Acknowledgements
 
-- [genui](https://github.com/flutter/genui) and its
-  [Verdure](https://github.com/flutter/genui/tree/main/examples/verdure) example,
-  which this project's structure follows.
+- [genui](https://github.com/flutter/genui) 
 - [A2UI](https://a2ui.org/) ([v0.9 specification](https://a2ui.org/specification/v0.9-a2ui/)), [A2A](https://a2a-protocol.org/) and the
   [Agent Development Kit](https://google.github.io/adk-docs/).
 - The body map from the Daily Health Tracker project (Apache 2.0).
