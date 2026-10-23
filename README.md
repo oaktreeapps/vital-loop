@@ -12,6 +12,27 @@ cards with a thermometer, rulers and a live ECG trace), a saved
 log, a daily summary written by Gemini, care nearby on a map, and a PDF
 report.
 
+Try it at [vital-loop on Cloud Run](https://vital-loop-555131973673.us-central1.run.app/)
+with a free [Gemini API key](https://aistudio.google.com/app/apikey); the
+catalog there needs no key. Your key stays in that browser session and is
+cleared when you close the window.
+
+No screen is built into the app. Gemini fills in each flow's screens from your
+earlier answers as you go, so two people logging the same thing can see
+different suggestions, symptom lists and summaries.
+
+- **Gemini writes; the catalog draws.** Gemini answers in A2UI JSON and can
+  only use the components in the catalog. The app draws them as real Flutter
+  widgets while the JSON is still streaming in.
+- **Templates set the layout; Gemini fills it in.** Each flow's screens are
+  JSON templates in `server/flows/`. Gemini adds your earlier answers and writes
+  only the parts marked for it: the symptom list, medicine suggestions and the
+  overview for your doctor.
+- **Code, not Gemini, judges your readings.** The normal, high and low ranges
+  for blood pressure, heart rate, temperature and blood sugar are in
+  `client/lib/models/vitals/`, so a reading's status never depends on what the
+  model says.
+
 > **Not medical software.** This is a demo. It does not give medical advice,
 > and it sends what you enter to the Gemini API to build the next screen (and,
 > for care nearby, the city you type to OpenStreetMap to find it on the map).
@@ -98,7 +119,7 @@ what it takes, and a plain Flutter widget that draws it. The app's
 **Component Catalog** screen (the catalog button on the dashboard) shows every
 one live, with its example JSON and schema, in **Default** and **Custom** tabs.
 
-The [Figma file]([https://www.figma.com/design/I2u4OYGUp0aT4EmnXVMEeG/VitalLoop-%C2%B7-A2UI-Component-CatalogHealth-Tracker-%C2%B7-A2UI-Component-Catalog?node-id=116-14503](https://www.figma.com/design/I2u4OYGUp0aT4EmnXVMEeG/VitalLoop-%C2%B7-A2UI-Component-CatalogHealth-Tracker-%C2%B7-A2UI-Component-Catalog?node-id=0-1&p=f&t=hbUnixnlCE6pc8cH-0))
+The [Figma file](https://www.figma.com/design/I2u4OYGUp0aT4EmnXVMEeG/VitalLoop-%C2%B7-A2UI-Component-CatalogHealth-Tracker-%C2%B7-A2UI-Component-Catalog?node-id=0-1&p=f&t=hbUnixnlCE6pc8cH-0)
 holds every component as a Figma component, built from shared parts and bound
 to VitalLoop's colours, spacing, radii and text styles as variables and
 styles. It also has the foundations, the shared building blocks, and the
