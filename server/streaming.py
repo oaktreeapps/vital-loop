@@ -23,9 +23,8 @@ Gemini answers with one ```json block holding the screen's A2UI messages:
 createSurface, updateDataModel and updateComponents with every component. We
 read that JSON while it streams in and send the app what is ready so far:
 
-- createSurface together with the first visible content (a surface without a
-  root shows an error box in genui), then the data model as soon as it is
-  complete;
+- createSurface together with the first visible content (so the app never
+  shows an empty surface), then the data model as soon as it is complete;
 - an updateComponents each time more of the screen is ready: every complete
   component reachable from "root", with each container's children cut at the
   first one that isn't complete yet. So the screen fills from top to bottom,
@@ -48,11 +47,18 @@ import re
 # ready to show when every child it points at with these keys is ready too.
 _SINGLE_CHILD_KEYS = ("child", "entryPointChild", "contentChild")
 
-# The only catalog the app has. Every template uses it, but Gemini sometimes
-# shortens it (e.g. to ".../v0_9/catalog.json"), and the app can't draw a
-# surface whose catalog it doesn't know. So every createSurface is sent with
-# this id.
-CATALOG_ID = "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
+# The A2UI version of every message the server sends.
+A2UI_VERSION = "1.0"
+
+# The only catalog the app has: VitalLoop's own A2UI v1.0 catalog, with the
+# basic components and the app's custom ones (vitalLoopCatalogId in the app's
+# lib/catalog/vitalloop_catalog.dart). Every template uses it, but Gemini
+# sometimes shortens it (e.g. to ".../v1_0/catalog.json"), and the app can't
+# draw a surface whose catalog it doesn't know: A2UI v1.0 has no fallback
+# catalog. So every createSurface is sent with this id.
+CATALOG_ID = (
+    "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json"
+)
 
 
 # Part 1: reading JSON that is not finished yet.
@@ -416,7 +422,7 @@ class ScreenStreamer:
         to_send = []
 
         # 1. createSurface, but only once there is something to show: an
-        #    empty surface is an error box in the app.
+        #    empty surface would show as a blank screen in the app.
         if sent_id not in self.created:
             if not visible:
                 return []
@@ -436,7 +442,7 @@ class ScreenStreamer:
             self.updates += 1
             to_send.append(
                 {
-                    "version": create.get("version", "v0.9"),
+                    "version": create.get("version", A2UI_VERSION),
                     "updateComponents": {
                         "surfaceId": sent_id,
                         "components": visible,

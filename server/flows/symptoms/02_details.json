@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "symptoms_step_2_details",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "symptoms_step_2_details",
       "path": "/",
@@ -23,7 +27,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "symptoms_step_2_details",
       "components": [
@@ -130,7 +134,7 @@
           "variant": "longText",
           "label": "What does it feel like?",
           "value": {
-            "path": "/description"
+            "@path": "/description"
           }
         },
         {
@@ -143,7 +147,7 @@
           "id": "severity",
           "component": "SeverityInput",
           "value": {
-            "path": "/severity"
+            "@path": "/severity"
           }
         },
         {
@@ -191,7 +195,7 @@
           "variant": "datetime",
           "label": "Date and time",
           "value": {
-            "path": "/startedAt"
+            "@path": "/startedAt"
           }
         },
         {
@@ -210,16 +214,16 @@
               "name": "symptomDetailsEntered",
               "context": {
                 "symptoms": {
-                  "path": "/symptoms"
+                  "@path": "/symptoms"
                 },
                 "description": {
-                  "path": "/description"
+                  "@path": "/description"
                 },
                 "severity": {
-                  "path": "/severity"
+                  "@path": "/severity"
                 },
                 "startedAt": {
-                  "path": "/startedAt"
+                  "@path": "/startedAt"
                 }
               }
             }
@@ -227,13 +231,12 @@
           "checks": [
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/startedAt"
+                    "@path": "/startedAt"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick when it started"
             }

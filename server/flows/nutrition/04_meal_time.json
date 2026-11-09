@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "nutrition_step_4_meal_time",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "nutrition_step_4_meal_time",
       "path": "/",
@@ -24,7 +28,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "nutrition_step_4_meal_time",
       "components": [
@@ -89,11 +93,10 @@
           "component": "IconBadge",
           "name": "check",
           "label": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
               "value": "${length(value:${/quantities})} ${pluralize(value:${length(value:${/quantities})}, one:'food', other:'foods')}"
-            },
-            "returnType": "string"
+            }
           },
           "color": "#1F2A24",
           "background": "#FFFFFF"
@@ -134,7 +137,7 @@
           "variant": "mutuallyExclusive",
           "displayStyle": "chips",
           "value": {
-            "path": "/mealDay"
+            "@path": "/mealDay"
           },
           "options": [
             {
@@ -159,7 +162,7 @@
           "variant": "time",
           "label": "Tap to change the time",
           "value": {
-            "path": "/mealTime"
+            "@path": "/mealTime"
           }
         },
         {
@@ -200,10 +203,10 @@
               "name": "mealTimeSelected",
               "context": {
                 "mealTime": {
-                  "path": "/mealTime"
+                  "@path": "/mealTime"
                 },
                 "mealDay": {
-                  "path": "/mealDay/0"
+                  "@path": "/mealDay/0"
                 }
               }
             }
@@ -211,25 +214,23 @@
           "checks": [
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/mealTime"
+                    "@path": "/mealTime"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick a time"
             },
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/mealDay"
+                    "@path": "/mealDay"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick a day"
             }
@@ -249,11 +250,10 @@
           "id": "next_label",
           "component": "Text",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
               "value": "Continue · ${/mealDay/0}, ${formatDate(value:'2000-01-01T${/mealTime}', pattern:'h:mm a')}"
-            },
-            "returnType": "string"
+            }
           }
         },
         {

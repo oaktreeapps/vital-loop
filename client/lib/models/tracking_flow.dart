@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/painting.dart';
-import 'package:genui/genui.dart';
 
+import '../catalog/shared/catalog_item.dart';
+import '../catalog/vitalloop_catalog.dart';
 import '../core/theme/app_colors.dart';
 
 import '../core/utils/text_format.dart';
@@ -24,7 +26,7 @@ import 'health_log.dart';
 ///
 /// Its screens and the LLM's instructions live on the backend, in
 /// `server/flows/<name>/`; the backend serves the flow at
-/// `<backend>/<name>`. Every flow renders with genui's basic catalog plus
+/// `<backend>/<name>`. Every flow renders with the basic components plus
 /// [customItems].
 class TrackingFlow {
   /// Creates a flow. Only [name], [startMessage] and [loadingLabel] are
@@ -52,7 +54,7 @@ class TrackingFlow {
   /// Shown until the first screen arrives.
   final String loadingLabel;
 
-  /// Components the screens may use on top of genui's built-in ones.
+  /// Components the screens may use on top of the basic ones.
   final List<CatalogItem> customItems;
 
   /// The UI action that saves an entry, e.g. "savePainEntry"; `null` for a
@@ -93,11 +95,12 @@ class TrackingFlow {
     );
   }
 
-  /// genui's basic catalog plus [customItems].
+  /// VitalLoop's A2UI v1.0 catalog with the basic components plus
+  /// [customItems].
   ///
-  /// It keeps the basic catalog ID, so surfaces the backend creates with that
-  /// ID resolve to this catalog.
-  late final Catalog catalog = BasicCatalogItems.asCatalog().copyWith(
-    newItems: customItems,
+  /// Every flow's catalog has the same id ([vitalLoopCatalogId]), the one the
+  /// backend puts in each `createSurface`.
+  late final CatalogImplementation catalog = vitalLoopCatalog(
+    customItems: customItems,
   );
 }

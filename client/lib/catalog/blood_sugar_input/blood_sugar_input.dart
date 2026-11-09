@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/vitals/blood_sugar.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/blood_sugar_card.dart';
 
@@ -23,7 +23,7 @@ import 'widgets/blood_sugar_card.dart';
 /// a zoned band to drag.
 ///
 /// See [BloodSugarCard]. Properties: `value` (required; usually a binding
-/// like `{"path": "/bloodSugar"}`), always in whole mg/dL from 40 to 300;
+/// like `{"@path": "/bloodSugar"}`), always in whole mg/dL from 40 to 300;
 /// `unit`, the unit shown first ("mg/dL" or "mmol/L"; the user can switch
 /// it, and it only changes what is shown); and `label`. Starts at 98 mg/dL
 /// when the data model has no value yet. Under 70 is low, up to 140 normal,
@@ -50,11 +50,11 @@ final CatalogItem bloodSugarInput = CatalogItem(
   ),
   exampleData: [
     () => '''
-      [{"id": "root", "component": "BloodSugarInput", "value": {"path": "/bloodSugar"}}]
+      [{"id": "root", "component": "BloodSugarInput", "value": {"@path": "/bloodSugar"}}]
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     return bindNumber(
       itemContext,
       bindingPath(itemContext, data['value'], 'value'),

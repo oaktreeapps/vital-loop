@@ -2,8 +2,9 @@
 
 The Flutter app of [VitalLoop](../README.md). It has no screens of its own
 for the tracking flows: it asks the [server](../server/) for each screen and
-draws the [A2UI](https://a2ui.org/) JSON it gets back with
-[`genui`](https://pub.dev/packages/genui), adding a few custom components of
+draws the [A2UI](https://a2ui.org/) v1.0 JSON it gets back with
+[`a2ui_flutter`](https://pub.dev/packages/a2ui_flutter) and
+[`a2ui_core`](https://pub.dev/packages/a2ui_core), adding a few custom components of
 its own (body map, severity scale, vital sign cards, care map and list, PDF
 report).
 
@@ -80,17 +81,24 @@ lib/
     vitals/                  Ranges, units and status of each vital sign
     body_map/                The body map's regions and their outlines
   services/                  Talking to the server, and building the PDF
-    backend_transport.dart   A2A client for one flow's agent on the server
+    transport.dart           What a flow's backend must do (Transport)
+    a2a_client.dart          A small A2A client: message/stream over HTTP
+    backend_transport.dart   The Transport to one flow's agent on the server
     gemini_key_setup.dart    Checks the server's Gemini API key, sends a new one
-    genui_session.dart       Connects a Transport to genui's SurfaceController
+    genui_session.dart       Connects a Transport to a2ui_core's MessageProcessor
     pdf_report_builder.dart  Builds the daily report PDF
   flows/                     One file per flow: its TrackingFlow and catalog
-  catalog/                   The 10 custom A2UI components, one folder each
-    shared/                  Used by several components: data_binding.dart
-                             (reading JSON props, binding a number),
+  catalog/                   VitalLoop's A2UI v1.0 catalog
+    vitalloop_catalog.dart   The catalog: its id, components and functions
+    basic/                   The 18 basic components (Text, Row, Button, …) and
+                             the functions screens call (formatString, …)
+    shared/                  Used by several components: catalog_item.dart
+                             (what a component is), data_binding.dart
+                             (reading JSON props, binding a value),
                              care_place_schema.dart, open_link.dart and
                              widgets/ (status chip, unit switch, round button)
-    <component>/             The CatalogItem (schema + builder), and widgets/
+    <component>/             One of the 10 custom components: the CatalogItem
+                             (schema + builder), and widgets/
                              with the widgets only that component uses:
       blood_pressure_input/  heart_rate_input/  temperature_input/
       blood_sugar_input/     severity_input/    body_map_picker/
@@ -137,8 +145,8 @@ routes; they still close with `Navigator.pop`.
    you tap.
 2. `TrackingFlowScreen` creates a `GenUiSession` with that flow's catalog and a
    `BackendTransport` to `<server>/<flow>`, and sends the flow's start message.
-3. The server streams A2UI messages back. `GenUiSession` passes them to genui's
-   `SurfaceController`, and the screen builds up as they arrive.
+3. The server streams A2UI v1.0 messages back. `GenUiSession` passes them to
+   a2ui_core's `MessageProcessor`, and the screen builds up as they arrive.
 4. A button tap goes back to the server as a UI action, and the next screen
    streams in. `goToDashboard` and the report's `finish` are handled in the
    app and never sent (`finish` also clears the log, to start again), and so
@@ -156,7 +164,8 @@ JSON schema, widget builder, example data) and a `widgets/` folder with its
 widgets; put any rules in `lib/models/`. Add it to the flow's catalog (`lib/flows/`), and use it from the flow's JSON
 in `../server/flows/`. The in-app catalog (`CatalogScreen`) shows it in its
 Custom tab on its own, from the flows' custom items; give it example data so
-it has a preview. The Default tab shows genui's built-in components.
+it has a preview. The Default tab shows the basic components
+(`lib/catalog/basic/`).
 
 ### Add a flow
 
@@ -208,7 +217,7 @@ test/
   screens/            The dashboard, catalog, key check and flow screens
   services/           The session, the key setup calls, the PDF builder
   widgets/            The small shared widgets: buttons, dialogs, the bars
-  genui/              Checks on genui behavior the app relies on
+  a2ui/               How the app takes a streamed screen, and what it rejects
   support/            Shared helpers: the fake backend, test setup, fakes
   fixtures/           Data files the tests read
 ```
@@ -226,6 +235,12 @@ received, surfaces built and actions tapped.
 ## Dependencies
 
 - `google_fonts` stays on 8.x. Version 9 uses the separate `material_ui`
-  package, whose `TextTheme` isn't Flutter's own, so this app and genui don't
+  package, whose `TextTheme` isn't Flutter's own, so this app doesn't
   compile with it.
-- `a2ui_core` stays on 0.1.x, the version `genui` 0.10 requires.
+- `a2ui_core` (0.5) and `a2ui_flutter` (0.1) process and render A2UI v1.0.
+  They replace `genui`, which only speaks A2UI v0.9. The basic components in
+  `lib/catalog/basic/` are adapted from genui's, so the screens look the same
+  as before; `flutter_markdown_plus`, `intl`, `audioplayers` and
+  `video_player` are what those components use.
+- The app talks A2A to the server with its own small client
+  (`lib/services/a2a_client.dart`) over `http`.

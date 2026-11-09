@@ -12,18 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:a2ui_core/a2ui_core.dart';
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
+
+import '../../services/transport.dart' show JsonMap;
 
 /// Logger for this file; warns about bad colors and unknown fonts in a theme.
 final Logger _log = Logger('SurfaceTheme');
 
-/// Applies the `theme` from a surface's `createSurface` message to [child].
+/// The key of a surface's theme in its `createSurface` message's
+/// `metadata.extensions`.
 ///
-/// genui's built-in components have no style properties; they take their
-/// colors, fonts and shapes from the Flutter [Theme]. This widget turns the
+/// A2UI v1.0 has no `theme` in `createSurface`; `metadata.extensions` is
+/// where a message carries what the protocol doesn't define.
+const String surfaceThemeExtension = 'vitalloopTheme';
+
+/// Applies the theme from a surface's `createSurface` message to [child].
+///
+/// The basic components have no style properties; they take their colors,
+/// fonts and shapes from the Flutter [Theme]. This widget turns the
 /// surface's JSON theme into a [ThemeData], so a screen can be styled from
 /// its JSON file:
 ///
@@ -31,7 +41,7 @@ final Logger _log = Logger('SurfaceTheme');
 /// "createSurface": {
 ///   "surfaceId": "...",
 ///   "catalogId": "...",
-///   "theme": {
+///   "metadata": {"extensions": {"vitalloopTheme": {
 ///     "fontFamily": "Open Sans",
 ///     "cornerRadius": 20,
 ///     "colors": {
@@ -43,7 +53,7 @@ final Logger _log = Logger('SurfaceTheme');
 ///       "h2": {"size": 30, "weight": 700, "color": "#1F2A24", "height": 1.2},
 ///       "caption": {"size": 14, "weight": 500, "letterSpacing": 0.2}
 ///     }
-///   }
+///   }}}
 /// }
 /// ```
 ///
@@ -52,45 +62,42 @@ final Logger _log = Logger('SurfaceTheme');
 /// `fontFamily` is any Google Fonts family. Every key is optional; a surface
 /// without a theme uses the app theme.
 class SurfaceTheme extends StatelessWidget {
-  /// Wraps [child] in the theme of the surface behind [surfaceContext].
-  const SurfaceTheme({
-    super.key,
-    required this.surfaceContext,
-    required this.child,
-  });
+  /// Wraps [child] in the theme of [surface].
+  const SurfaceTheme({super.key, required this.surface, required this.child});
 
-  /// The surface whose `createSurface` theme is applied. Its definition can
-  /// change while the screen streams in, so the theme is rebuilt each time.
-  final SurfaceContext surfaceContext;
+  /// The surface whose `createSurface` theme is applied.
+  final SurfaceModel<ComponentImplementation> surface;
 
   /// The surface's rendered content.
   final Widget child;
 
-  /// Rebuilds [child] under the surface's theme whenever the surface
-  /// definition changes; with no theme, returns [child] as is.
+  /// The theme JSON of [surface], or `null` when its `createSurface` had
+  /// none.
+  static JsonMap? themeOf(SurfaceModel<ComponentImplementation> surface) =>
+      switch (surface.extensions?[surfaceThemeExtension]) {
+        final Map<Object?, Object?> theme => theme.cast<String, Object?>(),
+        _ => null,
+      };
+
+  /// Builds [child] under the surface's theme; with no theme, returns
+  /// [child] as is.
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<SurfaceDefinition?>(
-      valueListenable: surfaceContext.definition,
-      builder: (context, definition, child) {
-        final JsonMap? json = definition?.theme;
-        if (json == null || json.isEmpty) return child!;
+    final JsonMap? json = themeOf(surface);
+    if (json == null || json.isEmpty) return child;
 
-        final ThemeData theme = surfaceThemeData(Theme.of(context), json);
-        return Theme(
-          data: theme,
-          child: ColoredBox(
-            color: theme.scaffoldBackgroundColor,
-            // Top-level "body" Text uses the ambient DefaultTextStyle, which
-            // comes from the Scaffold, not from Theme; restyle it too.
-            child: DefaultTextStyle.merge(
-              style: theme.textTheme.bodyMedium,
-              child: child!,
-            ),
-          ),
-        );
-      },
-      child: child,
+    final ThemeData theme = surfaceThemeData(Theme.of(context), json);
+    return Theme(
+      data: theme,
+      child: ColoredBox(
+        color: theme.scaffoldBackgroundColor,
+        // Top-level "body" Text uses the ambient DefaultTextStyle, which
+        // comes from the Scaffold, not from Theme; restyle it too.
+        child: DefaultTextStyle.merge(
+          style: theme.textTheme.bodyMedium,
+          child: child,
+        ),
+      ),
     );
   }
 }
@@ -101,7 +108,7 @@ class SurfaceTheme extends StatelessWidget {
 /// [base]. When the theme's brightness differs from [base]'s, a fresh theme
 /// of that brightness is used as the base instead.
 ///
-/// The component themes genui's components use are always replaced, even
+/// The component themes the basic components use are always replaced, even
 /// when [json] sets none of their keys: flat cards without margins,
 /// unelevated buttons, bordered chips, text fields, dividers and the date
 /// and time pickers, styled from the theme's colors, `cornerRadius` and
@@ -313,7 +320,7 @@ TextTheme _applyVariants(TextTheme theme, JsonMap variants) {
     );
   }
 
-  // Same mapping as genui's Text component.
+  // Same mapping as the Text component (lib/catalog/basic/text.dart).
   return theme.copyWith(
     headlineLarge: style('h1', theme.headlineLarge),
     headlineMedium: style('h2', theme.headlineMedium),

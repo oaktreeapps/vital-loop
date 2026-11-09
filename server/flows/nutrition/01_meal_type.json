@@ -1,52 +1,56 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_step_1_meal_type"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_step_2_food_items"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_step_3_quantity"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_step_4_meal_time"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_step_5_notes"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "nutrition_summary"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "nutrition_step_1_meal_type",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "nutrition_step_1_meal_type",
       "components": [

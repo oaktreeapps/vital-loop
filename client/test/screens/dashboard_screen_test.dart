@@ -34,7 +34,7 @@ void main() {
   });
 
   testWidgets('the catalog button opens the component catalog', (tester) async {
-    // Same size as the catalog screen test: genui's AudioPlayer preview
+    // Same size as the catalog screen test: the AudioPlayer preview
     // needs a little more width with the wide test font.
     useLargeScreen(tester, size: const Size(1080, 2400));
     await pumpDashboard(tester);

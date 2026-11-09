@@ -13,15 +13,15 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../core/theme/surface_theme.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 
 /// Material icons an `IconBadge` can show, by name.
 ///
-/// genui's built-in `Icon` only knows a small fixed set (no sun, moon, …).
+/// The basic `Icon` only knows a small fixed set (no sun, moon, …).
 /// Add entries here to make more icons available to the JSON screens.
 const Map<String, IconData> iconBadgeIcons = {
   'sunrise': Icons.wb_twilight,
@@ -105,14 +105,14 @@ final _schema = S.object(
 /// {"id": "tag", "component": "IconBadge", "name": "sun", "label": "Lunch",
 ///  "color": "#6B5412", "background": "#F5EDC4"}
 /// {"id": "entry", "component": "IconBadge", "name": "sick",
-///  "color": {"path": "color"}, "background": "#FFFFFF",
+///  "color": {"@path": "color"}, "background": "#FFFFFF",
 ///  "border": "#E8E1D6", "shape": "circle", "size": 40}
 /// ```
 final CatalogItem iconBadge = CatalogItem(
   name: 'IconBadge',
   dataSchema: _schema,
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     final ColorScheme scheme = Theme.of(itemContext.buildContext).colorScheme;
     final Color background =
         parseHexColor(data['background']) ?? scheme.primaryContainer;

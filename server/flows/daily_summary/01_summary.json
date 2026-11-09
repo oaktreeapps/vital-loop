@@ -1,31 +1,35 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "daily_summary",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json",
-        "text": {
-          "h3": {
-            "size": 15,
-            "weight": 400,
-            "color": "#1F2A24",
-            "height": 1.65
-          },
-          "body": {
-            "size": 15,
-            "height": 1.65
-          },
-          "h5": {
-            "size": 15
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json",
+            "text": {
+              "h3": {
+                "size": 15,
+                "weight": 400,
+                "color": "#1F2A24",
+                "height": 1.65
+              },
+              "body": {
+                "size": 15,
+                "height": 1.65
+              },
+              "h5": {
+                "size": 15
+              }
+            }
           }
         }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "daily_summary",
       "path": "/",
@@ -35,7 +39,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "daily_summary",
       "components": [
@@ -120,10 +124,10 @@
           "id": "entry_icon",
           "component": "IconBadge",
           "name": {
-            "path": "icon"
+            "@path": "icon"
           },
           "color": {
-            "path": "color"
+            "@path": "color"
           },
           "background": "#FFFFFF",
           "border": "#E8E1D6",
@@ -155,7 +159,7 @@
           "component": "Text",
           "variant": "h5",
           "text": {
-            "path": "category"
+            "@path": "category"
           }
         },
         {
@@ -163,7 +167,7 @@
           "component": "Text",
           "variant": "caption",
           "text": {
-            "path": "time"
+            "@path": "time"
           }
         },
         {
@@ -171,7 +175,7 @@
           "component": "Text",
           "variant": "body",
           "text": {
-            "path": "line"
+            "@path": "line"
           }
         },
         {

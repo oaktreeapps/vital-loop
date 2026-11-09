@@ -14,12 +14,12 @@
 //
 // Modified by Oaktreeapps in 2026.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../core/theme/surface_theme.dart' show parseHexColor;
 import '../../models/body_map/body_map.dart';
 import '../../models/body_map/ranked_region.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/body_map_picker_view.dart';
 
@@ -77,7 +77,7 @@ final CatalogItem bodyMapPicker = CatalogItem(
     () => '''
       [
         { "id": "root", "component": "BodyMapPicker",
-          "value": { "path": "/bodyAreas" },
+          "value": { "@path": "/bodyAreas" },
           "view": "back",
           "suggested": [
             { "id": "back.lumbar_spine", "label": "Lower back" },
@@ -88,8 +88,7 @@ final CatalogItem bodyMapPicker = CatalogItem(
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final Map<String, Object?> data = (itemContext.data as Map)
-        .cast<String, Object?>();
+    final JsonMap data = itemContext.data;
     // Where the selected names live in the data model. If the backend sent
     // no path, a private one is made from the component id.
     final String path = bindingPath(itemContext, data['value'], 'value');
@@ -98,7 +97,7 @@ final CatalogItem bodyMapPicker = CatalogItem(
     final int? max = numberOrNull(data['maxSelections'])?.toInt();
     return BoundList(
       dataContext: itemContext.dataContext,
-      value: {'path': path},
+      value: {'@path': path},
       builder: (context, raw) => BodyMapPickerView(
         ordered: ordered,
         // Keep only non-empty names; the model may hold anything.
@@ -112,8 +111,7 @@ final CatalogItem bodyMapPicker = CatalogItem(
         maxSelections: max != null && max >= 1 ? max : null,
         skinColor: parseHexColor(data['skinColor']),
         selectedColor: parseHexColor(data['selectedColor']),
-        onChanged: (next) =>
-            itemContext.dataContext.update(DataPath(path), next),
+        onChanged: (next) => itemContext.dataContext.set(path, next),
       ),
     );
   },

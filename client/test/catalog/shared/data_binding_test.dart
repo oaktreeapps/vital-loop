@@ -29,6 +29,6 @@ void main() {
     expect(stringOrNull('Pain'), 'Pain');
     expect(stringOrNull(''), '');
     expect(stringOrNull(5), isNull);
-    expect(stringOrNull({'path': '/x'}), isNull);
+    expect(stringOrNull({'@path': '/x'}), isNull);
   });
 }

@@ -142,8 +142,8 @@ class StreamingTest(unittest.TestCase):
         # The reply stops in the middle of component "b".
         reply = (
             "```json\n"
-            '[{"version": "v0.9", "createSurface": {"surfaceId": "s"}},\n'
-            '{"version": "v0.9", "updateComponents": {"surfaceId": "s", '
+            '[{"version": "1.0", "createSurface": {"surfaceId": "s"}},\n'
+            '{"version": "1.0", "updateComponents": {"surfaceId": "s", '
             '"components": ['
             '{"id": "root", "component": "Column", "children": ["a", "b"]},'
             '{"id": "a", "component": "Text", '
@@ -204,7 +204,7 @@ class StreamingTest(unittest.TestCase):
         # Gemini once shortened the id, and the app couldn't draw the screen.
         screen = load_screens("daily_summary")["findNearbyCare"]
         screen = screen.replace(
-            CATALOG_ID, "https://a2ui.org/specification/v0_9/catalog.json"
+            CATALOG_ID, "https://github.com/oaktreeapps/v1_0/catalog.json"
         )
         self.assertNotIn(CATALOG_ID, screen)
         sent, _ = _stream(screen)

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/health_report.dart';
 import '../shared/care_place_schema.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/pdf_report_card.dart';
 
@@ -85,8 +85,7 @@ final CatalogItem pdfReport = CatalogItem(
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final Map<String, Object?> data = (itemContext.data as Map)
-        .cast<String, Object?>();
+    final JsonMap data = itemContext.data;
     final HealthReport report = reportFromJson(data);
     // The agent writes the name, so keep only safe characters: no path
     // separators or other characters a file system may reject.

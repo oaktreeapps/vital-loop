@@ -5,14 +5,16 @@ The Python server of [VitalLoop](../README.md): it generates the
 the [Verdure](https://github.com/flutter/genui/tree/main/examples/verdure) example:
 an [ADK](https://google.github.io/adk-docs/) agent served over
 [A2A](https://a2a-protocol.org/), answering each request with
-[A2UI](https://a2ui.org/) JSON that the Flutter app renders with `genui`. The
-screens follow the [A2UI v0.9 specification](https://a2ui.org/specification/v0.9-a2ui/).
+[A2UI](https://a2ui.org/) JSON that the Flutter app renders with
+`a2ui_flutter`. The screens follow the
+[A2UI v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/) and use
+VitalLoop's own catalog (`CATALOG_ID` in `streaming.py`).
 
 ## How it works
 
 ```
 Flutter app ──A2A──▶ main.py ──▶ agent_executor.py ──▶ agent.py ──▶ Gemini
- (genui_a2a)          one URL       reads the request     prompt.md + screen
+ (A2A client)        one URL       reads the request     prompt.md + screen
                       per flow      sends A2UI back       templates (screens.py)
 ```
 
@@ -200,7 +202,7 @@ the templates from `../server/flows/` and check every flow against them.
 ## Dependencies
 
 `requirements.txt` keeps `a2a-sdk` below 1.0 on purpose. The client's A2A
-library (`genui_a2a`) speaks A2A 0.3. `a2a-sdk` 1.x can still answer 0.3
-clients, but its compatibility layer sends every number as a decimal (`72.0`
-instead of `72`), which the client doesn't expect. Move to 1.x once
-`genui_a2a` supports A2A 1.0.
+client (`client/lib/services/a2a_client.dart`) speaks A2A 0.3. `a2a-sdk` 1.x
+can still answer 0.3 clients, but its compatibility layer sends every number
+as a decimal (`72.0` instead of `72`), which the client doesn't expect. Move
+to 1.x together with the client.

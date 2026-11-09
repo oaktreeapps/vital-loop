@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
+
+import '../../catalog/shared/catalog_item.dart';
 
 import 'json_block.dart';
 
@@ -34,10 +35,11 @@ class ComponentCard extends StatelessWidget {
   /// The example A2UI components that the preview is rendered from.
   final List<JsonMap> example;
 
-  /// The rendered preview, a [Surface] made by the screen's controller.
+  /// The rendered preview: the example's surface, drawn by the screen.
   final Widget preview;
 
-  /// Builds the card. The description comes from the schema, if it has one.
+  /// Builds the card. The description is the item's, else the schema's, if
+  /// there is one.
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -60,7 +62,8 @@ class ComponentCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (schema['description'] case final String description) ...[
+                if (item.description ?? schema['description']
+                    case final String description) ...[
                   const SizedBox(height: 4),
                   Text(
                     description,

@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:genui/genui.dart';
+import 'package:vitalloop/catalog/shared/catalog_item.dart';
 import 'package:vitalloop/screens/catalog_screen.dart';
 
 import '../support/test_utils.dart';
@@ -25,7 +25,7 @@ void main() {
   setUpTestEnvironment();
 
   /// Opens the catalog on a screen wide enough for every preview (800
-  /// wide): with the wide test font, some previews (genui's AudioPlayer, the
+  /// wide): with the wide test font, some previews (the AudioPlayer, the
   /// vital inputs, the map's credit line) need more width than a phone has.
   Future<void> openCatalog(WidgetTester tester) async {
     useLargeScreen(tester, size: const Size(2000, 3200));
@@ -77,9 +77,7 @@ void main() {
     );
   });
 
-  testWidgets('the Default tab previews genui\'s built-in components', (
-    tester,
-  ) async {
+  testWidgets('the Default tab previews the basic components', (tester) async {
     await openCatalog(tester);
     expect(
       find.text('Default (${defaultCatalogItems.length})'),

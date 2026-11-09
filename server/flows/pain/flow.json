@@ -13,11 +13,10 @@
       "tag1Background": "#F4E3DD",
       "tag2Icon": "schedule",
       "tag2Label": {
-        "call": "formatString",
+        "@call": "formatString",
         "args": {
           "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
-        },
-        "returnType": "string"
+        }
       },
       "tag2Color": "#1F2A24",
       "tag2Background": "#FFFFFF",
@@ -39,11 +38,10 @@
       "row2Background": "#F1EBE0",
       "row2Label": "Pain level & start",
       "row2Value": {
-        "call": "formatString",
+        "@call": "formatString",
         "args": {
           "value": "{{painLevel}}/10 \u00b7 ${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
-        },
-        "returnType": "string"
+        }
       }
     }
   }

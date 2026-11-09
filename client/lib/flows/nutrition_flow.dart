@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 
 import '../catalog/icon_badge/icon_badge.dart';
+import '../catalog/shared/catalog_item.dart';
 import '../core/utils/text_format.dart';
 import '../models/tracking_flow.dart';
 
@@ -22,7 +23,7 @@ import '../models/tracking_flow.dart';
 const String startNutritionFlowMessage =
     'I want to log a meal in the Food / Nutrition tracker.';
 
-/// Custom components for the nutrition flow, on top of genui's built-in ones.
+/// Custom components for the nutrition flow, on top of the basic ones.
 ///
 /// To add one, create a [CatalogItem] (name, JSON schema, widget builder) and
 /// list it here; screens can then use it by name.
@@ -59,7 +60,7 @@ final TrackingFlow nutritionFlow = TrackingFlow(
   ]),
 );
 
-/// genui's basic catalog plus [nutritionCustomItems].
+/// The basic components plus [nutritionCustomItems].
 ///
 /// A shortcut for [TrackingFlow.catalog] of [nutritionFlow].
-Catalog get nutritionCatalog => nutritionFlow.catalog;
+CatalogImplementation get nutritionCatalog => nutritionFlow.catalog;

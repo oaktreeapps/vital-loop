@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "symptoms_summary",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "symptoms_summary",
       "path": "/",
@@ -20,7 +24,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "symptoms_summary",
       "components": [
@@ -208,11 +212,10 @@
           "component": "Text",
           "variant": "h5",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
               "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
-            },
-            "returnType": "string"
+            }
           }
         },
         {
@@ -252,11 +255,10 @@
           "component": "Text",
           "variant": "h5",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
               "value": "${pluralize(value:${length(value:${/description})}, zero:'No description added', one:'${/description}', other:'${/description}')}"
-            },
-            "returnType": "string"
+            }
           }
         },
         {

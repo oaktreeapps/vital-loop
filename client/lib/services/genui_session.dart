@@ -15,32 +15,45 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
+import 'package:a2ui_core/a2ui_core.dart';
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:genui/genui.dart';
 import 'package:logging/logging.dart';
 
 import '../core/app_logging.dart';
+import 'transport.dart';
+
+/// The A2UI version the app speaks: every message it sends carries it.
+final String a2uiVersion = A2uiProtocolVersion.v1_0.jsonValue;
 
 /// Runs a generative UI flow: sends requests to the backend and turns its
-/// A2UI responses into surfaces.
+/// A2UI v1.0 responses into surfaces.
 ///
 /// Flow: screen → [GenUiSession] → [Transport] (the backend's agent for the
-/// flow). Responses come back through the transport into the
-/// [SurfaceController]; a button tap on a surface is submitted back to the
-/// backend as the next request.
+/// flow). Responses come back through the transport into a2ui_core's
+/// [MessageProcessor], which keeps each surface's components and data model;
+/// a button tap on a surface is sent back to the backend as the next
+/// request.
 class GenUiSession extends ChangeNotifier {
   /// Creates a session that talks to the backend through [transport] and
   /// renders its screens with the components in [catalog].
   ///
   /// The session starts listening right away; call [sendMessage] to start
   /// the flow.
-  GenUiSession({required Transport transport, required Catalog catalog})
-    : _transport = transport,
-      _surfaceController = SurfaceController(catalogs: [catalog]) {
+  GenUiSession({
+    required Transport transport,
+    required CatalogImplementation catalog,
+  }) : _transport = transport,
+       processor = MessageProcessor<ComponentImplementation>(
+         catalogs: [catalog],
+         defaultVersion: A2uiProtocolVersion.v1_0,
+         // A message the app can't use is reported (see [_onRendererError])
+         // instead of thrown.
+         reportErrorsOnly: true,
+       ) {
     _logger.info(
-      'created with ${catalog.items.length} catalog items '
-      '→ ${transport.runtimeType} + SurfaceController',
+      'created with ${catalog.components.length} catalog components '
+      '→ ${transport.runtimeType} + MessageProcessor',
     );
     _init();
   }
@@ -51,21 +64,20 @@ class GenUiSession extends ChangeNotifier {
   /// Sends requests to the backend and receives its A2UI messages.
   final Transport _transport;
 
-  /// genui's controller that builds surfaces from A2UI messages and reports
-  /// button taps through `onSubmit`.
-  final SurfaceController _surfaceController;
+  /// a2ui_core's processor: it builds surfaces from the A2UI messages and
+  /// reports their button taps and errors.
+  ///
+  /// Public for the widgets that draw a surface, and for tests.
+  final MessageProcessor<ComponentImplementation> processor;
 
-  /// Feeds the transport's A2UI messages into [_surfaceController].
-  late final StreamSubscription<core.A2uiMessage> _messageSub;
+  /// Feeds the transport's A2UI messages into [processor].
+  late final StreamSubscription<JsonMap> _messageSub;
 
   /// Logs any plain text the agent sends next to its A2UI messages.
   late final StreamSubscription<String> _textSub;
 
-  /// Listens for button taps on a surface and sends them to the backend.
-  late final StreamSubscription<ChatMessage> _submitSub;
-
-  /// Listens for surfaces being added or removed, see [_onSurfaceUpdate].
-  late final StreamSubscription<SurfaceUpdate> _surfaceSub;
+  /// The listeners on [processor]'s surfaces, taps and errors.
+  final List<Subscription> _processorSubs = [];
 
   /// The source of [actions]. Broadcast, so many screens may listen.
   final StreamController<UserAction> _actions =
@@ -83,21 +95,27 @@ class GenUiSession extends ChangeNotifier {
     finishAction,
   };
 
-  /// The host that renders this session's surfaces.
-  SurfaceHost get surfaceHost => _surfaceController;
-
   /// The error reports already sent to the backend, as JSON text.
   ///
-  /// genui reports a surface it can't draw each time it rebuilds it, and the
-  /// backend's reply causes another rebuild. Sending each report only once
-  /// stops that loop.
+  /// A surface the app can't draw may report the same error again each time
+  /// it is rebuilt, and the backend's reply causes another rebuild. Sending
+  /// each report only once stops that loop.
   final Set<String> _sentErrors = {};
+
+  /// Error reports that came up while a request was in flight; they are
+  /// sent, one at a time, once it has ended.
+  final List<String> _waitingErrors = [];
 
   /// The ids of all surfaces the agent has created so far, oldest first.
   final List<String> _surfaceIds = [];
 
   /// The most recently created surface, or `null` before the first one.
   String? get currentSurfaceId => _surfaceIds.lastOrNull;
+
+  /// The surface with [surfaceId], or `null` if the agent removed it (or
+  /// never created it).
+  SurfaceModel<ComponentImplementation>? surfaceFor(String surfaceId) =>
+      processor.model.getSurface(surfaceId);
 
   /// Backing field for [isProcessing].
   bool _isProcessing = false;
@@ -116,72 +134,130 @@ class GenUiSession extends ChangeNotifier {
   /// must not touch the session when it ends.
   bool _disposed = false;
 
-  /// Connects the transport and the surface controller: incoming messages go
-  /// to the controller, and taps on a surface go to [actions] and, unless
-  /// they are in [localActions], back to the backend.
+  /// What goes with every request: the A2UI version and catalog the app
+  /// renders, so the agent knows what it may send.
+  late final JsonMap _requestMetadata = {
+    'a2uiRendererCapabilities': processor
+        .getRendererCapabilities(
+          const CapabilitiesOptions(versions: [A2uiProtocolVersion.v1_0]),
+        )
+        .toJson(),
+  };
+
+  /// Connects the transport and the processor: incoming messages go to the
+  /// processor, and taps on a surface go to [actions] and, unless they are
+  /// in [localActions], back to the backend.
   void _init() {
-    _messageSub = _transport.incomingMessages.listen((message) {
-      _logger.info(
-        'Transport → SurfaceController.handleMessage: ${message.runtimeType}',
-      );
-      _logger.finest(() => 'A2UI message: ${preview(message)}');
-      _surfaceController.handleMessage(message);
-    });
+    _messageSub = _transport.incomingMessages.listen(_onMessage);
     _textSub = _transport.incomingText.listen(
       (text) => _logger.fine('Agent text: "${preview(text)}"'),
     );
-    _submitSub = _surfaceController.onSubmit.listen((message) {
-      final UserAction? action = userActionFrom(message);
-      if (action != null && localActions.contains(action.name)) {
-        _logger.info('SurfaceController.onSubmit → local ${action.name}');
-        _actions.add(action);
-        return;
-      }
-      // Checked before the action is passed on, so a tap that is dropped
-      // isn't saved either.
-      if (_isProcessing) {
-        _logger.warning('${action?.name} ignored: a request is in progress');
-        return;
-      }
-      if (action == null) {
-        final String? report = errorReportFrom(message);
-        if (report != null && !_sentErrors.add(report)) {
-          _logger.fine('Error report already sent: ${preview(report)}');
-          return;
-        }
-      }
-      if (action != null) _actions.add(action);
-      _logger.info(
-        'SurfaceController.onSubmit (user tapped ${action?.name}) '
-        '→ Transport.sendRequest',
-      );
-      // The values the user entered: health data, so only at FINEST.
-      _logger.finest(() => 'Action context: ${action?.context}');
-      unawaited(_runRequest(() => _transport.sendRequest(message)));
-    });
-    _surfaceSub = _surfaceController.surfaceUpdates.listen(_onSurfaceUpdate);
+    _processorSubs.addAll([
+      processor.model.onSurfaceCreated.subscribe(_onSurfaceCreated),
+      processor.model.onSurfaceDeleted.subscribe(_onSurfaceDeleted),
+      processor.model.onAction.subscribe(_onAction),
+      processor.model.onError.subscribe(_onRendererError),
+    ]);
   }
 
-  /// Keeps [_surfaceIds] in step with the surfaces the agent creates and
-  /// removes, and tells listeners when the current surface changes.
-  void _onSurfaceUpdate(SurfaceUpdate update) {
-    _logger.info('SurfaceController → surfaceUpdate: ${update.runtimeType}');
-    switch (update) {
-      case SurfaceAdded(:final surfaceId):
-        if (!_surfaceIds.contains(surfaceId)) {
-          _logger.info('New surface #${_surfaceIds.length}: $surfaceId');
-          _surfaceIds.add(surfaceId);
-          notifyListeners();
-        }
-      case SurfaceRemoved(:final surfaceId):
-        _logger.warning('Surface $surfaceId removed by the agent');
-        _surfaceIds.remove(surfaceId);
-        notifyListeners();
-      case ComponentsUpdated():
-        // The surface widget redraws itself; nothing to do here.
-        break;
+  /// Applies one A2UI [message] from the agent to its surface.
+  void _onMessage(JsonMap message) {
+    _logger.info(
+      'Transport → MessageProcessor.processMessages: '
+      '${message.keys.where((key) => key != 'version').join(', ')}',
+    );
+    _logger.finest(() => 'A2UI message: ${preview(message)}');
+    try {
+      processor.processMessages(message);
+    } on Object catch (error, stackTrace) {
+      // The processor reports A2UI errors itself; anything else is a bug.
+      _logger.severe('Could not apply an A2UI message', error, stackTrace);
     }
   }
+
+  /// Adds a surface the agent created and tells listeners it is the current
+  /// one now.
+  void _onSurfaceCreated(SurfaceModel<ComponentImplementation> surface) {
+    if (_surfaceIds.contains(surface.id)) return;
+    _logger.info('New surface #${_surfaceIds.length}: ${surface.id}');
+    _processorSubs.add(
+      surface.onWarning.subscribe(
+        (warning) => _logger.fine('Surface ${surface.id}: ${warning.message}'),
+      ),
+    );
+    _surfaceIds.add(surface.id);
+    notifyListeners();
+  }
+
+  /// Forgets a surface the agent removed.
+  void _onSurfaceDeleted(String surfaceId) {
+    _logger.warning('Surface $surfaceId removed by the agent');
+    _surfaceIds.remove(surfaceId);
+    if (!_disposed) notifyListeners();
+  }
+
+  /// Handles a button tap on a surface: it goes to [actions] and, unless it
+  /// is one of the [localActions], to the backend as the next request.
+  void _onAction(A2uiRendererAction rendererAction) {
+    final UserAction action = userActionFrom(rendererAction);
+    if (localActions.contains(action.name)) {
+      _logger.info('Surface action → local ${action.name}');
+      _actions.add(action);
+      return;
+    }
+    // Checked before the action is passed on, so a tap that is dropped
+    // isn't saved either.
+    if (_isProcessing) {
+      _logger.warning('${action.name} ignored: a request is in progress');
+      return;
+    }
+    _actions.add(action);
+    _logger.info(
+      'Surface action (user tapped ${action.name}) → Transport.sendRequest',
+    );
+    // The values the user entered: health data, so only at FINEST.
+    _logger.finest(() => 'Action context: ${action.context}');
+    final JsonMap message = ActionMessage(
+      version: a2uiVersion,
+      action: rendererAction,
+    ).toJson();
+    unawaited(_runRequest(() => _send(TransportRequest.data(message))));
+  }
+
+  /// Reports a surface the app can't draw (e.g. a component that doesn't
+  /// follow its schema) to the backend, each report only once.
+  void _onRendererError(A2uiRendererError error) {
+    _logger.warning('A2UI error ${error.code}: ${error.message}');
+    final String report = jsonEncode(
+      ErrorMessage(version: a2uiVersion, error: error).toJson(),
+    );
+    if (_sentErrors.contains(report) || _waitingErrors.contains(report)) {
+      _logger.fine('Error report already sent: ${preview(report)}');
+      return;
+    }
+    if (_isProcessing) {
+      // Usually the request in flight caused it; report once it has ended.
+      _waitingErrors.add(report);
+      return;
+    }
+    _sendErrorReport(report);
+  }
+
+  /// Sends one error [report] to the backend, which logs it.
+  void _sendErrorReport(String report) {
+    _sentErrors.add(report);
+    _logger.info('Error report → Transport.sendRequest');
+    final Map<String, Object?> message = (jsonDecode(report) as Map)
+        .cast<String, Object?>();
+    unawaited(_runRequest(() => _send(TransportRequest.data(message))));
+  }
+
+  /// Sends [request] with the app's A2UI capabilities.
+  Future<void> _send(TransportRequest request) => _transport.sendRequest(
+    request.data == null
+        ? TransportRequest.text(request.text!, metadata: _requestMetadata)
+        : TransportRequest.data(request.data!, metadata: _requestMetadata),
+  );
 
   /// Sends a text request to the agent, e.g. to start a flow.
   Future<void> sendMessage(String text) async {
@@ -189,7 +265,7 @@ class GenUiSession extends ChangeNotifier {
     await _runRequest(() {
       _logger.info('GenUiSession → Transport.sendRequest (text message)');
       _logger.finest(() => 'Text: "${preview(text)}"');
-      return _transport.sendRequest(ChatMessage.user(text));
+      return _send(TransportRequest.text(text));
     });
   }
 
@@ -236,11 +312,15 @@ class GenUiSession extends ChangeNotifier {
         _isProcessing = false;
         _logger.fine('isProcessing=false → notifyListeners');
         notifyListeners();
+        // An error the request caused is reported now that it has ended.
+        if (_waitingErrors.isNotEmpty) {
+          _sendErrorReport(_waitingErrors.removeAt(0));
+        }
       }
     }
   }
 
-  /// Stops all listeners and closes the controller, the [actions] stream and
+  /// Stops all listeners and closes the processor, the [actions] stream and
   /// the transport.
   @override
   void dispose() {
@@ -248,9 +328,10 @@ class GenUiSession extends ChangeNotifier {
     _disposed = true;
     _messageSub.cancel();
     _textSub.cancel();
-    _submitSub.cancel();
-    _surfaceSub.cancel();
-    _surfaceController.dispose();
+    for (final Subscription subscription in _processorSubs) {
+      subscription.unsubscribe();
+    }
+    processor.dispose();
     _actions.close();
     _transport.dispose();
     super.dispose();
@@ -280,53 +361,17 @@ const String chooseCareCityAction = 'chooseCareCity';
 /// after [chooseCareCityAction] with `{"city": <the city typed>}`.
 const String findNearbyCareAction = 'findNearbyCare';
 
-/// The text of an A2UI client message holding the UI action [name] with
+/// The text of an A2UI renderer message holding the UI action [name] with
 /// [context], as a button tap sends it. The backend treats it as a tap, not
 /// as text typed by the user.
 String actionMessage(String name, Map<String, Object?> context) => jsonEncode({
-  'version': 'v0.9',
+  'version': a2uiVersion,
   'action': {'name': name, 'context': context},
 });
-
-/// Reads the error report in [message], which genui sends through `onSubmit`
-/// when it can't draw a surface, as JSON text like `{"error": ...}`.
-///
-/// Returns `null` when [message] is not an error report (e.g. a tap).
-String? errorReportFrom(ChatMessage message) {
-  for (final UiInteractionPart part in message.parts.uiInteractionParts) {
-    try {
-      if (jsonDecode(part.interaction) case {'error': _}) {
-        return part.interaction;
-      }
-    } on FormatException {
-      // Not JSON: not an error report.
-    }
-  }
-  return null;
-}
 
 /// A UI action from a surface: its name and the values in its context.
 typedef UserAction = ({String name, Map<String, Object?> context});
 
-/// Reads the UI action in [message], a tap that genui's `onSubmit` reports.
-///
-/// The tap arrives as a chat message whose UI interaction parts hold the
-/// action as JSON text. Returns `null` when no part holds an action (e.g. an
-/// error report).
-UserAction? userActionFrom(ChatMessage message) {
-  for (final UiInteractionPart part in message.parts.uiInteractionParts) {
-    try {
-      if (jsonDecode(part.interaction) case {
-        'action': {'name': final String name, 'context': final Object? context},
-      }) {
-        return (
-          name: name,
-          context: context is Map ? context.cast<String, Object?>() : {},
-        );
-      }
-    } on FormatException {
-      // Not JSON: not an action.
-    }
-  }
-  return null;
-}
+/// The name and context values of [action], a tap that a surface reports.
+UserAction userActionFrom(A2uiRendererAction action) =>
+    (name: action.name, context: Map<String, Object?>.of(action.context));

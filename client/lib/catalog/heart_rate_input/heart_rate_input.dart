@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/vitals/heart_rate.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/heart_rate_card.dart';
 
@@ -23,7 +23,7 @@ import 'widgets/heart_rate_card.dart';
 /// ECG trace to drag, a button to tap along with the pulse, and − / +.
 ///
 /// See [HeartRateCard]. Properties: `value` (required; usually a binding
-/// like `{"path": "/heartRate"}`), whole bpm from 40 to 200; and `label`.
+/// like `{"@path": "/heartRate"}`), whole bpm from 40 to 200; and `label`.
 /// Starts at 72 bpm when the data model has no value yet. Under 60 is low,
 /// over 100 is high.
 final CatalogItem heartRateInput = CatalogItem(
@@ -42,11 +42,11 @@ final CatalogItem heartRateInput = CatalogItem(
   ),
   exampleData: [
     () => '''
-      [{"id": "root", "component": "HeartRateInput", "value": {"path": "/heartRate"}}]
+      [{"id": "root", "component": "HeartRateInput", "value": {"@path": "/heartRate"}}]
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     return bindNumber(
       itemContext,
       bindingPath(itemContext, data['value'], 'value'),

@@ -71,6 +71,15 @@ class _GeminiKeyGateState extends State<GeminiKeyGate> {
   /// Whether the app is asking the server right now (shows a progress bar).
   bool _checking = true;
 
+  /// Whether one of the gate's dialogs is open.
+  ///
+  /// The dialog opens in the app's navigator, which is inside [build]'s
+  /// block when the gate sits around it (as in `main.dart`). So the block is
+  /// lifted while a dialog is open, or the dialog itself could not be tapped
+  /// or typed in; the dialog's own barrier keeps the app behind it out of
+  /// reach.
+  bool _asking = false;
+
   /// Starts the check once the first frame is up, so dialogs can open.
   @override
   void initState() {
@@ -114,6 +123,7 @@ class _GeminiKeyGateState extends State<GeminiKeyGate> {
             : 'Gemini API key ${status!.state.name} → asking for one',
       );
       // true: a key was saved; false: try again (after "Retry").
+      setState(() => _asking = true);
       final bool saved =
           await showDialog<bool>(
             context: widget.navigatorKey?.currentContext ?? context,
@@ -123,6 +133,8 @@ class _GeminiKeyGateState extends State<GeminiKeyGate> {
                 : GeminiKeyDialog(setup: _setup, status: status!),
           ) ??
           false;
+      if (!mounted) return;
+      setState(() => _asking = false);
       if (saved && mounted) {
         _logger.info('Gemini API key saved → app ready');
         setState(() => _ready = true);
@@ -135,12 +147,15 @@ class _GeminiKeyGateState extends State<GeminiKeyGate> {
   /// the server is being asked.
   @override
   Widget build(BuildContext context) {
+    // Blocked until the key works, except while a dialog asks for it: the
+    // dialog may be inside [GeminiKeyGate.child], and blocks the app itself.
+    final bool blocked = !_ready && !_asking;
     return Stack(
       children: [
-        // Blocks taps and keyboard focus until the key works.
+        // Blocks taps and keyboard focus.
         ExcludeFocus(
-          excluding: !_ready,
-          child: AbsorbPointer(absorbing: !_ready, child: widget.child),
+          excluding: blocked,
+          child: AbsorbPointer(absorbing: blocked, child: widget.child),
         ),
         if (!_ready && _checking)
           const Positioned(

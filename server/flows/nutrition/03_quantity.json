@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "nutrition_step_3_quantity",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "nutrition_step_3_quantity",
       "path": "/",
@@ -20,7 +24,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "nutrition_step_3_quantity",
       "components": [
@@ -87,11 +91,10 @@
           "component": "IconBadge",
           "name": "check",
           "label": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
               "value": "${length(value:${/quantities})} ${pluralize(value:${length(value:${/quantities})}, one:'food', other:'foods')}"
-            },
-            "returnType": "string"
+            }
           },
           "color": "#1F2A24",
           "background": "#FFFFFF"
@@ -163,7 +166,7 @@
           "component": "Text",
           "variant": "h5",
           "text": {
-            "path": "item"
+            "@path": "item"
           }
         },
         {
@@ -178,7 +181,7 @@
           "min": 1,
           "max": 10,
           "value": {
-            "path": "amount"
+            "@path": "amount"
           }
         },
         {
@@ -242,7 +245,7 @@
               "name": "quantitiesEntered",
               "context": {
                 "quantities": {
-                  "path": "/quantities"
+                  "@path": "/quantities"
                 }
               }
             }

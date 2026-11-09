@@ -25,8 +25,9 @@ main.py). It:
      the complete screen as "input-required" (the app now waits for the
      user's next tap).
 
-Each A2UI message of a screen goes out as its own data part. The Flutter app
-reads them with genui_a2a's A2uiAgentConnector.
+Each A2UI message of a screen goes out as its own data part, marked with the
+A2UI media type. The Flutter app reads them in
+lib/services/backend_transport.dart.
 """
 
 import json
@@ -51,6 +52,10 @@ from a2a.utils.errors import ServerError
 from agent import FlowAgent
 
 logger = logging.getLogger(__name__)  # Logs each request and reply per flow.
+
+# The media type of an A2UI message (A2UI v1.0), set on every data part that
+# carries one, so an A2A client can tell it from other data.
+A2UI_MIME_TYPE = "application/a2ui+json"
 
 
 class FlowAgentExecutor(AgentExecutor):
@@ -151,7 +156,10 @@ def _to_a2a_message(batch: list[dict], task: Task) -> Message:
     """Wraps a batch of A2UI messages as one A2A message, one data part each."""
     parts = []
     for a2ui_message in batch:
-        parts.append(Part(root=DataPart(data=a2ui_message)))
+        data_part = DataPart(
+            data=a2ui_message, metadata={"mimeType": A2UI_MIME_TYPE}
+        )
+        parts.append(Part(root=data_part))
     return new_agent_parts_message(parts, task.context_id, task.id)
 
 

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/care_place.dart';
 import '../shared/care_place_schema.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/care_list_view.dart';
 
@@ -24,7 +24,7 @@ import 'widgets/care_list_view.dart';
 /// or any other kind, one card each.
 ///
 /// See [CareListView]. Properties: `places` (required; usually a binding
-/// like `{"path": "/places"}`, a list of places as the server's nearby
+/// like `{"@path": "/places"}`, a list of places as the server's nearby
 /// search returns them), `selected` (the picked place's id, usually bound to
 /// the same path as a CareMap's `selected`, so tapping a card shows the
 /// place on the map), `emptyText` (shown when there are no places), and
@@ -70,8 +70,7 @@ final CatalogItem careList = CatalogItem(
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final Map<String, Object?> data = (itemContext.data as Map)
-        .cast<String, Object?>();
+    final JsonMap data = itemContext.data;
     final String selectedPath = bindingPath(
       itemContext,
       data['selected'],
@@ -85,12 +84,11 @@ final CatalogItem careList = CatalogItem(
       value: data['places'],
       builder: (context, places) => BoundString(
         dataContext: itemContext.dataContext,
-        value: {'path': selectedPath},
+        value: {'@path': selectedPath},
         builder: (context, selected) => CareListView(
           places: carePlacesFrom(places),
           selectedId: selected,
-          onSelect: (id) =>
-              itemContext.dataContext.update(DataPath(selectedPath), id),
+          onSelect: (id) => itemContext.dataContext.set(selectedPath, id),
           emptyText: emptyText ?? defaultCareListEmptyText,
           title: title,
           city: city,

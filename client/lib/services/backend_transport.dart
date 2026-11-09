@@ -14,11 +14,12 @@
 
 import 'dart:async';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
 import 'package:flutter/foundation.dart';
-import 'package:genui/genui.dart';
-import 'package:genui_a2a/genui_a2a.dart';
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+
+import 'a2a_client.dart';
+import 'transport.dart';
 
 /// The Python backend (`server/main.py`).
 ///
@@ -69,55 +70,86 @@ class BackendTransport implements Transport {
   /// Creates a transport for the flow named [flowName] (e.g. `nutrition`).
   ///
   /// [serverUrl] is the backend's address; it defaults to [backendUrl]. Tests
-  /// pass their own address here.
-  BackendTransport({required String flowName, Uri? serverUrl})
-    : this._(serverEndpoint(serverUrl ?? backendUrl, flowName));
+  /// pass their own address and [httpClient] here.
+  BackendTransport({
+    required String flowName,
+    Uri? serverUrl,
+    http.Client? httpClient,
+  }) : this._(serverEndpoint(serverUrl ?? backendUrl, flowName), httpClient);
 
   /// Creates a transport for the flow's agent at `url`.
-  BackendTransport._(this._url) : _connector = A2uiAgentConnector(url: _url) {
+  BackendTransport._(this._url, http.Client? httpClient)
+    : _client = A2aClient(url: _url, httpClient: httpClient) {
     _logger.info('created → $_url');
   }
 
   /// The flow's agent, e.g. `http://localhost:10002/nutrition`.
   final Uri _url;
 
-  /// The genui_a2a client that talks A2A to the flow's agent and turns its
-  /// answers into A2UI messages and text.
-  final A2uiAgentConnector _connector;
+  /// The A2A client that talks to the flow's agent and keeps the
+  /// conversation's ids.
+  final A2aClient _client;
 
   /// Logger for every transport's messages.
   static final Logger _logger = Logger('BackendTransport');
 
+  /// The A2UI message kinds an agent may send in a data part.
+  static const Set<String> _a2uiMessageKinds = {
+    'createSurface',
+    'updateComponents',
+    'updateDataModel',
+    'deleteSurface',
+    'callRendererFunction',
+    'agentFunctionResponse',
+  };
+
+  /// The task states that mean the agent could not answer.
+  static const Set<String> _failedStates = {'failed', 'canceled', 'rejected'};
+
+  /// The source of [incomingMessages].
+  final StreamController<JsonMap> _messages = StreamController.broadcast();
+
+  /// The source of [incomingText].
+  final StreamController<String> _text = StreamController.broadcast();
+
   /// The A2UI messages the agent streams back (create surface, update
   /// components, ...), in the order they arrive.
   @override
-  Stream<core.A2uiMessage> get incomingMessages => _connector.stream;
+  Stream<JsonMap> get incomingMessages => _messages.stream;
 
   /// Plain text parts of the agent's answers. The app only logs them.
   @override
-  Stream<String> get incomingText => _connector.textStream;
+  Stream<String> get incomingText => _text.stream;
 
-  /// Sends [message] and waits for the agent's answer.
+  /// Sends [request] and waits for the agent's answer, passing on its A2UI
+  /// messages and text as they stream in.
   ///
   /// Throws a [BackendException] if the backend can't be reached or reports
   /// an error.
   @override
-  Future<void> sendRequest(ChatMessage message) async {
-    // The connector reports backend errors on a separate stream instead of
-    // throwing, so listen to it during the request and rethrow afterwards.
+  Future<void> sendRequest(TransportRequest request) async {
+    final JsonMap part = switch (request.data) {
+      final JsonMap data => {'kind': 'data', 'data': data},
+      null => {'kind': 'text', 'text': request.text ?? ''},
+    };
     Object? agentError;
-    final StreamSubscription<Object> errors = _connector.errorStream.listen(
-      (error) => agentError = error,
-    );
     try {
-      await _connector.connectAndSend(message);
+      final Stream<A2aEvent> events = _client.sendMessageStream([
+        part,
+      ], metadata: request.metadata);
+      await for (final A2aEvent event in events) {
+        if (_failedStates.contains(event.state)) {
+          agentError = 'A2A Error: ${event.state}: ${event.parts}';
+          _logger.severe(agentError);
+          continue;
+        }
+        event.parts.forEach(_passOn);
+      }
     } on Exception catch (error) {
       throw BackendException(
         "Can't reach the server at $_url. Check that it is running.",
         cause: error,
       );
-    } finally {
-      await errors.cancel();
     }
     if (agentError != null) {
       throw BackendException(
@@ -127,7 +159,26 @@ class BackendTransport implements Transport {
     }
   }
 
-  /// Closes the connector and its streams. Called by `GenUiSession.dispose`.
+  /// Passes one part of the agent's message on: an A2UI message (a data
+  /// part) to [incomingMessages], text to [incomingText].
+  void _passOn(JsonMap part) {
+    if (part['data'] case final Map<Object?, Object?> data) {
+      if (data.keys.any(_a2uiMessageKinds.contains)) {
+        if (!_messages.isClosed) _messages.add(data.cast<String, Object?>());
+      } else {
+        _logger.warning('A data part without an A2UI message: ${data.keys}');
+      }
+    } else if (part['text'] case final String text) {
+      final String trimmed = text.trim();
+      if (trimmed.isNotEmpty && !_text.isClosed) _text.add(trimmed);
+    }
+  }
+
+  /// Closes the client and the streams. Called by `GenUiSession.dispose`.
   @override
-  void dispose() => _connector.dispose();
+  void dispose() {
+    _client.close();
+    _messages.close();
+    _text.close();
+  }
 }
