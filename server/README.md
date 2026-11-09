@@ -8,7 +8,18 @@ an [ADK](https://google.github.io/adk-docs/) agent served over
 [A2UI](https://a2ui.org/) JSON that the Flutter app renders with
 `a2ui_flutter`. The screens follow the
 [A2UI v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/) and use
-VitalLoop's own catalog (`CATALOG_ID` in `streaming.py`).
+VitalLoop's catalog (`CATALOG_ID` in `streaming.py`): the A2UI v1.0 basic
+catalog plus the app's own components and one function, `count`.
+
+A few things to know when writing a screen:
+
+- A heading is body text written as Markdown: `"text": "## Log your vitals"`
+  (`#` to `#####`, the theme's `h1` to `h5`). The basic Text has only the
+  `body` and `caption` variants.
+- A binding is `{"@path": "/key"}` and a function call `{"@call": ...}`.
+- In a `${...}` expression, quoted text is literal: pass a value as
+  `${/key}`, not `'${/key}'`. `count(value:...)` gives the length of a text
+  or list; the basic `length` only checks one.
 
 ## How it works
 

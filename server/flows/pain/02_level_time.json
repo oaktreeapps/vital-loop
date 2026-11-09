@@ -94,15 +94,13 @@
         {
           "id": "areas_text",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "{{bodyAreas|text}}"
+          "text": "##### {{bodyAreas|text}}"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "How bad is it?"
+          "text": "## How bad is it?"
         },
         {
           "id": "pain_level",
@@ -147,14 +145,14 @@
         {
           "id": "start_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "When did it start?"
+          "text": "##### When did it start?"
         },
         {
           "id": "started",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
             "@path": "/startedAt"

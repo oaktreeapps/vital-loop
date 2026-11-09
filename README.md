@@ -117,9 +117,11 @@ to VitalLoop's colors, spacing, radii and text styles as variables and styles.
 | Summary and care | `CareMap`, `CareList`, `PdfReport` |
 | Page header | `IconBadge` |
 
-The first two families are the A2UI basic components (drawn by
-`client/lib/catalog/basic/`); the rest are custom catalog items. Together they
-form VitalLoop's own A2UI v1.0 catalog (`client/lib/catalog/vitalloop_catalog.dart`). The
+The first two families are the A2UI v1.0 basic components, exactly as the
+`a2ui_flutter` package implements them; the rest are custom catalog items.
+Together they form VitalLoop's A2UI v1.0 catalog
+(`client/lib/catalog/vitalloop_catalog.dart`), which also adds one function,
+`count`, to the basic catalog's. The
 custom cards share one look defined in `client/lib/catalog/shared/`. A screen can
 only use components from this list, and each custom component's schema
 description is exactly what Gemini reads about it.
@@ -207,7 +209,7 @@ Issues and pull requests are welcome. Before you open a PR:
 
 ## Acknowledgements
 
-- [GenUI](https://github.com/flutter/genui), whose basic catalog widgets the app's basic components are adapted from
+- [GenUI](https://github.com/flutter/genui), whose examples the app's structure follows
 - [A2UI](https://a2ui.org/) ([v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/)), [A2A](https://a2a-protocol.org/) and the
   [Agent Development Kit](https://google.github.io/adk-docs/).
 - The body map from the Daily Health Tracker project (Apache 2.0).

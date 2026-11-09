@@ -45,7 +45,11 @@
             ]
           }
         },
-        "selectedPlaceId": ""
+        "selectedPlaceId": "",
+        "title": {
+          "$ai": "A short title (2–6 words) naming the main kind of care found and the city, e.g. \"Orthopedic care near Austin\". No diagnosis.",
+          "example": "Care near {{city}}"
+        }
       }
     }
   },
@@ -80,10 +84,11 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
           "text": {
-            "$ai": "A short title (2–6 words) naming the main kind of care found and the city, e.g. \"Orthopedic care near Austin\". No diagnosis.",
-            "example": "Care near {{city}}"
+            "@call": "formatString",
+            "args": {
+              "value": "## ${/title}"
+            }
           }
         },
         {

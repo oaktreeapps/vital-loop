@@ -93,7 +93,7 @@
           "label": {
             "@call": "formatString",
             "args": {
-              "value": "${length(value:${/quantities})} ${pluralize(value:${length(value:${/quantities})}, one:'food', other:'foods')}"
+              "value": "${count(value:${/quantities})} ${pluralize(value:${count(value:${/quantities})}, one:'food', other:'foods')}"
             }
           },
           "color": "#1F2A24",
@@ -102,8 +102,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "How much did you have?"
+          "text": "## How much did you have?"
         },
         {
           "id": "subtitle",
@@ -155,6 +154,7 @@
         {
           "id": "portion_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "portion_name",
@@ -164,9 +164,11 @@
         {
           "id": "portion_name",
           "component": "Text",
-          "variant": "h5",
           "text": {
-            "@path": "item"
+            "@call": "formatString",
+            "args": {
+              "value": "##### ${item}"
+            }
           }
         },
         {

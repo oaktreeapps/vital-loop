@@ -97,14 +97,12 @@
         {
           "id": "eyebrow",
           "component": "Text",
-          "variant": "h4",
-          "text": "LOG A MEAL"
+          "text": "#### LOG A MEAL"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Which meal are you logging?"
+          "text": "## Which meal are you logging?"
         },
         {
           "id": "subtitle",
@@ -178,8 +176,7 @@
         {
           "id": "tile_breakfast_name",
           "component": "Text",
-          "variant": "h5",
-          "text": "Breakfast"
+          "text": "##### Breakfast"
         },
         {
           "id": "tile_breakfast_time",
@@ -226,8 +223,7 @@
         {
           "id": "tile_lunch_name",
           "component": "Text",
-          "variant": "h5",
-          "text": "Lunch"
+          "text": "##### Lunch"
         },
         {
           "id": "tile_lunch_time",
@@ -274,8 +270,7 @@
         {
           "id": "tile_dinner_name",
           "component": "Text",
-          "variant": "h5",
-          "text": "Dinner"
+          "text": "##### Dinner"
         },
         {
           "id": "tile_dinner_time",
@@ -322,8 +317,7 @@
         {
           "id": "tile_snack_name",
           "component": "Text",
-          "variant": "h5",
-          "text": "Snack"
+          "text": "##### Snack"
         },
         {
           "id": "tile_snack_time",

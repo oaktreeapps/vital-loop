@@ -75,8 +75,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "What are you feeling?"
+          "text": "## What are you feeling?"
         },
         {
           "id": "subtitle",
@@ -87,8 +86,7 @@
         {
           "id": "picker_label",
           "component": "Text",
-          "variant": "h4",
-          "text": "COMMON SYMPTOMS"
+          "text": "#### COMMON SYMPTOMS"
         },
         {
           "id": "picked",
@@ -155,8 +153,7 @@
         {
           "id": "other_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Something else?"
+          "text": "##### Something else?"
         },
         {
           "id": "other",
@@ -198,7 +195,7 @@
                   "value": {
                     "@call": "formatString",
                     "args": {
-                      "value": "${length(value:${/symptoms})}|${/otherSymptoms}"
+                      "value": "${count(value:${/symptoms})}|${/otherSymptoms}"
                     }
                   },
                   "pattern": "^(?!0\\|\\s*$)"

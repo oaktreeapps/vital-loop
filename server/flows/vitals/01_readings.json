@@ -80,8 +80,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Log your vitals"
+          "text": "## Log your vitals"
         },
         {
           "id": "subtitle",
@@ -157,14 +156,14 @@
         {
           "id": "time_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "Measurement time"
+          "text": "##### Measurement time"
         },
         {
           "id": "time",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
             "@path": "/measuredAt"

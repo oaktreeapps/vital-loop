@@ -49,8 +49,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Readings saved"
+          "text": "## Readings saved"
         },
         {
           "id": "subtitle",
@@ -115,6 +114,7 @@
         {
           "id": "row_1_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_1_label",
@@ -130,8 +130,7 @@
         {
           "id": "row_1_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{systolic}}/{{diastolic}} mmHg"
+          "text": "##### {{systolic}}/{{diastolic}} mmHg"
         },
         {
           "id": "row_2_row",
@@ -153,6 +152,7 @@
         {
           "id": "row_2_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_2_label",
@@ -168,8 +168,7 @@
         {
           "id": "row_2_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{heartRate}} bpm"
+          "text": "##### {{heartRate}} bpm"
         },
         {
           "id": "row_3_row",
@@ -191,6 +190,7 @@
         {
           "id": "row_3_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_3_label",
@@ -206,8 +206,7 @@
         {
           "id": "row_3_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{temperature}} °C"
+          "text": "##### {{temperature}} °C"
         },
         {
           "id": "row_4_row",
@@ -229,6 +228,7 @@
         {
           "id": "row_4_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_4_label",
@@ -244,8 +244,7 @@
         {
           "id": "row_4_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{bloodSugar}} mg/dL"
+          "text": "##### {{bloodSugar}} mg/dL"
         },
         {
           "id": "row_5_row",
@@ -267,6 +266,7 @@
         {
           "id": "row_5_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_5_label",
@@ -282,11 +282,10 @@
         {
           "id": "row_5_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${formatDate(value:'{{measuredAt}}', pattern:'d MMM, h:mm a')}"
+              "value": "##### ${formatDate(value:'{{measuredAt}}', format:'d MMM, h:mm a')}"
             }
           }
         },

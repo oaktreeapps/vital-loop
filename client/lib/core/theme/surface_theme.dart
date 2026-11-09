@@ -113,6 +113,12 @@ class SurfaceTheme extends StatelessWidget {
 /// unelevated buttons, bordered chips, text fields, dividers and the date
 /// and time pickers, styled from the theme's colors, `cornerRadius` and
 /// `border` color.
+///
+/// The basic components are a2ui_flutter's Material widgets, which have no
+/// style properties of their own: a Card is a [Card], a Button a
+/// [FilledButton] (`primary`), a [TextButton] (`borderless`, left as
+/// Flutter draws it) or an [OutlinedButton], and a ChoicePicker's chips
+/// are [FilterChip]s and [ChoiceChip]s. So their look is set here.
 ThemeData surfaceThemeData(ThemeData base, JsonMap json) {
   final JsonMap colors = _map(json['colors']);
   final Color? primary = parseHexColor(colors['primary']);
@@ -189,15 +195,31 @@ ThemeData surfaceThemeData(ThemeData base, JsonMap json) {
     scaffoldBackgroundColor: background ?? base.scaffoldBackgroundColor,
     dividerTheme: DividerThemeData(color: border),
     cardTheme: CardThemeData(
+      color: scheme.surface,
       elevation: 0,
       shape: shape,
       margin: EdgeInsets.zero,
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
+    // Button "primary": filled with the primary color.
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        textStyle: textTheme.bodyLarge,
         elevation: 0,
         shape: shape,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        padding: _buttonPadding,
+      ),
+    ),
+    // Button "default": the surface color with the theme's border.
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        textStyle: textTheme.bodyLarge,
+        shape: shape,
+        side: side,
+        padding: _buttonPadding,
       ),
     ),
     chipTheme: _chipTheme(scheme, textTheme, side),
@@ -261,6 +283,12 @@ ThemeData surfaceThemeData(ThemeData base, JsonMap json) {
   );
 }
 
+/// The space inside a filled or outlined Button, around its child.
+const EdgeInsets _buttonPadding = EdgeInsets.symmetric(
+  horizontal: 20,
+  vertical: 18,
+);
+
 /// Chips (ChoicePicker with `"displayStyle": "chips"`): pills with a border,
 /// filled with the primary color when selected.
 ChipThemeData _chipTheme(
@@ -320,7 +348,8 @@ TextTheme _applyVariants(TextTheme theme, JsonMap variants) {
     );
   }
 
-  // Same mapping as the Text component (lib/catalog/basic/text.dart).
+  // Same mapping as surfaceMarkdown (surface_markdown.dart): a Markdown
+  // heading of level 1–5 is h1–h5.
   return theme.copyWith(
     headlineLarge: style('h1', theme.headlineLarge),
     headlineMedium: style('h2', theme.headlineMedium),

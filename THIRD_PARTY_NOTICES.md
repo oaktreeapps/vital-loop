@@ -13,19 +13,12 @@ files keeps its Apache 2.0 header, followed by a note that Oaktreeapps changed
 it. You may obtain a copy of the license at
 https://www.apache.org/licenses/LICENSE-2.0.
 
-## genui (BSD 3-Clause)
+## genui examples (BSD 3-Clause)
 
 The app's structure (a `Transport` feeding a surface controller, an ADK agent
 served over A2A) is adapted from the
 [genui examples](https://github.com/flutter/genui/tree/main/examples), mainly
 Verdure and simple_chat.
-
-The basic components and functions in `client/lib/catalog/basic/` (Text, Row,
-Column, Card, Button, TextField, ChoicePicker, Slider, DateTimeInput and the
-others, and `formatString`) are adapted from the basic catalog of the
-[genui package](https://github.com/flutter/genui/tree/main/packages/genui),
-version 0.10.4, to run on A2UI v1.0 with `a2ui_core` and `a2ui_flutter`. Each
-of these files says so in its header.
 
 ```
 Copyright 2025 The Flutter Authors. All rights reserved.

@@ -14,7 +14,7 @@
 
 import 'package:a2ui_core/a2ui_core.dart';
 import 'package:a2ui_flutter/a2ui_flutter.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../services/transport.dart' show JsonMap;
@@ -78,7 +78,6 @@ class CatalogItem {
     required this.widgetBuilder,
     this.description,
     this.exampleData = const [],
-    this.isImplicitlyFlexible = false,
     this.schemaIsComplete = false,
   });
 
@@ -98,10 +97,6 @@ class CatalogItem {
   /// Example screens (A2UI component lists as JSON text) that show the
   /// component, for the catalog screen and the tests.
   final List<String Function()> exampleData;
-
-  /// Whether a Row or Column gives the component a share of the free space
-  /// even without a `weight` (inputs that want all the width they can get).
-  final bool isImplicitlyFlexible;
 
   /// Whether [dataSchema] is already a full component schema.
   final bool schemaIsComplete;
@@ -149,14 +144,27 @@ class CatalogItem {
   ComponentImplementation _implement(Schema schema) => ComponentImplementation(
     name: name,
     schema: schema,
-    builder: (context, node, props, buildChild) => widgetBuilder(
-      CatalogItemContext(
-        buildContext: context,
-        node: node,
-        props: props,
-        buildChild: buildChild,
-      ),
-    ),
+    builder: (context, node, props, buildChild) {
+      Widget build(BuildContext context) => widgetBuilder(
+        CatalogItemContext(
+          buildContext: context,
+          node: node,
+          props: props,
+          buildChild: buildChild,
+        ),
+      );
+      // A basic component is styled by the surface's theme. One of the
+      // app's own draws itself, so its buttons keep Flutter's defaults
+      // instead of taking the look the theme gives the A2UI Button.
+      if (schemaIsComplete) return build(context);
+      return Theme(
+        data: Theme.of(context).copyWith(
+          filledButtonTheme: const FilledButtonThemeData(),
+          outlinedButtonTheme: const OutlinedButtonThemeData(),
+        ),
+        child: Builder(builder: build),
+      );
+    },
   );
 }
 

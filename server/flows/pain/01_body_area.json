@@ -70,8 +70,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Where does it hurt?"
+          "text": "## Where does it hurt?"
         },
         {
           "id": "subtitle",
@@ -136,7 +135,7 @@
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "Continue · ${length(value:${/bodyAreas})} ${pluralize(value:${length(value:${/bodyAreas})}, one:'area', other:'areas')}"
+              "value": "Continue · ${count(value:${/bodyAreas})} ${pluralize(value:${count(value:${/bodyAreas})}, one:'area', other:'areas')}"
             }
           }
         },

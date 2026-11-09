@@ -82,8 +82,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "What did you have for {{mealType|lower}}?"
+          "text": "## What did you have for {{mealType|lower}}?"
         },
         {
           "id": "subtitle",
@@ -104,8 +103,7 @@
         {
           "id": "suggestions_label",
           "component": "Text",
-          "variant": "h4",
-          "text": "SUGGESTIONS"
+          "text": "#### SUGGESTIONS"
         },
         {
           "id": "selected_count",
@@ -114,7 +112,7 @@
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${length(value:${/foodItems})} selected"
+              "value": "${count(value:${/foodItems})} selected"
             }
           }
         },
@@ -174,8 +172,7 @@
         {
           "id": "other_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Something else?"
+          "text": "##### Something else?"
         },
         {
           "id": "other",
@@ -217,7 +214,7 @@
                   "value": {
                     "@call": "formatString",
                     "args": {
-                      "value": "${length(value:${/foodItems})}${/otherFood}"
+                      "value": "${count(value:${/foodItems})}${/otherFood}"
                     }
                   },
                   "pattern": "^(?!0\\s*$)."
@@ -243,7 +240,7 @@
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "Continue · ${length(value:${/foodItems})} ${pluralize(value:${length(value:${/foodItems})}, one:'item', other:'items')}"
+              "value": "Continue · ${count(value:${/foodItems})} ${pluralize(value:${count(value:${/foodItems})}, one:'item', other:'items')}"
             }
           }
         },

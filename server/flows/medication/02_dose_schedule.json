@@ -89,8 +89,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "How much, and when?"
+          "text": "## How much, and when?"
         },
         {
           "id": "about_card",
@@ -127,18 +126,28 @@
         {
           "id": "about_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "About {{medicineName}}"
+          "text": "##### About {{medicineName}}"
         },
         {
           "id": "about_text",
           "component": "Text",
           "variant": "body",
           "text": {
-            "@call": "formatString",
+            "@call": "pluralize",
             "args": {
-              "value": "${pluralize(value:${length(value:${/descriptions/{{medicineName}}})}, zero:'No description for this medicine yet. Check the leaflet in the pack.', other:'${/descriptions/{{medicineName}}}')}"
+              "value": {
+                "@call": "count",
+                "args": {
+                  "value": {
+                    "@path": "/descriptions/{{medicineName}}"
+                  }
+                }
+              },
+              "zero": "No description for this medicine yet. Check the leaflet in the pack.",
+              "other": {
+                "@path": "/descriptions/{{medicineName}}"
+              }
             }
           }
         },
@@ -175,17 +184,15 @@
         {
           "id": "dose_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Dosage"
+          "text": "##### Dosage"
         },
         {
           "id": "dose_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${formatNumber(value:${/dosage}, decimalPlaces:0)} ${pluralize(value:${/dosage}, one:'tablet', other:'tablets')}"
+              "value": "##### ${formatNumber(value:${/dosage}, decimals:0)} ${pluralize(value:${/dosage}, one:'tablet', other:'tablets')}"
             }
           }
         },
@@ -216,13 +223,13 @@
         {
           "id": "schedule_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Scheduled time"
+          "text": "##### Scheduled time"
         },
         {
           "id": "schedule",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
             "@path": "/scheduledAt"

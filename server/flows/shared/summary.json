@@ -59,8 +59,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Entry saved"
+          "text": "## Entry saved"
         },
         {
           "id": "subtitle",
@@ -113,6 +112,7 @@
         {
           "id": "row_1_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_1_label",
@@ -128,7 +128,6 @@
         {
           "id": "row_1_value",
           "component": "Text",
-          "variant": "h5",
           "text": "{{row1Value}}"
         },
         {
@@ -151,6 +150,7 @@
         {
           "id": "row_2_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_2_label",
@@ -166,7 +166,6 @@
         {
           "id": "row_2_value",
           "component": "Text",
-          "variant": "h5",
           "text": "{{row2Value}}"
         },
         {
@@ -189,6 +188,7 @@
         {
           "id": "notes_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "notes_label",
@@ -204,11 +204,10 @@
         {
           "id": "notes_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${pluralize(value:${length(value:${/notes})}, zero:'No notes added', one:'${/notes}', other:'${/notes}')}"
+              "value": "##### ${pluralize(value:${count(value:${/notes})}, zero:'No notes added', one:${/notes}, other:${/notes})}"
             }
           }
         },

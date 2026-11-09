@@ -16,6 +16,7 @@ import 'package:a2ui_core/a2ui_core.dart';
 import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/theme/surface_markdown.dart';
 import '../../core/theme/surface_theme.dart';
 import '../../services/backend_transport.dart';
 import '../../services/genui_session.dart';
@@ -81,7 +82,7 @@ class FlowBody extends StatelessWidget {
                 child: SizedBox.expand(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
-                    child: A2uiSurface(surface: surface),
+                    child: SurfaceView(surface: surface),
                   ),
                 ),
               ),

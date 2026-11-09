@@ -49,8 +49,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Your report is ready"
+          "text": "## Your report is ready"
         },
         {
           "id": "subtitle",

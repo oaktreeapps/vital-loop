@@ -59,8 +59,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Symptoms saved"
+          "text": "## Symptoms saved"
         },
         {
           "id": "subtitle",
@@ -119,6 +118,7 @@
         {
           "id": "row_1_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_1_label",
@@ -134,8 +134,7 @@
         {
           "id": "row_1_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{symptoms|text}}"
+          "text": "##### {{symptoms|text}}"
         },
         {
           "id": "row_2_row",
@@ -157,6 +156,7 @@
         {
           "id": "row_2_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_2_label",
@@ -172,8 +172,7 @@
         {
           "id": "row_2_value",
           "component": "Text",
-          "variant": "h5",
-          "text": "{{severity}} / 10"
+          "text": "##### {{severity}} / 10"
         },
         {
           "id": "row_3_row",
@@ -195,6 +194,7 @@
         {
           "id": "row_3_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_3_label",
@@ -210,11 +210,10 @@
         {
           "id": "row_3_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
+              "value": "##### ${formatDate(value:'{{startedAt}}', format:'d MMM, h:mm a')}"
             }
           }
         },
@@ -238,6 +237,7 @@
         {
           "id": "row_4_text",
           "component": "Column",
+          "align": "start",
           "weight": 1,
           "children": [
             "row_4_label",
@@ -253,11 +253,10 @@
         {
           "id": "row_4_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${pluralize(value:${length(value:${/description})}, zero:'No description added', one:'${/description}', other:'${/description}')}"
+              "value": "##### ${pluralize(value:${count(value:${/description})}, zero:'No description added', one:${/description}, other:${/description})}"
             }
           }
         },

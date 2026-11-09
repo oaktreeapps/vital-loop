@@ -17,7 +17,7 @@
       "tag2Label": {
         "@call": "formatString",
         "args": {
-          "value": "{{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', pattern:'h:mm a')}"
+          "value": "{{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', format:'h:mm a')}"
         }
       },
       "tag2Color": "#1F2A24",
@@ -37,14 +37,14 @@
       "row1Value": {
         "@call": "formatString",
         "args": {
-          "value": "{{mealType}} · {{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', pattern:'h:mm a')}"
+          "value": "##### {{mealType}} · {{mealDay}}, ${formatDate(value:'2000-01-01T{{mealTime}}', format:'h:mm a')}"
         }
       },
       "row2Icon": "dinner",
       "row2Color": "#8A5A2B",
       "row2Background": "#F1EBE0",
       "row2Label": "Food",
-      "row2Value": "{{quantities|text}}"
+      "row2Value": "##### {{quantities|text}}"
     }
   }
 }

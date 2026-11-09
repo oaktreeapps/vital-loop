@@ -34,7 +34,15 @@
       "surfaceId": "daily_summary",
       "path": "/",
       "value": {
-        "entries": "{{entries}}"
+        "entries": "{{entries}}",
+        "title": {
+          "$ai": "A short title for today's entries (2–5 words), e.g. naming the main thing logged. No diagnosis.",
+          "example": "Your day at a glance"
+        },
+        "overview_lead": {
+          "$ai": "The opening paragraph of an overview of today's entries written for the user's doctor: one or two plain sentences on what was logged and over what time (e.g. from the first to the last entry). Plain text, no markdown.",
+          "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry."
+        }
       }
     }
   },
@@ -62,25 +70,26 @@
         {
           "id": "eyebrow",
           "component": "Text",
-          "variant": "h4",
-          "text": "{{date|upper}} · {{entryCountLabel|upper}}"
+          "text": "#### {{date|upper}} · {{entryCountLabel|upper}}"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h1",
           "text": {
-            "$ai": "A short title for today's entries (2–5 words), e.g. naming the main thing logged. No diagnosis.",
-            "example": "Your day at a glance"
+            "@call": "formatString",
+            "args": {
+              "value": "# ${/title}"
+            }
           }
         },
         {
           "id": "overview_lead",
           "component": "Text",
-          "variant": "h3",
           "text": {
-            "$ai": "The opening paragraph of an overview of today's entries written for the user's doctor: one or two plain sentences on what was logged and over what time (e.g. from the first to the last entry). Plain text, no markdown.",
-            "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry."
+            "@call": "formatString",
+            "args": {
+              "value": "### ${/overview_lead}"
+            }
           }
         },
         {
@@ -99,8 +108,7 @@
         {
           "id": "entries_title",
           "component": "Text",
-          "variant": "h4",
-          "text": "TODAY'S ENTRIES"
+          "text": "#### TODAY'S ENTRIES"
         },
         {
           "id": "entries",
@@ -157,9 +165,11 @@
         {
           "id": "entry_category",
           "component": "Text",
-          "variant": "h5",
           "text": {
-            "@path": "category"
+            "@call": "formatString",
+            "args": {
+              "value": "##### ${category}"
+            }
           }
         },
         {

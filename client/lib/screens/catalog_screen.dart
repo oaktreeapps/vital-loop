@@ -21,6 +21,7 @@ import 'package:logging/logging.dart';
 
 import '../catalog/shared/catalog_item.dart';
 import '../catalog/vitalloop_catalog.dart';
+import '../core/theme/surface_markdown.dart';
 import '../flows/daily_summary_flow.dart';
 import '../models/health_option.dart';
 import '../models/tracking_flow.dart';
@@ -214,7 +215,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
               ComponentCard(
                 item: item,
                 example: example,
-                preview: A2uiSurface(surface: surface),
+                preview: SurfaceView(surface: surface),
               ),
       ],
     );

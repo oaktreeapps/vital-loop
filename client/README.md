@@ -69,7 +69,8 @@ lib/
   core/                      App-wide setup
     app_logging.dart         Colored logs for every class (package:logging → logger)
     router/                  The screens' paths (app_routes) and the go_router setup
-    theme/                   The app's colors, and a screen's JSON theme → Flutter theme
+    theme/                   The app's colors, a screen's JSON theme → Flutter theme,
+                             and the Text component's Markdown (headings)
     utils/                   Readable dates, times and answers
   models/                    Plain data and rules, no widgets
     tracking_flow.dart       A flow: name, start message, catalog, what it saves
@@ -89,11 +90,11 @@ lib/
     pdf_report_builder.dart  Builds the daily report PDF
   flows/                     One file per flow: its TrackingFlow and catalog
   catalog/                   VitalLoop's A2UI v1.0 catalog
-    vitalloop_catalog.dart   The catalog: its id, components and functions
-    basic/                   The 18 basic components (Text, Row, Button, …) and
-                             the functions screens call (formatString, …)
+    vitalloop_catalog.dart   The catalog: a2ui_flutter's basic components and
+                             functions, plus the app's own
     shared/                  Used by several components: catalog_item.dart
-                             (what a component is), data_binding.dart
+                             (what a component is), count_function.dart
+                             (the app's one extra function), data_binding.dart
                              (reading JSON props, binding a value),
                              care_place_schema.dart, open_link.dart and
                              widgets/ (status chip, unit switch, round button)
@@ -164,8 +165,8 @@ JSON schema, widget builder, example data) and a `widgets/` folder with its
 widgets; put any rules in `lib/models/`. Add it to the flow's catalog (`lib/flows/`), and use it from the flow's JSON
 in `../server/flows/`. The in-app catalog (`CatalogScreen`) shows it in its
 Custom tab on its own, from the flows' custom items; give it example data so
-it has a preview. The Default tab shows the basic components
-(`lib/catalog/basic/`).
+it has a preview. The Default tab shows the A2UI basic components, which
+come from `a2ui_flutter`.
 
 ### Add a flow
 
@@ -238,9 +239,10 @@ received, surfaces built and actions tapped.
   package, whose `TextTheme` isn't Flutter's own, so this app doesn't
   compile with it.
 - `a2ui_core` (0.5) and `a2ui_flutter` (0.1) process and render A2UI v1.0.
-  They replace `genui`, which only speaks A2UI v0.9. The basic components in
-  `lib/catalog/basic/` are adapted from genui's, so the screens look the same
-  as before; `flutter_markdown_plus`, `intl`, `audioplayers` and
-  `video_player` are what those components use.
+  They replace `genui`, which only speaks A2UI v0.9. The basic components
+  (Text, Row, Button, …) and functions are theirs; the app styles them
+  through the Flutter theme (`lib/core/theme/surface_theme.dart`).
+- `flutter_markdown_plus` renders the Text component's Markdown, which is
+  how a screen writes a heading (`## Title`).
 - The app talks A2A to the server with its own small client
   (`lib/services/a2a_client.dart`) over `http`.

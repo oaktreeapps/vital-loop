@@ -96,8 +96,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Anything else to note?"
+          "text": "## Anything else to note?"
         },
         {
           "id": "subtitle",
@@ -132,8 +131,7 @@
         {
           "id": "notes_label",
           "component": "Text",
-          "variant": "h5",
-          "text": "Notes"
+          "text": "##### Notes"
         },
         {
           "id": "notes_count",
@@ -142,7 +140,7 @@
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${length(value:${/notes})} / 280"
+              "value": "${count(value:${/notes})} / 280"
             }
           }
         },
@@ -206,7 +204,7 @@
           "text": {
             "@call": "formatString",
             "args": {
-              "value": "${pluralize(value:${length(value:${/notes})}, zero:'Save without notes', one:'Save entry', other:'Save entry')}"
+              "value": "${pluralize(value:${count(value:${/notes})}, zero:'Save without notes', one:'Save entry', other:'Save entry')}"
             }
           }
         }

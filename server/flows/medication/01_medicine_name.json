@@ -99,14 +99,12 @@
         {
           "id": "eyebrow",
           "component": "Text",
-          "variant": "h4",
-          "text": "LOG A MEDICATION"
+          "text": "#### LOG A MEDICATION"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Which medication are you logging?"
+          "text": "## Which medication are you logging?"
         },
         {
           "id": "subtitle",
@@ -117,8 +115,7 @@
         {
           "id": "suggestions_label",
           "component": "Text",
-          "variant": "h4",
-          "text": "COMMON MEDICINES"
+          "text": "#### COMMON MEDICINES"
         },
         {
           "id": "picked",
@@ -175,8 +172,7 @@
         {
           "id": "other_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Something else?"
+          "text": "##### Something else?"
         },
         {
           "id": "other",
@@ -227,7 +223,7 @@
                 "medicineName": {
                   "@call": "formatString",
                   "args": {
-                    "value": "${pluralize(value:${length(value:${/medicineOther})}, zero:'${/medicineChoice/0}', other:'${/medicineOther}')}"
+                    "value": "${pluralize(value:${count(value:${/medicineOther})}, zero:${/medicineChoice/0}, other:${/medicineOther})}"
                   }
                 }
               }
@@ -241,7 +237,7 @@
                   "value": {
                     "@call": "formatString",
                     "args": {
-                      "value": "${length(value:${/medicineChoice})}${/medicineOther}"
+                      "value": "${count(value:${/medicineChoice})}${/medicineOther}"
                     }
                   },
                   "pattern": "^(?!0\\s*$)."
