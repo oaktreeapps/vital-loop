@@ -258,13 +258,17 @@ void main() {
   );
 
   test('actionMessage is a v1.0 action the backend reads as a tap', () {
-    expect(jsonDecode(actionMessage('findNearbyCare', {'city': 'Austin'})), {
-      'version': '1.0',
-      'action': {
-        'name': 'findNearbyCare',
-        'context': {'city': 'Austin'},
-      },
-    });
+    final message =
+        jsonDecode(actionMessage('findNearbyCare', {'city': 'Austin'}))
+            as Map<String, Object?>;
+    final action = message['action']! as Map<String, Object?>;
+    expect(message['version'], '1.0');
+    expect(action['name'], 'findNearbyCare');
+    expect(action['context'], {'city': 'Austin'});
+    // The fields every v1.0 action has, for an action no surface raised.
+    expect(action['surfaceId'], appActionSource);
+    expect(action['sourceComponentId'], appActionSource);
+    expect(DateTime.tryParse(action['timestamp']! as String), isNotNull);
   });
 
   group('GenUiSession', () {

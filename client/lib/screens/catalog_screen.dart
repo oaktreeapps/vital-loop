@@ -17,10 +17,12 @@ import 'dart:convert';
 import 'package:a2ui_core/a2ui_core.dart';
 import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
 
 import '../catalog/shared/catalog_item.dart';
 import '../catalog/vitalloop_catalog.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/surface_markdown.dart';
 import '../flows/daily_summary_flow.dart';
 import '../models/health_option.dart';
@@ -165,9 +167,33 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: const Text('Component Catalog'),
+          backgroundColor: AppColors.background,
+          surfaceTintColor: Colors.transparent,
+          foregroundColor: AppColors.text,
+          title: Text(
+            'Component Catalog',
+            style: GoogleFonts.fraunces(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.3,
+              color: AppColors.text,
+            ),
+          ),
           bottom: TabBar(
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textMuted,
+            indicatorColor: AppColors.primary,
+            dividerColor: AppColors.border,
+            labelStyle: GoogleFonts.dmSans(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+            unselectedLabelStyle: GoogleFonts.dmSans(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
             tabs: [
               Tab(text: 'Default (${defaultCatalogItems.length})'),
               Tab(text: 'Custom (${customCatalogItems.length})'),
@@ -198,7 +224,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
-  /// A tab's short [intro] text and one [ComponentCard] per item in [items].
+  /// A tab's short [intro] text and one [ComponentCard] per item in [items],
+  /// numbered from 1 in the tab's order.
   Widget _componentList({
     required String intro,
     required List<CatalogItem> items,
@@ -206,13 +233,21 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(intro, style: Theme.of(context).textTheme.bodyMedium),
+        Text(
+          intro,
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            height: 1.45,
+            color: AppColors.textMuted,
+          ),
+        ),
         const SizedBox(height: 16),
-        for (final CatalogItem item in items)
+        for (final (int i, CatalogItem item) in items.indexed)
           if (_examples[item.name] case final List<JsonMap> example)
             if (_processor.model.getSurface(_surfaceId(item))
                 case final SurfaceModel<ComponentImplementation> surface)
               ComponentCard(
+                index: i + 1,
                 item: item,
                 example: example,
                 preview: SurfaceView(surface: surface),

@@ -361,12 +361,26 @@ const String chooseCareCityAction = 'chooseCareCity';
 /// after [chooseCareCityAction] with `{"city": <the city typed>}`.
 const String findNearbyCareAction = 'findNearbyCare';
 
+/// The surface and component an action the app makes itself names, since
+/// no surface's button raised it.
+const String appActionSource = 'app';
+
 /// The text of an A2UI renderer message holding the UI action [name] with
 /// [context], as a button tap sends it. The backend treats it as a tap, not
 /// as text typed by the user.
+///
+/// A complete v1.0 `action`: an action the app raises itself (e.g. from a
+/// dialog or the dashboard) names [appActionSource] as its surface and
+/// component.
 String actionMessage(String name, Map<String, Object?> context) => jsonEncode({
   'version': a2uiVersion,
-  'action': {'name': name, 'context': context},
+  'action': {
+    'name': name,
+    'surfaceId': appActionSource,
+    'sourceComponentId': appActionSource,
+    'timestamp': DateTime.now().toUtc().toIso8601String(),
+    'context': context,
+  },
 });
 
 /// A UI action from a surface: its name and the values in its context.
