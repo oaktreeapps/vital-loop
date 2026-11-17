@@ -1,41 +1,53 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "daily_summary",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json",
-        "text": {
-          "h3": {
-            "size": 15,
-            "weight": 400,
-            "color": "#1F2A24",
-            "height": 1.65
-          },
-          "body": {
-            "size": 15,
-            "height": 1.65
-          },
-          "h5": {
-            "size": 15
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json",
+            "text": {
+              "h3": {
+                "size": 15,
+                "weight": 400,
+                "color": "#1F2A24",
+                "height": 1.65
+              },
+              "body": {
+                "size": 15,
+                "height": 1.65
+              },
+              "h5": {
+                "size": 15
+              }
+            }
           }
         }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "daily_summary",
       "path": "/",
       "value": {
-        "entries": "{{entries}}"
+        "entries": "{{entries}}",
+        "title": {
+          "$ai": "A short title for today's entries (2–5 words), e.g. naming the main thing logged. No diagnosis.",
+          "example": "Your day at a glance"
+        },
+        "overview_lead": {
+          "$ai": "The opening paragraph of an overview of today's entries written for the user's doctor: one or two plain sentences on what was logged and over what time (e.g. from the first to the last entry). Plain text, no markdown.",
+          "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry."
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "daily_summary",
       "components": [
@@ -58,25 +70,26 @@
         {
           "id": "eyebrow",
           "component": "Text",
-          "variant": "h4",
-          "text": "{{date|upper}} · {{entryCountLabel|upper}}"
+          "text": "#### {{date|upper}} · {{entryCountLabel|upper}}"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h1",
           "text": {
-            "$ai": "A short title for today's entries (2–5 words), e.g. naming the main thing logged. No diagnosis.",
-            "example": "Your day at a glance"
+            "@call": "formatString",
+            "args": {
+              "value": "# ${/title}"
+            }
           }
         },
         {
           "id": "overview_lead",
           "component": "Text",
-          "variant": "h3",
           "text": {
-            "$ai": "The opening paragraph of an overview of today's entries written for the user's doctor: one or two plain sentences on what was logged and over what time (e.g. from the first to the last entry). Plain text, no markdown.",
-            "example": "Here is everything you logged today, listed below as you saved it, with the time of each entry."
+            "@call": "formatString",
+            "args": {
+              "value": "### ${/overview_lead}"
+            }
           }
         },
         {
@@ -95,8 +108,7 @@
         {
           "id": "entries_title",
           "component": "Text",
-          "variant": "h4",
-          "text": "TODAY'S ENTRIES"
+          "text": "#### TODAY'S ENTRIES"
         },
         {
           "id": "entries",
@@ -120,10 +132,10 @@
           "id": "entry_icon",
           "component": "IconBadge",
           "name": {
-            "path": "icon"
+            "@path": "icon"
           },
           "color": {
-            "path": "color"
+            "@path": "color"
           },
           "background": "#FFFFFF",
           "border": "#E8E1D6",
@@ -153,9 +165,11 @@
         {
           "id": "entry_category",
           "component": "Text",
-          "variant": "h5",
           "text": {
-            "path": "category"
+            "@call": "formatString",
+            "args": {
+              "value": "##### ${category}"
+            }
           }
         },
         {
@@ -163,7 +177,7 @@
           "component": "Text",
           "variant": "caption",
           "text": {
-            "path": "time"
+            "@path": "time"
           }
         },
         {
@@ -171,7 +185,7 @@
           "component": "Text",
           "variant": "body",
           "text": {
-            "path": "line"
+            "@path": "line"
           }
         },
         {

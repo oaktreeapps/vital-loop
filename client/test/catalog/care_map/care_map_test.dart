@@ -142,11 +142,14 @@ void main() {
     }
 
     test("the template's bound center passes CareMap's schema", () async {
-      // The template binds the center: {"path": "/center"}. genui's
-      // propertyReference rejected that ("matched 2" of its one-of).
+      // The template binds the center: {"@path": "/center"}. It must match
+      // exactly one branch of the schema's one-of: the binding.
       final Object? center = templateMap()['center'];
-      expect(center, {'path': '/center'});
-      final Schema schema = careMap.dataSchema.properties!['center']!;
+      expect(center, {'@path': '/center'});
+      final properties = careMap.dataSchema.value['properties']! as Map;
+      final schema = Schema.fromMap(
+        (properties['center']! as Map).cast<String, Object?>(),
+      );
       expect(await schema.validate(center), isEmpty);
     });
 
@@ -154,7 +157,9 @@ void main() {
       Future<bool> valid(Object? center) async =>
           (await centerSchema.validate(center)).isEmpty;
       expect(await valid({'lat': 40.7, 'lng': -74.0}), isTrue);
-      expect(await valid({'path': '/center'}), isTrue);
+      expect(await valid({'@path': '/center'}), isTrue);
+      // The v0.9 spelling of a binding is not one any more.
+      expect(await valid({'path': '/center'}), isFalse);
       expect(await valid({'lat': 40.7}), isFalse);
       expect(await valid('New York'), isFalse);
     });

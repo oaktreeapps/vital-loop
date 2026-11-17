@@ -58,11 +58,11 @@ class DailySummaryTest(unittest.TestCase):
         self.assertEqual(components["list"]["component"], "CareList")
         for component_id in ("map", "list"):
             self.assertEqual(
-                components[component_id]["places"], {"path": "/places"}
+                components[component_id]["places"], {"@path": "/places"}
             )
             self.assertEqual(
                 components[component_id]["selected"],
-                {"path": "/selectedPlaceId"},
+                {"@path": "/selectedPlaceId"},
             )
         # Generate PDF is the last thing on the screen, and leads on to the
         # report as before.

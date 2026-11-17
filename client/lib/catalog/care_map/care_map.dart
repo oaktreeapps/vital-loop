@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/care_place.dart';
 import '../shared/care_place_schema.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/care_map_view.dart';
 
 /// The `center` property: `{"lat", "lng"}`, or a binding to it.
 ///
-/// Not genui's `A2uiSchemas.propertyReference`: it allows "any value" or a
-/// binding as one-of, and a binding is also "any value", so a bound center
-/// matched both and never passed validation.
+/// Not "any value" or a binding as one-of: a binding is also "any value",
+/// so a bound center would match both and never pass validation.
 final Schema centerSchema = S.combined(
   description:
       'The city center as {"lat", "lng"}, or a binding to it; shown when '
@@ -41,7 +40,7 @@ final Schema centerSchema = S.combined(
 /// An OpenStreetMap map with a pin for each place to get care nearby.
 ///
 /// See [CareMapView]. Properties: `places` (required; usually a binding like
-/// `{"path": "/places"}`, a list of places as the server's nearby search
+/// `{"@path": "/places"}`, a list of places as the server's nearby search
 /// returns them), `selected` (the picked place's id, usually bound to the
 /// same path as a CareList's `selected`, so tapping a pin picks the place in
 /// the list too), `center` (`{"lat", "lng"}`, shown when there are no
@@ -80,8 +79,7 @@ final CatalogItem careMap = CatalogItem(
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final Map<String, Object?> data = (itemContext.data as Map)
-        .cast<String, Object?>();
+    final JsonMap data = itemContext.data;
     final String selectedPath = bindingPath(
       itemContext,
       data['selected'],
@@ -95,14 +93,13 @@ final CatalogItem careMap = CatalogItem(
         value: data['center'],
         builder: (context, center) => BoundString(
           dataContext: itemContext.dataContext,
-          value: {'path': selectedPath},
+          value: {'@path': selectedPath},
           builder: (context, selected) => CareMapView(
             places: carePlacesFrom(places),
             center: geoPointFrom(center),
             city: stringOrNull(data['city']),
             selectedId: selected,
-            onSelect: (id) =>
-                itemContext.dataContext.update(DataPath(selectedPath), id),
+            onSelect: (id) => itemContext.dataContext.set(selectedPath, id),
           ),
         ),
       ),

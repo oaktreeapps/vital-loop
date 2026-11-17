@@ -13,11 +13,10 @@
       "tag1Background": "#F4E3DD",
       "tag2Icon": "schedule",
       "tag2Label": {
-        "call": "formatString",
+        "@call": "formatString",
         "args": {
-          "value": "${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
-        },
-        "returnType": "string"
+          "value": "${formatDate(value:'{{startedAt}}', format:'d MMM, h:mm a')}"
+        }
       },
       "tag2Color": "#1F2A24",
       "tag2Background": "#FFFFFF",
@@ -33,17 +32,16 @@
       "row1Color": "#A14B3F",
       "row1Background": "#F4E3DD",
       "row1Label": "Where",
-      "row1Value": "{{bodyAreas|text}}",
+      "row1Value": "##### {{bodyAreas|text}}",
       "row2Icon": "gauge",
       "row2Color": "#8A5A2B",
       "row2Background": "#F1EBE0",
       "row2Label": "Pain level & start",
       "row2Value": {
-        "call": "formatString",
+        "@call": "formatString",
         "args": {
-          "value": "{{painLevel}}/10 \u00b7 ${formatDate(value:'{{startedAt}}', pattern:'d MMM, h:mm a')}"
-        },
-        "returnType": "string"
+          "value": "##### {{painLevel}}/10 \u00b7 ${formatDate(value:'{{startedAt}}', format:'d MMM, h:mm a')}"
+        }
       }
     }
   }

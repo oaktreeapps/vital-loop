@@ -13,15 +13,14 @@
 // limitations under the License.
 
 // Checks every custom component's example A2UI JSON: it passes the
-// component's own schema, so the catalog previews and the instructions
-// Gemini gets show valid JSON.
+// component's own schema, so the catalog previews show valid JSON.
 
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:genui/genui.dart' show CatalogItem;
 import 'package:json_schema_builder/json_schema_builder.dart';
 import 'package:vitalloop/catalog/care_map/care_map.dart';
+import 'package:vitalloop/catalog/shared/catalog_item.dart';
 import 'package:vitalloop/screens/catalog_screen.dart';
 
 void main() {

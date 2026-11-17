@@ -42,8 +42,8 @@ final pretty.Logger _console = pretty.Logger(
 /// cancels the old listener and lines are not printed twice.
 StreamSubscription<LogRecord>? _subscription;
 
-/// Routes every [Logger] in the app (and in packages such as genui that also
-/// use `package:logging`) to a colored console printer from `package:logger`:
+/// Routes every [Logger] in the app (and in packages that also use
+/// `package:logging`) to a colored console printer from `package:logger`:
 ///
 /// ```text
 /// 💡 12:34:56.789 [GenUiSession] GenUiSession → Transport.sendRequest
@@ -59,13 +59,6 @@ void setupLogging() {
   _subscription?.cancel();
   _subscription = Logger.root.onRecord.listen((record) {
     final String time = record.time.toIso8601String().substring(11, 23);
-    if (_isStaleValidation(record)) {
-      _console.t(
-        '$time [${record.loggerName}] Skipped checking an older version of '
-        'the screen: a newer streamed version replaced it',
-      );
-      return;
-    }
     _console.log(
       _levelFor(record.level),
       '$time [${record.loggerName}] ${record.message}',
@@ -74,15 +67,6 @@ void setupLogging() {
     );
   });
 }
-
-/// genui checks each updateComponents against the catalog in the background,
-/// reading the surface's live component map. When a screen is streamed, the
-/// next update changes that map before the check ends and the check fails with
-/// a ConcurrentModificationError (a genui bug, still in 0.10.4). Nothing is
-/// wrong with the screen, and the last update is checked once streaming ends.
-bool _isStaleValidation(LogRecord record) =>
-    record.error is ConcurrentModificationError &&
-    record.message == 'Unexpected error during surface validation';
 
 /// Maps a `package:logging` [level] to the matching `package:logger` level,
 /// which picks the color and the emoji of the printed line.

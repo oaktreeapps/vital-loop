@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "{{surfaceId}}",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "{{surfaceId}}",
       "path": "/",
@@ -20,7 +24,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "{{surfaceId}}",
       "components": [
@@ -92,8 +96,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Anything else to note?"
+          "text": "## Anything else to note?"
         },
         {
           "id": "subtitle",
@@ -128,19 +131,17 @@
         {
           "id": "notes_label",
           "component": "Text",
-          "variant": "h5",
-          "text": "Notes"
+          "text": "##### Notes"
         },
         {
           "id": "notes_count",
           "component": "Text",
           "variant": "caption",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
-              "value": "${length(value:${/notes})} / 280"
-            },
-            "returnType": "string"
+              "value": "${count(value:${/notes})} / 280"
+            }
           }
         },
         {
@@ -149,7 +150,7 @@
           "variant": "longText",
           "label": "{{notesHint}}",
           "value": {
-            "path": "/notes"
+            "@path": "/notes"
           }
         },
         {
@@ -162,7 +163,7 @@
               "name": "{{saveAction}}",
               "context": {
                 "notes": {
-                  "path": "/notes"
+                  "@path": "/notes"
                 }
               }
             }
@@ -170,14 +171,13 @@
           "checks": [
             {
               "condition": {
-                "call": "regex",
+                "@call": "regex",
                 "args": {
                   "value": {
-                    "path": "/notes"
+                    "@path": "/notes"
                   },
                   "pattern": "^[\\s\\S]{0,280}$"
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Keep notes under 280 characters"
             }
@@ -202,11 +202,10 @@
           "id": "save_label",
           "component": "Text",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
-              "value": "${pluralize(value:${length(value:${/notes})}, zero:'Save without notes', one:'Save entry', other:'Save entry')}"
-            },
-            "returnType": "string"
+              "value": "${pluralize(value:${count(value:${/notes})}, zero:'Save without notes', one:'Save entry', other:'Save entry')}"
+            }
           }
         }
       ]

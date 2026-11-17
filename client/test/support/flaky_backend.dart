@@ -17,9 +17,8 @@
 
 import 'dart:async';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
-import 'package:genui/genui.dart';
 import 'package:vitalloop/services/backend_transport.dart';
+import 'package:vitalloop/services/transport.dart';
 
 /// A backend whose requests fail with [BackendException] until [works] is
 /// set, or stay in flight until [answer] is called.
@@ -34,13 +33,13 @@ class FlakyBackend implements Transport {
   final Completer<void> _answer = Completer<void>();
 
   @override
-  Stream<core.A2uiMessage> get incomingMessages => const Stream.empty();
+  Stream<JsonMap> get incomingMessages => const Stream.empty();
 
   @override
   Stream<String> get incomingText => const Stream.empty();
 
   @override
-  Future<void> sendRequest(ChatMessage message) {
+  Future<void> sendRequest(TransportRequest message) {
     requests++;
     if (!works) {
       throw const BackendException('The server is down.');

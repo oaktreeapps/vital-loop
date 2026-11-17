@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/severity_level.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/severity_card.dart';
 
@@ -29,7 +29,7 @@ import 'widgets/severity_card.dart';
 ///
 /// ```json
 /// {"id": "severity", "component": "SeverityInput",
-///  "value": {"path": "/severity"}}
+///  "value": {"@path": "/severity"}}
 /// ```
 final CatalogItem severityInput = CatalogItem(
   name: 'SeverityInput',
@@ -48,11 +48,11 @@ final CatalogItem severityInput = CatalogItem(
   ),
   exampleData: [
     () => '''
-      [{"id": "root", "component": "SeverityInput", "value": {"path": "/severity"}}]
+      [{"id": "root", "component": "SeverityInput", "value": {"@path": "/severity"}}]
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     // Listen to the bound number and rebuild the card when it changes. The
     // scale only offers whole numbers from 1 to 10, so the value is rounded
     // and clamped both ways.

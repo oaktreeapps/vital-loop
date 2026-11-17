@@ -1,40 +1,44 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "medication_step_1_name"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "medication_step_2_dose_schedule"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "medication_step_3_notes"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "deleteSurface": {
       "surfaceId": "medication_summary"
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "medication_step_1_name",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "medication_step_1_name",
       "path": "/",
@@ -45,7 +49,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "medication_step_1_name",
       "components": [
@@ -95,14 +99,12 @@
         {
           "id": "eyebrow",
           "component": "Text",
-          "variant": "h4",
-          "text": "LOG A MEDICATION"
+          "text": "#### LOG A MEDICATION"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Which medication are you logging?"
+          "text": "## Which medication are you logging?"
         },
         {
           "id": "subtitle",
@@ -113,8 +115,7 @@
         {
           "id": "suggestions_label",
           "component": "Text",
-          "variant": "h4",
-          "text": "COMMON MEDICINES"
+          "text": "#### COMMON MEDICINES"
         },
         {
           "id": "picked",
@@ -122,7 +123,7 @@
           "variant": "mutuallyExclusive",
           "displayStyle": "chips",
           "value": {
-            "path": "/medicineChoice"
+            "@path": "/medicineChoice"
           },
           "options": {
             "$ai": "6 common medicines people log at home: a mix of everyday ones (pain relief, fever, allergy, vitamins) and common long-term ones. Generic names only, no doses. Pick a different, varied set each time.",
@@ -171,15 +172,14 @@
         {
           "id": "other_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Something else?"
+          "text": "##### Something else?"
         },
         {
           "id": "other",
           "component": "TextField",
           "label": "e.g. Omeprazole",
           "value": {
-            "path": "/medicineOther"
+            "@path": "/medicineOther"
           }
         },
         {
@@ -221,11 +221,10 @@
               "name": "medicineNameEntered",
               "context": {
                 "medicineName": {
-                  "call": "formatString",
+                  "@call": "formatString",
                   "args": {
-                    "value": "${pluralize(value:${length(value:${/medicineOther})}, zero:'${/medicineChoice/0}', other:'${/medicineOther}')}"
-                  },
-                  "returnType": "string"
+                    "value": "${pluralize(value:${count(value:${/medicineOther})}, zero:${/medicineChoice/0}, other:${/medicineOther})}"
+                  }
                 }
               }
             }
@@ -233,18 +232,16 @@
           "checks": [
             {
               "condition": {
-                "call": "regex",
+                "@call": "regex",
                 "args": {
                   "value": {
-                    "call": "formatString",
+                    "@call": "formatString",
                     "args": {
-                      "value": "${length(value:${/medicineChoice})}${/medicineOther}"
-                    },
-                    "returnType": "string"
+                      "value": "${count(value:${/medicineChoice})}${/medicineOther}"
+                    }
                   },
                   "pattern": "^(?!0\\s*$)."
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick or type a medicine"
             }

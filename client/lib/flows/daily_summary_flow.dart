@@ -39,7 +39,7 @@ TrackingFlow dailySummaryFlow(List<HealthLogEntry> entries, {DateTime? day}) {
   final int count = entries.length;
   return TrackingFlow(
     name: 'daily_summary',
-    // An A2UI client message, so the backend treats it as a button press
+    // An A2UI renderer message, so the backend treats it as a button press
     // and not as text typed by the user.
     startMessage: actionMessage('generateSummary', {
       'date': formatDay(day ?? DateTime.now()),

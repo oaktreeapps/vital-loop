@@ -15,6 +15,8 @@
 // Tests for the first-run Gemini API key check: the gate that blocks the app
 // until the server has a working key, and the dialog that asks for one.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vitalloop/screens/gemini_key_gate.dart';
@@ -61,6 +63,18 @@ class _FakeKeySetup implements GeminiKeySetup {
   void close() {}
 }
 
+/// A server that never answers the key check.
+class _SilentKeySetup implements GeminiKeySetup {
+  @override
+  Future<GeminiKeyStatus> status() => Completer<GeminiKeyStatus>().future;
+
+  @override
+  Future<void> submit(String key) async {}
+
+  @override
+  void close() {}
+}
+
 /// A server with no key yet.
 const GeminiKeyStatus _missing = GeminiKeyStatus(state: GeminiKeyState.missing);
 
@@ -94,6 +108,41 @@ Future<int Function()> _pumpGate(
   return () => taps;
 }
 
+/// Shows a [GeminiKeyGate] around the app's navigator, as `main.dart` does:
+/// the dialogs it opens are then inside the part of the app it guards.
+///
+/// Returns a function that tells how often the app's button was tapped.
+Future<int Function()> _pumpGateAroundNavigator(
+  WidgetTester tester,
+  GeminiKeySetup setup,
+) async {
+  var taps = 0;
+  final navigatorKey = GlobalKey<NavigatorState>();
+  await tester.pumpWidget(
+    MaterialApp(
+      navigatorKey: navigatorKey,
+      builder: (context, child) => GeminiKeyGate(
+        setup: setup,
+        navigatorKey: navigatorKey,
+        child: child!,
+      ),
+      home: Scaffold(
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () => taps++,
+            child: const Text('App'),
+          ),
+        ),
+      ),
+    ),
+  );
+  // Not pumpAndSettle: while the key is checked, a progress bar animates.
+  for (var i = 0; i < 10; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  return () => taps;
+}
+
 /// The dialog's Save button.
 Finder get _saveButton =>
     find.widgetWithText(FilledButton, 'Save and continue');
@@ -102,6 +151,8 @@ Finder get _saveButton =>
 /// small test screen, and taps it.
 Future<void> _tapSave(WidgetTester tester) async {
   await tester.ensureVisible(_saveButton);
+  // Let the scroll take effect, so the tap lands where the button is now.
+  await tester.pump();
   await tester.tap(_saveButton);
 }
 
@@ -138,6 +189,55 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
     await tester.tap(find.text('App'));
     expect(taps(), 1);
+  });
+
+  testWidgets('around the navigator, as in the app: the dialog can be used', (
+    tester,
+  ) async {
+    final setup = _FakeKeySetup([_missing]);
+    final int Function() taps = await _pumpGateAroundNavigator(tester, setup);
+    expect(find.text('Add your Gemini API key'), findsOneWidget);
+
+    // The key field has the focus, so the keyboard is up.
+    // The dialog also shows the link as selectable text; this is the field.
+    final Finder keyField = find.descendant(
+      of: find.byType(TextField),
+      matching: find.byType(EditableText),
+    );
+    final EditableText field = tester.widget(keyField);
+    expect(field.focusNode.hasFocus, isTrue);
+    // Taps reach the dialog: the eye button shows the key.
+    expect(field.obscureText, isTrue);
+    await tester.tap(find.byTooltip('Show key'));
+    await tester.pump();
+    expect(tester.widget<EditableText>(keyField).obscureText, isFalse);
+    // The app behind the dialog still can't be used: the dialog's barrier
+    // is in the way.
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pump();
+    expect(find.text('Add your Gemini API key'), findsOneWidget);
+    expect(taps(), 0);
+
+    await tester.enterText(find.byType(TextField), _goodKey);
+    await tester.pump();
+    await _tapSave(tester);
+    await tester.pumpAndSettle();
+
+    expect(setup.submitted, [_goodKey]);
+    expect(find.byType(Dialog), findsNothing);
+    await tester.tap(find.text('App'));
+    expect(taps(), 1);
+  });
+
+  testWidgets('around the navigator: the app waits while the key is checked', (
+    tester,
+  ) async {
+    // The server never answers, so no dialog opens.
+    final setup = _SilentKeySetup();
+    final int Function() taps = await _pumpGateAroundNavigator(tester, setup);
+    expect(find.byType(Dialog), findsNothing);
+    await tester.tap(find.text('App'), warnIfMissed: false);
+    expect(taps(), 0);
   });
 
   testWidgets('a rejected key: the reason shows and the dialog stays', (

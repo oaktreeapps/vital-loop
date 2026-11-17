@@ -94,14 +94,24 @@ class ToA2aMessageTest(unittest.TestCase):
     def test_each_a2ui_message_is_one_data_part(self):
         """One data part per A2UI message, in order, for the task."""
         batch = [
-            {"version": "v0.9", "createSurface": {"surfaceId": "s"}},
-            {"version": "v0.9", "deleteSurface": {"surfaceId": "old"}},
+            {"version": "1.0", "createSurface": {"surfaceId": "s"}},
+            {"version": "1.0", "deleteSurface": {"surfaceId": "old"}},
         ]
         task = SimpleNamespace(id="task-1", context_id="context-1")
         message = _to_a2a_message(batch, task)
         self.assertEqual([part.root.data for part in message.parts], batch)
         self.assertEqual(message.task_id, "task-1")
         self.assertEqual(message.context_id, "context-1")
+
+    def test_each_data_part_has_the_a2ui_media_type(self):
+        """A2UI v1.0: every data part is marked application/a2ui+json."""
+        batch = [{"version": "1.0", "deleteSurface": {"surfaceId": "old"}}]
+        task = SimpleNamespace(id="task-1", context_id="context-1")
+        message = _to_a2a_message(batch, task)
+        self.assertEqual(
+            [part.root.metadata for part in message.parts],
+            [{"mimeType": "application/a2ui+json"}],
+        )
 
 
 if __name__ == "__main__":

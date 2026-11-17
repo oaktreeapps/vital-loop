@@ -15,7 +15,7 @@ https://www.apache.org/licenses/LICENSE-2.0.
 
 ## genui examples (BSD 3-Clause)
 
-The app's structure (a `Transport` feeding a `SurfaceController`, an ADK agent
+The app's structure (a `Transport` feeding a surface controller, an ADK agent
 served over A2A) is adapted from the
 [genui examples](https://github.com/flutter/genui/tree/main/examples), mainly
 Verdure and simple_chat.
@@ -48,5 +48,5 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-Packages the app and backend depend on (genui, ADK, a2a-sdk, pdf, …) are
+Packages the app and backend depend on (a2ui_core, a2ui_flutter, ADK, a2a-sdk, pdf, …) are
 downloaded by `flutter pub get` and `pip install` and keep their own licenses.

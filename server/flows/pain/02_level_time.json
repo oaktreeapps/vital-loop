@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "pain_step_2_level",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "pain_step_2_level",
       "path": "/",
@@ -21,7 +25,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "pain_step_2_level",
       "components": [
@@ -90,22 +94,20 @@
         {
           "id": "areas_text",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "{{bodyAreas|text}}"
+          "text": "##### {{bodyAreas|text}}"
         },
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "How bad is it?"
+          "text": "## How bad is it?"
         },
         {
           "id": "pain_level",
           "component": "SeverityInput",
           "label": "Pain level",
           "value": {
-            "path": "/painLevel"
+            "@path": "/painLevel"
           }
         },
         {
@@ -143,17 +145,17 @@
         {
           "id": "start_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "When did it start?"
+          "text": "##### When did it start?"
         },
         {
           "id": "started",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
-            "path": "/startedAt"
+            "@path": "/startedAt"
           }
         },
         {
@@ -172,10 +174,10 @@
               "name": "painDetailsEntered",
               "context": {
                 "painLevel": {
-                  "path": "/painLevel"
+                  "@path": "/painLevel"
                 },
                 "startedAt": {
-                  "path": "/startedAt"
+                  "@path": "/startedAt"
                 }
               }
             }
@@ -183,13 +185,12 @@
           "checks": [
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/startedAt"
+                    "@path": "/startedAt"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick when it started"
             }

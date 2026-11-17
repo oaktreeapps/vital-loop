@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/care_place.dart';
+import 'catalog_item.dart';
 
 /// The `places` property of CareMap and CareList: a list of places (see
 /// [CarePlace]), or a binding to one in the data model.
@@ -25,7 +25,7 @@ import '../../models/care_place.dart';
 Schema carePlacesSchema() => A2uiSchemas.listOrReference(
   description:
       'Places to get care, as the nearby search returned them. Usually a '
-      'binding like {"path": "/places"}, shared by a CareMap and a CareList.',
+      'binding like {"@path": "/places"}, shared by a CareMap and a CareList.',
   items: carePlaceSchema(),
 );
 

@@ -17,13 +17,15 @@
 // cleanly.
 
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
+import 'package:a2ui_core/a2ui_core.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:genui/genui.dart';
+import 'package:vitalloop/catalog/vitalloop_catalog.dart';
 import 'package:vitalloop/flows/nutrition_flow.dart';
 import 'package:vitalloop/services/backend_transport.dart';
 import 'package:vitalloop/services/genui_session.dart';
+import 'package:vitalloop/services/transport.dart';
 
 import '../support/flaky_backend.dart';
 
@@ -33,9 +35,17 @@ class _ManualBackend implements Transport {
   /// The text of every request that reached this backend, in order.
   final List<String> requests = [];
 
-  /// No A2UI messages: these tests only look at the requests.
+  /// The A2UI messages a test sends to the app with [send].
+  final StreamController<JsonMap> _messages = StreamController.broadcast();
+
+  /// The capabilities the app sent with its last request.
+  JsonMap lastMetadata = const {};
+
   @override
-  Stream<core.A2uiMessage> get incomingMessages => const Stream.empty();
+  Stream<JsonMap> get incomingMessages => _messages.stream;
+
+  /// Sends an A2UI [message] to the app, as an agent's answer would.
+  void send(JsonMap message) => _messages.add(message);
 
   /// No text either.
   @override
@@ -46,11 +56,9 @@ class _ManualBackend implements Transport {
 
   /// Records the request's text; it stays in flight until [answer].
   @override
-  Future<void> sendRequest(ChatMessage message) {
-    final TextPart? text = message.parts.whereType<TextPart>().firstOrNull;
-    requests.add(
-      text?.text ?? message.parts.uiInteractionParts.single.interaction,
-    );
+  Future<void> sendRequest(TransportRequest message) {
+    requests.add(message.asText);
+    lastMetadata = message.metadata;
     return _answer.future;
   }
 
@@ -60,9 +68,9 @@ class _ManualBackend implements Transport {
     _answer = Completer<void>();
   }
 
-  /// Nothing to clean up.
+  /// Closes the message stream.
   @override
-  void dispose() {}
+  void dispose() => _messages.close();
 }
 
 void main() {
@@ -107,12 +115,18 @@ void main() {
     final backend = _ManualBackend();
     final session = GenUiSession(transport: backend, catalog: nutritionCatalog);
     addTearDown(session.dispose);
-    final controller = session.surfaceHost as SurfaceController;
 
-    // genui reports a surface it can't draw each time it rebuilds it, and
-    // each answer from the backend rebuilds it again: once is enough.
+    // A surface the app can't draw may report the same error each time it
+    // is rebuilt, and each answer from the backend rebuilds it again: once
+    // is enough.
     for (var i = 0; i < 3; i++) {
-      controller.reportError(StateError('Catalog not found'), null);
+      session.processor.model.emitError(
+        A2uiRendererError(
+          code: 'CATALOG_ERROR',
+          surfaceId: 's',
+          message: 'Catalog not found',
+        ),
+      );
       await pumpEventQueue();
       backend.answer();
       await pumpEventQueue();
@@ -120,6 +134,141 @@ void main() {
 
     expect(backend.requests, hasLength(1));
     expect(backend.requests.single, contains('"error"'));
+    expect(backend.requests.single, contains('"version":"1.0"'));
+  });
+
+  test(
+    'a message the app can\'t use is reported once the request ends',
+    () async {
+      final backend = _ManualBackend();
+      final session = GenUiSession(
+        transport: backend,
+        catalog: nutritionCatalog,
+      );
+      addTearDown(session.dispose);
+
+      final Future<void> start = session.sendMessage('start');
+      // The answer names a catalog the app doesn't have: no surface.
+      backend.send({
+        'version': '1.0',
+        'createSurface': {
+          'surfaceId': 's',
+          'catalogId': 'https://example.com/x',
+        },
+      });
+      await pumpEventQueue();
+      expect(session.currentSurfaceId, isNull);
+      // The report waits for the request in flight.
+      expect(backend.requests, ['start']);
+
+      backend.answer();
+      await start;
+      await pumpEventQueue();
+      expect(backend.requests, hasLength(2));
+      expect(backend.requests.last, contains('"error"'));
+      backend.answer();
+      await pumpEventQueue();
+      expect(session.isProcessing, isFalse);
+    },
+  );
+
+  test(
+    'messages build surfaces, and a tap goes back as a v1.0 action',
+    () async {
+      final backend = _ManualBackend();
+      final session = GenUiSession(
+        transport: backend,
+        catalog: nutritionCatalog,
+      );
+      addTearDown(session.dispose);
+      final actions = <UserAction>[];
+      session.actions.listen(actions.add);
+
+      backend
+        ..send({
+          'version': '1.0',
+          'createSurface': {'surfaceId': 's', 'catalogId': vitalLoopCatalogId},
+        })
+        ..send({
+          'version': '1.0',
+          'updateDataModel': {
+            'surfaceId': 's',
+            'path': '/',
+            'value': {'meal': 'Lunch'},
+          },
+        })
+        ..send({
+          'version': '1.0',
+          'updateComponents': {
+            'surfaceId': 's',
+            'components': [
+              {
+                'id': 'root',
+                'component': 'Button',
+                'child': 'label',
+                'action': {
+                  'event': {
+                    'name': 'mealTypeSelected',
+                    'context': {
+                      'mealType': {'@path': '/meal'},
+                    },
+                  },
+                },
+              },
+              {'id': 'label', 'component': 'Text', 'text': 'Continue'},
+            ],
+          },
+        });
+      await pumpEventQueue();
+      expect(session.currentSurfaceId, 's');
+      expect(session.surfaceFor('s'), isNotNull);
+
+      // What a Button does when tapped.
+      await session.surfaceFor('s')!.dispatchAction({
+        'event': {
+          'name': 'mealTypeSelected',
+          'context': {'mealType': 'Lunch'},
+        },
+      }, 'root');
+      await pumpEventQueue();
+
+      expect(actions.single.name, 'mealTypeSelected');
+      expect(actions.single.context, {'mealType': 'Lunch'});
+      final request = jsonDecode(backend.requests.single) as Map;
+      expect(request['version'], '1.0');
+      expect((request['action'] as Map)['name'], 'mealTypeSelected');
+      expect((request['action'] as Map)['surfaceId'], 's');
+      // Every request says which A2UI version and catalog the app renders.
+      expect(backend.lastMetadata['a2uiRendererCapabilities'], {
+        '1.0': {
+          'supportedCatalogIds': [vitalLoopCatalogId],
+        },
+      });
+      backend.answer();
+      await pumpEventQueue();
+
+      // A deleteSurface removes it again.
+      backend.send({
+        'version': '1.0',
+        'deleteSurface': {'surfaceId': 's'},
+      });
+      await pumpEventQueue();
+      expect(session.currentSurfaceId, isNull);
+    },
+  );
+
+  test('actionMessage is a v1.0 action the backend reads as a tap', () {
+    final message =
+        jsonDecode(actionMessage('findNearbyCare', {'city': 'Austin'}))
+            as Map<String, Object?>;
+    final action = message['action']! as Map<String, Object?>;
+    expect(message['version'], '1.0');
+    expect(action['name'], 'findNearbyCare');
+    expect(action['context'], {'city': 'Austin'});
+    // The fields every v1.0 action has, for an action no surface raised.
+    expect(action['surfaceId'], appActionSource);
+    expect(action['sourceComponentId'], appActionSource);
+    expect(DateTime.tryParse(action['timestamp']! as String), isNotNull);
   });
 
   group('GenUiSession', () {

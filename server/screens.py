@@ -28,7 +28,8 @@ just sent, e.g. "mealTypeSelected". Its value is a screen file, or a shared
 screen with the values for its {{slots}}:
   {"screen": "../shared/notes.json", "with": {"stepLabel": "Step 5 of 5"}}
 
-A screen can pull in another file with {"$include": "../shared/theme.json"}.
+A screen can pull in another file with {"$include": "../shared/theme.json"}
+(each createSurface carries the theme in metadata.extensions.vitalloopTheme).
 Keys next to "$include" change the included JSON for that screen only, e.g.
 {"$include": "../shared/theme.json", "text": {"body": {"size": 15}}}.
 """

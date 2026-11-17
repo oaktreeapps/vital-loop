@@ -158,10 +158,8 @@ void main() {
 
     // The city went to the backend, not the dialog's local action.
     final FakeBackend summary = backends.last;
-    expect(summary.actions.last, {
-      'name': 'findNearbyCare',
-      'context': {'city': 'Sacramento'},
-    });
+    expect(summary.actions.last['name'], 'findNearbyCare');
+    expect(summary.actions.last['context'], {'city': 'Sacramento'});
     expect(
       summary.actions.map((a) => a['name']),
       isNot(contains('chooseCareCity')),

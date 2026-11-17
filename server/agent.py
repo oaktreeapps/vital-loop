@@ -84,6 +84,9 @@ Answer every request with the template for that request, as ONE ```json block
 containing the full message array:
 - Keep every message, component, id, layout property, text and surfaceId
   exactly as in the template. Never add, remove or reorder components.
+- A text that starts with "#" marks and a space (e.g. "## Log your vitals")
+  is a Markdown heading: the marks set its size. Keep them, and the space
+  after them, whenever you fill in or write such a text.
 - Replace each placeholder "{{name}}" with the value of `name` from the user's
   earlier actions. A placeholder that is the whole JSON value becomes that
   value as JSON (a list stays a list, a number stays a number); a placeholder

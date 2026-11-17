@@ -1,9 +1,10 @@
-# VitalLoop: a GenUI + Gemini demo
+# VitalLoop: a generative UI + Gemini demo
 
 A demo health tracking app where screens are **not pre-built in Dart**. A small
 Python server asks Gemini for each screen, Gemini answers with
-[A2UI](https://a2ui.org/) JSON, and the app draws it with Flutter's
-[`GenUI`](https://pub.dev/packages/genui) package.
+[A2UI](https://a2ui.org/) v1.0 JSON, and the app draws it with Flutter's
+[`a2ui_flutter`](https://pub.dev/packages/a2ui_flutter) and
+[`a2ui_core`](https://pub.dev/packages/a2ui_core) packages.
 
 The demo app has: forms, validation, custom components such as temperature input, a saved log, a daily summary written by Gemini, a PDF
 report etc.
@@ -69,19 +70,19 @@ Also:
 │  └ TrackingFlowScreen (one flow)        │   A2A    │ agent_executor.py  streams screens     │
 │     └ GenUISession                      │ ───────▶ │ agent.py     ADK agent ───────▶ Gemini │
 │        ├ BackendTransport (A2A client)  │ ◀─────── │ streaming.py partial JSON → screens    │
-│        └ SurfaceController (GenUI)      │  A2UI    │ screens.py   flow templates            │
-│           └ catalog: basic + custom     │  JSON    │ flows/<flow>/ prompt.md, *.json        │
+│        └ MessageProcessor (a2ui_core)   │  A2UI    │ screens.py   flow templates            │
+│           └ VitalLoop catalog (v1.0)    │  JSON    │ flows/<flow>/ prompt.md, *.json        │
 └─────────────────────────────────────────┘          └────────────────────────────────────────┘
 ```
 
 1. You tap a flow on the dashboard. The client sends a start message to that
    flow's agent, e.g. `http://localhost:10002/pain`.
 2. The server's [ADK](https://google.github.io/adk-docs/) agent gives Gemini the instructions (`prompt.md`) and the screen templates. Gemini answers with the A2UI messages for the next screen: `createSurface`, `updateDataModel` and
-   `updateComponents` (see the [A2UI v0.9 specification](https://a2ui.org/specification/v0.9-a2ui/)).
+   `updateComponents` (see the [A2UI v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/)).
 3. While Gemini writes, the server goes through the JSON and sends every
-   complete part of the screen to the client as an A2A status update. GenUI
+   complete part of the screen to the client as an A2A status update. The app
    renders each one, so the screen fills from top to bottom.
-4. When you tap a button, GenUI sends its action (e.g. `bodyAreasSelected`, with
+4. When you tap a button, the app sends its action (e.g. `bodyAreasSelected`, with
    the values you picked) back to the agent, and `flow.json` says which screen
    comes next. Some actions are handled on client side, e.g. `goToDashboard`.
 5. When a flow saves, the entry goes into `HealthLog`, which is an in-memory log on client side. The dashboard badges and the daily summary are built from it.
@@ -94,7 +95,7 @@ Also:
   `{"$ai": "what to generate", "example": ...}`, e.g. the symptoms list, the
   medication suggestions, the summary's overview for your doctor etc. If Gemini
   leaves one empty, the example is used.
-- **Custom components**: Flutter widgets registered as GenUI `CatalogItem`s in
+- **Custom components**: Flutter widgets registered as `CatalogItem`s in
   `client/lib/catalog/`. Only pre-defined components from the catalog can be used.
 
 ## The catalog
@@ -116,7 +117,11 @@ to VitalLoop's colors, spacing, radii and text styles as variables and styles.
 | Summary and care | `CareMap`, `CareList`, `PdfReport` |
 | Page header | `IconBadge` |
 
-The first two families come from GenUI; the rest are custom catalog items. The
+The first two families are the A2UI v1.0 basic components, exactly as the
+`a2ui_flutter` package implements them; the rest are custom catalog items.
+Together they form VitalLoop's A2UI v1.0 catalog
+(`client/lib/catalog/vitalloop_catalog.dart`), which also adds one function,
+`count`, to the basic catalog's. The
 custom cards share one look defined in `client/lib/catalog/shared/`. A screen can
 only use components from this list, and each custom component's schema
 description is exactly what Gemini reads about it.
@@ -204,8 +209,8 @@ Issues and pull requests are welcome. Before you open a PR:
 
 ## Acknowledgements
 
-- [GenUI](https://github.com/flutter/genui) 
-- [A2UI](https://a2ui.org/) ([v0.9 specification](https://a2ui.org/specification/v0.9-a2ui/)), [A2A](https://a2a-protocol.org/) and the
+- [GenUI](https://github.com/flutter/genui), whose examples the app's structure follows
+- [A2UI](https://a2ui.org/) ([v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/)), [A2A](https://a2a-protocol.org/) and the
   [Agent Development Kit](https://google.github.io/adk-docs/).
 - The body map from the Daily Health Tracker project (Apache 2.0).
 

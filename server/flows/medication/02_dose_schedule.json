@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "medication_step_2_dose_schedule",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "medication_step_2_dose_schedule",
       "path": "/",
@@ -29,7 +33,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "medication_step_2_dose_schedule",
       "components": [
@@ -85,8 +89,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "How much, and when?"
+          "text": "## How much, and when?"
         },
         {
           "id": "about_card",
@@ -123,20 +126,29 @@
         {
           "id": "about_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "About {{medicineName}}"
+          "text": "##### About {{medicineName}}"
         },
         {
           "id": "about_text",
           "component": "Text",
           "variant": "body",
           "text": {
-            "call": "formatString",
+            "@call": "pluralize",
             "args": {
-              "value": "${pluralize(value:${length(value:${/descriptions/{{medicineName}}})}, zero:'No description for this medicine yet. Check the leaflet in the pack.', other:'${/descriptions/{{medicineName}}}')}"
-            },
-            "returnType": "string"
+              "value": {
+                "@call": "count",
+                "args": {
+                  "value": {
+                    "@path": "/descriptions/{{medicineName}}"
+                  }
+                }
+              },
+              "zero": "No description for this medicine yet. Check the leaflet in the pack.",
+              "other": {
+                "@path": "/descriptions/{{medicineName}}"
+              }
+            }
           }
         },
         {
@@ -172,19 +184,16 @@
         {
           "id": "dose_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Dosage"
+          "text": "##### Dosage"
         },
         {
           "id": "dose_value",
           "component": "Text",
-          "variant": "h5",
           "text": {
-            "call": "formatString",
+            "@call": "formatString",
             "args": {
-              "value": "${formatNumber(value:${/dosage}, decimalPlaces:0)} ${pluralize(value:${/dosage}, one:'tablet', other:'tablets')}"
-            },
-            "returnType": "string"
+              "value": "##### ${formatNumber(value:${/dosage}, decimals:0)} ${pluralize(value:${/dosage}, one:'tablet', other:'tablets')}"
+            }
           }
         },
         {
@@ -193,7 +202,7 @@
           "min": 1,
           "max": 10,
           "value": {
-            "path": "/dosage"
+            "@path": "/dosage"
           }
         },
         {
@@ -214,16 +223,16 @@
         {
           "id": "schedule_title",
           "component": "Text",
-          "variant": "h5",
-          "text": "Scheduled time"
+          "text": "##### Scheduled time"
         },
         {
           "id": "schedule",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
-            "path": "/scheduledAt"
+            "@path": "/scheduledAt"
           }
         },
         {
@@ -242,10 +251,10 @@
               "name": "doseScheduleEntered",
               "context": {
                 "dosage": {
-                  "path": "/dosage"
+                  "@path": "/dosage"
                 },
                 "scheduledAt": {
-                  "path": "/scheduledAt"
+                  "@path": "/scheduledAt"
                 }
               }
             }
@@ -253,13 +262,12 @@
           "checks": [
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/scheduledAt"
+                    "@path": "/scheduledAt"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick when the dose is scheduled"
             }

@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)  # Logs searches, never health data.
 # OpenStreetMap's free geocoder, for the city's center. Its usage policy
 # asks for a User-Agent that names the app, and at most one request a second.
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
-USER_AGENT = "VitalLoop/1.0 (open-source genui demo app)"
+USER_AGENT = "VitalLoop/1.0 (open-source A2UI demo app)"
 
 # The Gemini model that searches Google Maps.
 MAPS_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")

@@ -5,14 +5,30 @@ The Python server of [VitalLoop](../README.md): it generates the
 the [Verdure](https://github.com/flutter/genui/tree/main/examples/verdure) example:
 an [ADK](https://google.github.io/adk-docs/) agent served over
 [A2A](https://a2a-protocol.org/), answering each request with
-[A2UI](https://a2ui.org/) JSON that the Flutter app renders with `genui`. The
-screens follow the [A2UI v0.9 specification](https://a2ui.org/specification/v0.9-a2ui/).
+[A2UI](https://a2ui.org/) JSON that the Flutter app renders with
+`a2ui_flutter`. The screens follow the
+[A2UI v1.0 specification](https://a2ui.org/specification/v1.0-a2ui/) and use
+VitalLoop's catalog (`CATALOG_ID` in `streaming.py`): the A2UI v1.0 basic
+catalog plus the app's own components and one function, `count`.
+
+A few things to know when writing a screen:
+
+- A heading is body text written as Markdown: `"text": "## Log your vitals"`
+  (`#` to `#####`, the theme's `h1` to `h5`). The basic Text has only the
+  `body` and `caption` variants.
+- A binding is `{"@path": "/key"}` and a function call `{"@call": ...}`.
+- In a `${...}` expression, quoted text is literal: pass a value as
+  `${/key}`, not `'${/key}'`. `count(value:...)` gives the length of a text
+  or list; the basic `length` only checks one.
+- A Button's validation rules are its `checks`. The specification renamed
+  that key to `@checks` on 11 November 2026; the templates keep `checks`
+  until a released `a2ui_core` reads the new name (0.7.0 does not yet).
 
 ## How it works
 
 ```
 Flutter app ──A2A──▶ main.py ──▶ agent_executor.py ──▶ agent.py ──▶ Gemini
- (genui_a2a)          one URL       reads the request     prompt.md + screen
+ (A2A client)        one URL       reads the request     prompt.md + screen
                       per flow      sends A2UI back       templates (screens.py)
 ```
 
@@ -200,7 +216,7 @@ the templates from `../server/flows/` and check every flow against them.
 ## Dependencies
 
 `requirements.txt` keeps `a2a-sdk` below 1.0 on purpose. The client's A2A
-library (`genui_a2a`) speaks A2A 0.3. `a2a-sdk` 1.x can still answer 0.3
-clients, but its compatibility layer sends every number as a decimal (`72.0`
-instead of `72`), which the client doesn't expect. Move to 1.x once
-`genui_a2a` supports A2A 1.0.
+client (`client/lib/services/a2a_client.dart`) speaks A2A 0.3. `a2a-sdk` 1.x
+can still answer 0.3 clients, but its compatibility layer sends every number
+as a decimal (`72.0` instead of `72`), which the client doesn't expect. Move
+to 1.x together with the client.

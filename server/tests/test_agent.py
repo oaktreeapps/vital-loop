@@ -76,7 +76,7 @@ class AgentTest(unittest.TestCase):
 
     def test_parse_a2ui_reads_the_json_block(self):
         """parse_a2ui reads the ```json block and rejects a reply without."""
-        message = {"version": "v0.9", "deleteSurface": {"surfaceId": "a"}}
+        message = {"version": "1.0", "deleteSurface": {"surfaceId": "a"}}
         reply = "Here you go.\n```json\n" + json.dumps([message]) + "\n```"
         self.assertEqual(parse_a2ui(reply), [message])
         with self.assertRaises(ValueError):

@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "nearby_care",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "nearby_care",
       "path": "/",
@@ -41,12 +45,16 @@
             ]
           }
         },
-        "selectedPlaceId": ""
+        "selectedPlaceId": "",
+        "title": {
+          "$ai": "A short title (2–6 words) naming the main kind of care found and the city, e.g. \"Orthopedic care near Austin\". No diagnosis.",
+          "example": "Care near {{city}}"
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "nearby_care",
       "components": [
@@ -76,10 +84,11 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
           "text": {
-            "$ai": "A short title (2–6 words) naming the main kind of care found and the city, e.g. \"Orthopedic care near Austin\". No diagnosis.",
-            "example": "Care near {{city}}"
+            "@call": "formatString",
+            "args": {
+              "value": "## ${/title}"
+            }
           }
         },
         {
@@ -95,13 +104,13 @@
           "id": "map",
           "component": "CareMap",
           "places": {
-            "path": "/places"
+            "@path": "/places"
           },
           "center": {
-            "path": "/center"
+            "@path": "/center"
           },
           "selected": {
-            "path": "/selectedPlaceId"
+            "@path": "/selectedPlaceId"
           },
           "city": "{{city}}"
         },
@@ -111,10 +120,10 @@
           "title": "Places nearby",
           "city": "{{city}}",
           "places": {
-            "path": "/places"
+            "@path": "/places"
           },
           "selected": {
-            "path": "/selectedPlaceId"
+            "@path": "/selectedPlaceId"
           },
           "emptyText": {
             "$ai": "One short sentence shown when the places list is empty. If search_care_places returned an error, say nearby search couldn't run and why in plain words (e.g. it isn't set up on the server yet), without suggesting another city. Otherwise say no places were found near {{city}} and suggest a nearby larger city.",
@@ -169,7 +178,7 @@
               "name": "generatePdf",
               "context": {
                 "selectedPlaceId": {
-                  "path": "/selectedPlaceId"
+                  "@path": "/selectedPlaceId"
                 }
               }
             }

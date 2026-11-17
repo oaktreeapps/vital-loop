@@ -16,9 +16,12 @@
 // pumping a flow or the dashboard with a fake backend, and finding and tapping
 // a step's buttons.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logging/logging.dart';
 import 'package:vitalloop/core/router/app_routes.dart';
 import 'package:vitalloop/main.dart';
 import 'package:vitalloop/models/health_log.dart';
@@ -37,9 +40,32 @@ const String serverFlowsDir = '../server/flows';
 /// Turns off font downloads (surface themes use Google Fonts, and tests have
 /// no network) and empties the app-wide [healthLog] before each test, so no
 /// test sees entries saved by another.
+///
+/// It also fails a test in which the app could not use a screen the backend
+/// sent: an A2UI message that breaks the v1.0 rules or the catalog's
+/// schemas, or an expression that fails. The app only logs and reports
+/// those, so without this a broken screen could pass unnoticed.
 void setUpTestEnvironment() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
   setUp(healthLog.clear);
+
+  final a2uiErrors = <String>[];
+  late StreamSubscription<LogRecord> logs;
+  setUp(() {
+    a2uiErrors.clear();
+    logs = Logger.root.onRecord.listen((record) {
+      if (record.loggerName == 'GenUiSession' &&
+          record.level >= Level.WARNING &&
+          (record.message.startsWith('A2UI error') ||
+              record.message.startsWith('Could not apply'))) {
+        a2uiErrors.add('${record.message} ${record.error ?? ''}');
+      }
+    });
+  });
+  tearDown(() async {
+    await logs.cancel();
+    expect(a2uiErrors, isEmpty, reason: 'the app could not use a screen');
+  });
 }
 
 /// Uses a large test screen for this test and resets it when the test ends.

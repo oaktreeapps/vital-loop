@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:a2ui_core/a2ui_core.dart';
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
 
+import '../../core/theme/surface_markdown.dart';
 import '../../core/theme/surface_theme.dart';
 import '../../services/backend_transport.dart';
 import '../../services/genui_session.dart';
@@ -57,11 +59,13 @@ class FlowBody extends StatelessWidget {
       );
     }
 
-    if (surfaceId == null) {
+    final SurfaceModel<ComponentImplementation>? surface = surfaceId == null
+        ? null
+        : session.surfaceFor(surfaceId);
+    if (surface == null) {
       return FlowLoadingView(label: loadingLabel);
     }
 
-    final SurfaceContext surface = session.surfaceHost.contextFor(surfaceId);
     return Column(
       children: [
         if (session.isProcessing) const LinearProgressIndicator(),
@@ -74,11 +78,11 @@ class FlowBody extends StatelessWidget {
               // A new key per surface makes the switcher fade between steps.
               child: SurfaceTheme(
                 key: ValueKey(surfaceId),
-                surfaceContext: surface,
+                surface: surface,
                 child: SizedBox.expand(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
-                    child: Surface(surfaceContext: surface),
+                    child: SurfaceView(surface: surface),
                   ),
                 ),
               ),

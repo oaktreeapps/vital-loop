@@ -110,7 +110,7 @@ void main() {
 
     // The scheduled time can still be changed: pick the date, then the
     // time, with the pickers' defaults.
-    await scrollAndTap(tester, find.byKey(const Key('schedule_text')));
+    await scrollAndTap(tester, find.byIcon(Icons.calendar_today));
     await settle(tester);
     await tester.tap(find.text('OK'));
     await settle(tester);

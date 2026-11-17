@@ -46,6 +46,7 @@ from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities
 from a2a.types import AgentCard
+from a2a.types import AgentExtension
 from a2a.types import AgentSkill
 from dotenv import load_dotenv
 from starlette.applications import Starlette
@@ -62,6 +63,7 @@ from key_setup import current_key  # noqa: E402
 from key_setup import KeySetup  # noqa: E402
 from key_setup import SETUP_PATH  # noqa: E402
 from screens import list_flows  # noqa: E402
+from streaming import CATALOG_ID  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(name)s: %(message)s"
@@ -69,13 +71,25 @@ logging.basicConfig(
 logger = logging.getLogger("backend")  # Logs which flows are served, and where.
 
 
+# The A2UI v1.0 extension of A2A: an agent that lists it in its card answers
+# with A2UI v1.0 messages.
+A2UI_EXTENSION_URI = "https://a2ui.org/a2a-extension/a2ui/v1.0"
+
+
 def agent_card(flow: str, base_url: str) -> AgentCard:
     """Describes one flow's agent to A2A clients.
 
     The app (and any other A2A client) can read this card at
     <base_url>/<flow>/.well-known/agent-card.json to learn the agent's name,
-    its request URL and that it supports streaming.
+    its request URL, that it supports streaming, and that it answers with
+    A2UI v1.0 screens built from the app's catalog.
     """
+    a2ui_extension = AgentExtension(
+        uri=A2UI_EXTENSION_URI,
+        description="Answers with A2UI v1.0 screens.",
+        required=False,
+        params={"supportedCatalogIds": [CATALOG_ID]},
+    )
     return AgentCard(
         name=f"VitalLoop: {flow}",
         description=(
@@ -85,7 +99,9 @@ def agent_card(flow: str, base_url: str) -> AgentCard:
         version="1.0.0",
         default_input_modes=["text"],
         default_output_modes=["text"],
-        capabilities=AgentCapabilities(streaming=True),
+        capabilities=AgentCapabilities(
+            streaming=True, extensions=[a2ui_extension]
+        ),
         skills=[
             AgentSkill(
                 id=flow,

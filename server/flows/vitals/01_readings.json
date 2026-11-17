@@ -1,16 +1,20 @@
 [
   {
-    "version": "v0.9",
+    "version": "1.0",
     "createSurface": {
       "surfaceId": "vitals_step_1_readings",
-      "catalogId": "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
-      "theme": {
-        "$include": "../shared/theme.json"
+      "catalogId": "https://github.com/oaktreeapps/vital-loop/catalogs/v1_0/catalog.json",
+      "metadata": {
+        "extensions": {
+          "vitalloopTheme": {
+            "$include": "../shared/theme.json"
+          }
+        }
       }
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateDataModel": {
       "surfaceId": "vitals_step_1_readings",
       "path": "/",
@@ -25,7 +29,7 @@
     }
   },
   {
-    "version": "v0.9",
+    "version": "1.0",
     "updateComponents": {
       "surfaceId": "vitals_step_1_readings",
       "components": [
@@ -76,8 +80,7 @@
         {
           "id": "title",
           "component": "Text",
-          "variant": "h2",
-          "text": "Log your vitals"
+          "text": "## Log your vitals"
         },
         {
           "id": "subtitle",
@@ -89,24 +92,24 @@
           "id": "blood_pressure",
           "component": "BloodPressureInput",
           "systolic": {
-            "path": "/systolic"
+            "@path": "/systolic"
           },
           "diastolic": {
-            "path": "/diastolic"
+            "@path": "/diastolic"
           }
         },
         {
           "id": "heart_rate",
           "component": "HeartRateInput",
           "value": {
-            "path": "/heartRate"
+            "@path": "/heartRate"
           }
         },
         {
           "id": "temperature",
           "component": "TemperatureInput",
           "value": {
-            "path": "/temperature"
+            "@path": "/temperature"
           },
           "unit": "celsius"
         },
@@ -114,7 +117,7 @@
           "id": "blood_sugar",
           "component": "BloodSugarInput",
           "value": {
-            "path": "/bloodSugar"
+            "@path": "/bloodSugar"
           },
           "unit": "mg/dL"
         },
@@ -153,17 +156,17 @@
         {
           "id": "time_title",
           "component": "Text",
-          "variant": "h5",
           "weight": 1,
-          "text": "Measurement time"
+          "text": "##### Measurement time"
         },
         {
           "id": "time",
           "component": "DateTimeInput",
-          "variant": "datetime",
+          "enableDate": true,
+          "enableTime": true,
           "label": "Date and time",
           "value": {
-            "path": "/measuredAt"
+            "@path": "/measuredAt"
           }
         },
         {
@@ -188,22 +191,22 @@
               "name": "vitalsEntered",
               "context": {
                 "systolic": {
-                  "path": "/systolic"
+                  "@path": "/systolic"
                 },
                 "diastolic": {
-                  "path": "/diastolic"
+                  "@path": "/diastolic"
                 },
                 "heartRate": {
-                  "path": "/heartRate"
+                  "@path": "/heartRate"
                 },
                 "temperature": {
-                  "path": "/temperature"
+                  "@path": "/temperature"
                 },
                 "bloodSugar": {
-                  "path": "/bloodSugar"
+                  "@path": "/bloodSugar"
                 },
                 "measuredAt": {
-                  "path": "/measuredAt"
+                  "@path": "/measuredAt"
                 }
               }
             }
@@ -211,13 +214,12 @@
           "checks": [
             {
               "condition": {
-                "call": "required",
+                "@call": "required",
                 "args": {
                   "value": {
-                    "path": "/measuredAt"
+                    "@path": "/measuredAt"
                   }
-                },
-                "returnType": "boolean"
+                }
               },
               "message": "Pick the measurement time"
             }

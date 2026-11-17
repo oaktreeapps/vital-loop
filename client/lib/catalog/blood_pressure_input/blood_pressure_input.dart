@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/vitals/blood_pressure.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/blood_pressure_card.dart';
 
 /// Blood pressure in mmHg: a card with a ruler for each number.
 ///
 /// See [BloodPressureCard]. Properties: `systolic` and `diastolic`
-/// (required; usually bindings like `{"path": "/systolic"}`), whole mmHg
+/// (required; usually bindings like `{"@path": "/systolic"}`), whole mmHg
 /// from 70 to 200 and 40 to 130; and `label`. Dragging a ruler writes the
 /// new number to the bound path. When a value has no binding, it is stored
 /// under this component's own path (see [bindingPath]). Starts at 118 / 76
@@ -50,11 +50,11 @@ final CatalogItem bloodPressureInput = CatalogItem(
   exampleData: [
     () => '''
       [{"id": "root", "component": "BloodPressureInput",
-        "systolic": {"path": "/systolic"}, "diastolic": {"path": "/diastolic"}}]
+        "systolic": {"@path": "/systolic"}, "diastolic": {"@path": "/diastolic"}}]
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     return bindNumber(
       itemContext,
       bindingPath(itemContext, data['systolic'], 'systolic'),

@@ -16,7 +16,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:genui/genui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
@@ -27,6 +26,7 @@ import '../models/health_log.dart';
 import '../models/tracking_flow.dart';
 import '../services/backend_transport.dart';
 import '../services/genui_session.dart';
+import '../services/transport.dart';
 import '../widgets/flow/care_city_dialog.dart';
 import '../widgets/flow/flow_body.dart';
 
@@ -34,7 +34,7 @@ import '../widgets/flow/flow_body.dart';
 typedef TransportFactory = Transport Function(TrackingFlow flow);
 
 /// A guided tracking flow (e.g. Food / Nutrition, Medications), rendered
-/// entirely from genui surfaces.
+/// entirely from A2UI surfaces.
 ///
 /// Flow: TrackingFlowScreen → GenUiSession (the flow's catalog) →
 /// BackendTransport → the flow's agent on the Python backend. The backend
@@ -92,7 +92,7 @@ class _TrackingFlowScreenState extends State<TrackingFlowScreen> {
         BackendTransport(flowName: flow.name);
     _log.info(
       'TrackingFlowScreen → GenUiSession (${flow.name} catalog, '
-      '${flow.catalog.items.length} components, ${transport.runtimeType})',
+      '${flow.catalog.components.length} components, ${transport.runtimeType})',
     );
     _session = GenUiSession(transport: transport, catalog: flow.catalog);
     _answers.clear();

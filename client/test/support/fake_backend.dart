@@ -19,8 +19,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
-import 'package:genui/genui.dart';
+import 'package:vitalloop/services/transport.dart';
 
 import 'test_utils.dart';
 
@@ -47,8 +46,7 @@ class FakeBackend implements Transport {
   final List<Map<String, Object?>> actions = [];
 
   /// The A2UI messages sent to the app, one by one, like a streamed reply.
-  final StreamController<core.A2uiMessage> _messages =
-      StreamController.broadcast();
+  final StreamController<JsonMap> _messages = StreamController.broadcast();
 
   /// Surface ids already created, with how often.
   final Map<String, int> _surfaceIds = {};
@@ -67,7 +65,7 @@ class FakeBackend implements Transport {
 
   /// The A2UI messages of each screen, as the real backend would send them.
   @override
-  Stream<core.A2uiMessage> get incomingMessages => _messages.stream;
+  Stream<JsonMap> get incomingMessages => _messages.stream;
 
   /// The real backend sends no plain text, so neither does this one.
   @override
@@ -81,16 +79,8 @@ class FakeBackend implements Transport {
   /// from the app gets no answer, like on the real backend. Every action is
   /// also kept in [actions], so tests can check what the app sent.
   @override
-  Future<void> sendRequest(ChatMessage message) async {
-    final String request = message.parts
-        .map(
-          (part) => part.isUiInteractionPart
-              ? part.asUiInteractionPart!.interaction
-              : part is TextPart
-              ? part.text
-              : '',
-        )
-        .join();
+  Future<void> sendRequest(TransportRequest message) async {
+    final String request = message.asText;
 
     Object? json;
     try {
@@ -117,9 +107,7 @@ class FakeBackend implements Transport {
       _resolvePlaces(jsonDecode(_fill(screen))) as List<Object?>,
     );
     for (final message in messages) {
-      _messages.add(
-        core.A2uiMessage.fromJson(message! as Map<String, Object?>),
-      );
+      _messages.add((message! as Map).cast<String, Object?>());
     }
   }
 
@@ -363,7 +351,7 @@ class FakeBackend implements Transport {
     _ => '$value',
   };
 
-  /// `yyyy-MM-ddTHH:mm:00`, the format genui's DateTimeInput reads.
+  /// `yyyy-MM-ddTHH:mm:00`, the format the DateTimeInput reads.
   static String _now() {
     final now = DateTime.now();
     String two(int n) => n.toString().padLeft(2, '0');

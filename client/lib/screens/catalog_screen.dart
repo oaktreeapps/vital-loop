@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:a2ui_core/a2ui_core.dart' as core;
+import 'package:a2ui_core/a2ui_core.dart';
+import 'package:a2ui_flutter/a2ui_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:genui/genui.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
 
+import '../catalog/shared/catalog_item.dart';
+import '../catalog/vitalloop_catalog.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/surface_markdown.dart';
 import '../flows/daily_summary_flow.dart';
 import '../models/health_option.dart';
 import '../models/tracking_flow.dart';
@@ -31,10 +35,8 @@ import '../widgets/component_preview/json_sheet.dart';
 /// Logger for this screen's messages.
 final Logger _log = Logger('CatalogScreen');
 
-/// genui's built-in components, which every flow's screens can use.
-final List<CatalogItem> defaultCatalogItems = BasicCatalogItems.asCatalog()
-    .items
-    .toList();
+/// The basic components, which every flow's screens can use.
+final List<CatalogItem> defaultCatalogItems = basicCatalogItems;
 
 /// The app's own components (`lib/catalog/`), each once, in the order the
 /// flows list them: every dashboard flow, then the daily summary.
@@ -53,11 +55,11 @@ final List<CatalogItem> customCatalogItems = () {
 }();
 
 /// Shows every component the flows' screens can use, in two tabs: Default
-/// (genui's built-in components) and Custom (the app's own). Each has a live
+/// (the basic components) and Custom (the app's own). Each has a live
 /// preview rendered from its example A2UI JSON, the JSON itself, and the
 /// schema the backend must follow.
 ///
-/// Previews go through the same SurfaceController path as backend responses,
+/// Previews go through the same MessageProcessor path as backend responses,
 /// so what renders here is what the backend would get by sending that JSON.
 class CatalogScreen extends StatefulWidget {
   /// Creates the catalog screen.
@@ -68,53 +70,64 @@ class CatalogScreen extends StatefulWidget {
   State<CatalogScreen> createState() => _CatalogScreenState();
 }
 
-/// State of [CatalogScreen]: owns the [SurfaceController] that renders one
+/// State of [CatalogScreen]: owns the [MessageProcessor] that keeps one
 /// preview surface per catalog item.
 class _CatalogScreenState extends State<CatalogScreen> {
-  /// Renders the previews, with the default and every custom component.
-  final SurfaceController _controller = SurfaceController(
-    catalogs: [
-      BasicCatalogItems.asCatalog().copyWith(newItems: customCatalogItems),
-    ],
-  );
+  /// Keeps the previews' surfaces, with the basic and every custom component.
+  final MessageProcessor<ComponentImplementation> _processor =
+      MessageProcessor<ComponentImplementation>(
+        catalogs: [vitalLoopCatalog(customItems: customCatalogItems)],
+        reportErrorsOnly: true,
+      );
 
   /// Listens for taps in the previews, see [_showAction].
-  late final StreamSubscription<ChatMessage> _submitSub;
+  late final Subscription _actionSub;
+
+  /// Logs a preview the processor can't use.
+  late final Subscription _errorSub;
 
   /// Component name → the example components rendered as its preview.
   final Map<String, List<JsonMap>> _examples = {};
 
   /// Creates one preview surface for every catalog item that has example
-  /// data, by sending its example JSON to [_controller] as A2UI messages.
+  /// data, by sending its example JSON to [_processor] as A2UI messages.
   @override
   void initState() {
     super.initState();
-    final String catalogId = _controller.catalogs.first.catalogId!;
+    _errorSub = _processor.model.onError.subscribe(
+      (error) => _log.warning('Preview error ${error.code}: ${error.message}'),
+    );
     for (final CatalogItem item in [
       ...defaultCatalogItems,
       ...customCatalogItems,
     ]) {
       if (item.exampleData.isEmpty) continue;
-      final List<JsonMap> components =
-          (jsonDecode(item.exampleData.first()) as List).cast<JsonMap>();
+      final List<JsonMap> components = [
+        for (final Object? component
+            in jsonDecode(item.exampleData.first()) as List)
+          (component! as Map).cast<String, Object?>(),
+      ];
       _examples[item.name] = components;
-      _log.info('Render example for ${item.name} → SurfaceController');
-      _controller
-        ..handleMessage(
-          core.CreateSurfaceMessage(
-            surfaceId: _surfaceId(item),
-            catalogId: catalogId,
-          ),
-        )
-        ..handleMessage(
-          core.UpdateComponentsMessage(
-            surfaceId: _surfaceId(item),
-            components: components,
-          ),
-        );
+      _log.info('Render example for ${item.name} → MessageProcessor');
+      _processor.processMessages([
+        {
+          'version': a2uiVersion,
+          'createSurface': {
+            'surfaceId': _surfaceId(item),
+            'catalogId': vitalLoopCatalogId,
+          },
+        },
+        {
+          'version': a2uiVersion,
+          'updateComponents': {
+            'surfaceId': _surfaceId(item),
+            'components': components,
+          },
+        },
+      ]);
     }
     // A tap in a preview produces the exact event a backend would receive.
-    _submitSub = _controller.onSubmit.listen(_showAction);
+    _actionSub = _processor.model.onAction.subscribe(_showAction);
   }
 
   /// The id of the preview surface for [item], e.g. `catalog_Button`.
@@ -122,9 +135,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   /// Shows the action from a tap in a preview in a bottom sheet, so you can
   /// see what the backend would receive.
-  void _showAction(ChatMessage message) {
-    final UserAction? action = userActionFrom(message);
-    if (action == null || !mounted) return;
+  void _showAction(A2uiRendererAction rendererAction) {
+    if (!mounted) return;
+    final UserAction action = userActionFrom(rendererAction);
     _log.info('Preview action → would be sent to backend: ${action.name}');
     showModalBottomSheet<void>(
       context: context,
@@ -139,11 +152,12 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
-  /// Stops listening for taps and closes the controller.
+  /// Stops listening for taps and closes the processor.
   @override
   void dispose() {
-    _submitSub.cancel();
-    _controller.dispose();
+    _actionSub.unsubscribe();
+    _errorSub.unsubscribe();
+    _processor.dispose();
     super.dispose();
   }
 
@@ -153,9 +167,33 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: const Text('Component Catalog'),
+          backgroundColor: AppColors.background,
+          surfaceTintColor: Colors.transparent,
+          foregroundColor: AppColors.text,
+          title: Text(
+            'Component Catalog',
+            style: GoogleFonts.fraunces(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.3,
+              color: AppColors.text,
+            ),
+          ),
           bottom: TabBar(
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textMuted,
+            indicatorColor: AppColors.primary,
+            dividerColor: AppColors.border,
+            labelStyle: GoogleFonts.dmSans(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+            unselectedLabelStyle: GoogleFonts.dmSans(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
             tabs: [
               Tab(text: 'Default (${defaultCatalogItems.length})'),
               Tab(text: 'Custom (${customCatalogItems.length})'),
@@ -166,7 +204,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
           children: [
             _componentList(
               intro:
-                  'These components come with genui and every flow can use '
+                  'These components come with A2UI and every flow can use '
                   'them. The backend composes screens from them by sending '
                   'A2UI JSON that follows each schema. Tap a button in a '
                   'preview to see the event the backend receives.',
@@ -186,7 +224,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
-  /// A tab's short [intro] text and one [ComponentCard] per item in [items].
+  /// A tab's short [intro] text and one [ComponentCard] per item in [items],
+  /// numbered from 1 in the tab's order.
   Widget _componentList({
     required String intro,
     required List<CatalogItem> items,
@@ -194,17 +233,25 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(intro, style: Theme.of(context).textTheme.bodyMedium),
+        Text(
+          intro,
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            height: 1.45,
+            color: AppColors.textMuted,
+          ),
+        ),
         const SizedBox(height: 16),
-        for (final CatalogItem item in items)
+        for (final (int i, CatalogItem item) in items.indexed)
           if (_examples[item.name] case final List<JsonMap> example)
-            ComponentCard(
-              item: item,
-              example: example,
-              preview: Surface(
-                surfaceContext: _controller.contextFor(_surfaceId(item)),
+            if (_processor.model.getSurface(_surfaceId(item))
+                case final SurfaceModel<ComponentImplementation> surface)
+              ComponentCard(
+                index: i + 1,
+                item: item,
+                example: example,
+                preview: SurfaceView(surface: surface),
               ),
-            ),
       ],
     );
   }

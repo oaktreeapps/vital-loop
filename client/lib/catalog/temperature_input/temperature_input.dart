@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:genui/genui.dart';
 import 'package:json_schema_builder/json_schema_builder.dart';
 
 import '../../models/vitals/temperature.dart';
+import '../shared/catalog_item.dart';
 import '../shared/data_binding.dart';
 import 'widgets/temperature_card.dart';
 
 /// Body temperature, stored in °C: a card with a thermometer to drag.
 ///
 /// See [TemperatureCard]. Properties: `value` (required; usually a binding
-/// like `{"path": "/temperature"}`), always in °C from 34 to 42 in 0.1
+/// like `{"@path": "/temperature"}`), always in °C from 34 to 42 in 0.1
 /// steps; `unit`, the unit shown first ("celsius" or "fahrenheit"; the user
 /// can switch it, and it only changes what is shown); and `label`. Starts at
 /// 36.6 °C when the data model has no value yet. Under 35 is low, up to 37.5
@@ -49,11 +49,11 @@ final CatalogItem temperatureInput = CatalogItem(
   ),
   exampleData: [
     () => '''
-      [{"id": "root", "component": "TemperatureInput", "value": {"path": "/temperature"}}]
+      [{"id": "root", "component": "TemperatureInput", "value": {"@path": "/temperature"}}]
     ''',
   ],
   widgetBuilder: (itemContext) {
-    final data = itemContext.data as JsonMap;
+    final JsonMap data = itemContext.data;
     return bindNumber(
       itemContext,
       bindingPath(itemContext, data['value'], 'value'),
