@@ -20,6 +20,9 @@ A few things to know when writing a screen:
 - In a `${...}` expression, quoted text is literal: pass a value as
   `${/key}`, not `'${/key}'`. `count(value:...)` gives the length of a text
   or list; the basic `length` only checks one.
+- A Button's validation rules are its `checks`. The specification renamed
+  that key to `@checks` on 11 November 2026; the templates keep `checks`
+  until a released `a2ui_core` reads the new name (0.7.0 does not yet).
 
 ## How it works
 

@@ -108,7 +108,8 @@ lib/
   screens/
     dashboard_screen.dart    Home: the flows, today's badges, Generate summary
     tracking_flow_screen.dart  Runs one flow and shows its latest screen
-    catalog_screen.dart      Preview of the nutrition catalog's components
+    catalog_screen.dart      Preview of every catalog component, with its JSON
+                             and schema
     gemini_key_gate.dart     First-run key check; blocks the app until the key works
   widgets/                   The screens' widgets, one per file
     common/                  Shared by screens: the dialog frame, the text field
@@ -208,15 +209,19 @@ part. Run them from this `client/` folder.
 ```
 test/
   app_test.dart       The app opens on the dashboard
-  catalog/            Each component's card, and that every example passes
-                      its schema (catalog_examples_test.dart)
+  catalog/            Each component's card; that every example passes its
+                      schema (catalog_examples_test.dart); the catalog itself,
+                      with every example and the server's first screens held
+                      to the strict v1.0 rules (vitalloop_catalog_test.dart);
+                      and the expressions the screens use (shared/)
   core/               Routes, the surface theme, text formatting
   flows/              Each flow from start to summary, against the real
                       templates
   models/             Plain logic, no widgets: vitals ranges, severity, the
                       health log, the report, care places, the body map
   screens/            The dashboard, catalog, key check and flow screens
-  services/           The session, the key setup calls, the PDF builder
+  services/           The session, the A2A client and transport, the key
+                      setup calls, the PDF builder
   widgets/            The small shared widgets: buttons, dialogs, the bars
   a2ui/               How the app takes a streamed screen, and what it rejects
   support/            Shared helpers: the fake backend, test setup, fakes
@@ -238,10 +243,11 @@ received, surfaces built and actions tapped.
 - `google_fonts` stays on 8.x. Version 9 uses the separate `material_ui`
   package, whose `TextTheme` isn't Flutter's own, so this app doesn't
   compile with it.
-- `a2ui_core` (0.5) and `a2ui_flutter` (0.1) process and render A2UI v1.0.
-  They replace `genui`, which only speaks A2UI v0.9. The basic components
-  (Text, Row, Button, …) and functions are theirs; the app styles them
-  through the Flutter theme (`lib/core/theme/surface_theme.dart`).
+- `a2ui_core` and `a2ui_flutter` (the versions in `pubspec.yaml`) process
+  and render A2UI v1.0. They replace `genui`, which only speaks A2UI v0.9.
+  The basic components (Text, Row, Button, …) and functions are theirs; the
+  app styles them through the Flutter theme
+  (`lib/core/theme/surface_theme.dart`).
 - `flutter_markdown_plus` renders the Text component's Markdown, which is
   how a screen writes a heading (`## Title`).
 - The app talks A2A to the server with its own small client
